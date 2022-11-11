@@ -5,7 +5,7 @@ from PyQt5.QtGui import *
 
 # import sys
 # sys.path.insert(0, "D:/issuePjt_mj")
-from source.get_api_data import *
+from source.get_api_data_news import *
 import common.config.apiinfo as apifp
 from common.config.filepassclass import *
 

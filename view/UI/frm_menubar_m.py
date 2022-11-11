@@ -3,8 +3,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 # from top1 import Ui_top_win
 # from today1 import Ui_today_win
 # from dftop1 import Ui_dftop_win
-from news_api1 import Ui_news_collect_win
-from complaint_api import Ui_complaint_api_win
+from frm_news_api_s import Ui_news_collect_win
+from frm_complaint_api_s import Ui_complaint_api_win
 
 class Ui_MainWindow(object):
     def collect_complaint_window(self):

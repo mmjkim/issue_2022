@@ -89,7 +89,7 @@ COMPLAIN_DATA_PATH_KWSEX = '민원_키워드기반성별정보'
 #키워드 기반 연령 정보
 COMPLAIN_DATA_PATH_KWAGE = '민원_키워드기반연령정보'
 
-COMPLAIN_MAX_ROW = 50
+COMPLAIN_MAX_ROW = '10'
 
 
 #------------- 네이버 API I/F 정보 ---------------------

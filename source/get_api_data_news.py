@@ -120,7 +120,7 @@ def get_news_data(part, day1, day2):
     for i in list_part:
         uddi = get_news_uuid_list(i)
         for j in date_list:
-            news_data = get_news(uddi, i, j)
+            get_news(uddi, i, j)
 
 
 # aa = get_news_uuid_list('경제')

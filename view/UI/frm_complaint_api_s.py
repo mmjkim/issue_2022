@@ -1,4 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
 
 import common.config.apiinfo as apifp
@@ -192,26 +193,43 @@ class Ui_complaint_api_win(object):
 
         self.show_folders()
 
+        self.btn_sel.clicked.connect(self.get_complaints)
+
+
     def get_complaints(self):
         global part
         s_yy_start = self.sel_yy_start.currentText()
         s_mm_start = self.sel_mm_start.currentText()
 
         if self.rad_type_rising.isChecked():
-            # get_risting_keyword()
-            pass
+            part = '급등'
         elif self.rad_type_top.isChecked():
-            # get_topN_keyword()
-            pass
+            part = '핵심'
         elif self.rad_type_today.isChecked():
-            # get_today_topic_keyword()
-            pass
+            part = '오늘'
         elif self.rad_type_dftop.isChecked():
-            # get_dfTopN_keyword()
-            pass
+            part = '최다'
         elif self.rad_type_all.isChecked():
-            # part = '전체'
-            pass
+            part = '전체'
+
+        target_list = []
+        if self.chkbox_pttn.isChecked():
+            target_list.append('pttn')
+        if self.chkbox_dfpt.isChecked():
+            target_list.append('dfpt')
+        if self.chkbox_saeol.isChecked():
+            target_list.append('saeol')
+        if self.chkbox_prpl.isChecked():
+            target_list.append('prpl')
+        if self.chkbox_qna.isChecked():
+            target_list.append('qna')
+        if self.chkbox_qnao.isChecked():
+            target_list.append('qna_origin')
+
+        target = "%s" % ",".join(target_list)
+        get_complaint_data(part, s_yy_start+s_mm_start, target)
+        self.show_folders()
+
 
     def show_folders(self):
         file_path = FilePathClass()
@@ -267,13 +285,12 @@ class Ui_complaint_api_win(object):
         for j in range(0, len(dftop_list)):
             self.tbl_dftop.setItem(j, 0, QTableWidgetItem(dftop_list[j]))
 
-        self.tbl_rising.cellClicked.connect(self.get_value)
-
-
-    def get_value(self, row, column):
-        item = self.tbl_rising.item(row, column).text()
-        print(item)
-
+    #     self.tbl_rising.cellClicked.connect(self.get_value)
+    #
+    #
+    # def get_value(self, row, column):
+    #     item = self.tbl_rising.item(row, column).text()
+    #     print(item)
 
     def retranslateUi(self, complaint_api_win):
         _translate = QtCore.QCoreApplication.translate

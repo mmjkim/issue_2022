@@ -18,7 +18,11 @@ from dateutil.relativedelta import relativedelta
 #     return (year,month,last_day)
 def getMonthRange(year, month):
     # date = datetime(year=year, month=month, day=1).date()
-    last_day = calendar.monthrange(year, month)[1]
+    if (year == datetime.today().year) & (month == datetime.today().month):
+        last_day = datetime.strptime(datetime.today().date().strftime("%Y%m%d"), "%Y%m%d")
+    else:
+        last_day = calendar.monthrange(year, month)[1]
+    # last_day = 5
     date = datetime(year=year, month=month, day=last_day).date()
     return date
 
@@ -68,9 +72,14 @@ def getMonthList(d1, d2, cnt):
 #    list(해당 월의 모든 일자 list)
 def getDayList(d1):
     start = datetime.strptime(d1 + "01", "%Y%m%d")
-    end = datetime.strptime(getMonthRange(int(d1[:4]), int(d1[-2:])).strftime('%Y%m%d'), "%Y%m%d")
-    #     print(type(start), type(end))
+
+    if (int(d1[:4]) == datetime.today().year) & (int(d1[-2:]) == datetime.today().month):
+        end = datetime.strptime(datetime.today().date().strftime("%Y%m%d"), "%Y%m%d")
+    else:
+        end = datetime.strptime(getMonthRange(int(d1[:4]), int(d1[-2:])).strftime('%Y%m%d'), "%Y%m%d")
+
     daylist = [date.strftime("%Y%m%d") for date in pd.date_range(start, periods=(end - start).days + 1)]
+
     return daylist
 
 
