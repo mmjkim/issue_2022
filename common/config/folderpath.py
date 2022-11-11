@@ -1,5 +1,10 @@
 
-ROOT_PATH = 'D:\\issuePjt'
+import os
+from pathlib import Path
+
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__)).split("/")
+ROOT_PATH = ROOT_DIR[0] + '\\issue_2022'
+
 DATA_PATH = 'data'
 LOG_PATH = 'LOG'
 
