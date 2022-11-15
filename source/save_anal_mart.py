@@ -47,7 +47,7 @@ def anal_mart_news(part):
         df_dis_use.rename(columns={'빈도수':'freq', '순위':'rank', '키워드':'keyword'}, inplace=True)
 
         # '수집년월' 컬럼 추가
-        df_dis_use['stdym'] = os.path.basename(temp[i]).replace('.csv', '')
+        df_dis_use['stdym'] = os.path.basename(temp[i][:6]).replace('.csv', '')
         dfAllData = pd.concat([dfAllData, df_dis_use])
 
     #데이터 컬럼 재정의
@@ -86,7 +86,7 @@ def anal_mart_complaint(part):
 
     # 데이타를 읽어서 df에 저장 (std_ymd, keyword, freq, rank=0)
     temp = "{0}{1}\*.csv".format(file_path.get_raw_collect_path(), dataPath)
-    print(temp)
+    # print(temp)
 
     all_files = glob.glob(temp)
     # 저장할 데이터 정리
@@ -165,7 +165,6 @@ def set_topic_data(files):
 
     return df_mart_data
 
-
 #핵심 키워드 데이터 생성
 def set_top_data(files):
 
@@ -190,9 +189,6 @@ def set_top_data(files):
     df_mart_data = df_mart_data.assign(rank=0)
 
     return df_mart_data
-
-
-
 
 #최다 키워드 데이터 생성
 def set_dftopkw_data(files):
@@ -219,4 +215,5 @@ def set_dftopkw_data(files):
     return df_mart_data
 
 
-anal_mart_complaint('핵심')
+# anal_mart_complaint('핵심')
+anal_mart_news('경제')

@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import *
 import common.config.apiinfo as apifp
 from common.config.filepassclass import *
 from source.get_api_data_complaint import *
+from source.save_anal_mart import *
 
 class Ui_complaint_api_win(object):
     def setupUi(self, complaint_api_win):
@@ -141,6 +142,23 @@ class Ui_complaint_api_win(object):
         self.show_folders()
 
         self.btn_sel.clicked.connect(self.get_complaints)
+        self.btn_mart.clicked.connect(self.save_mart)
+
+
+    def save_mart(self):
+        if self.rad_type_rising.isChecked():
+            anal_mart_complaint('급등')
+        elif self.rad_type_top.isChecked():
+            anal_mart_complaint('핵심')
+        elif self.rad_type_today.isChecked():
+            anal_mart_complaint('오늘')
+        elif self.rad_type_dftop.isChecked():
+            anal_mart_complaint('최다')
+        elif self.rad_type_all.isChecked():
+            anal_mart_complaint('급등')
+            anal_mart_complaint('핵심')
+            anal_mart_complaint('오늘')
+            anal_mart_complaint('최다')
 
 
     def get_complaints(self):

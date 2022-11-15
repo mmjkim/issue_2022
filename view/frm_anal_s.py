@@ -116,7 +116,7 @@ class Ui_Anal_Dialog(object):
         self.label.setGeometry(QtCore.QRect(10, 10, 121, 16))
         self.label.setObjectName("label")
         self.btn_search = QtWidgets.QPushButton(self.frame_2)
-        self.btn_search.setGeometry(QtCore.QRect(541, 9, 79, 23))
+        self.btn_search.setGeometry(QtCore.QRect(541, 10, 79, 23))
         self.btn_search.setObjectName("btn_search")
         self.frame_4 = QtWidgets.QFrame(Anal_Dialog)
         self.frame_4.setGeometry(QtCore.QRect(658, 80, 353, 309))
