@@ -216,4 +216,4 @@ def set_dftopkw_data(files):
 
 
 # anal_mart_complaint('핵심')
-anal_mart_news('경제')
+# anal_mart_news('경제')
