@@ -368,7 +368,7 @@ def get_complaint_data(part, date, target):
             get_risting_keyword(i, target)
             get_today_topic_keyword(i,  target)
             get_dfTopN_keyword(i, target)
-        get_topN_keyword(date+"01", getMonthRange(int(date[:4]), int(date[-2:])).strftime('%Y%m%d'), target)
+        get_topN_keyword(date+"01", getMonthRange(date[:4], date[-2:]).strftime('%Y%m%d'), target)
     elif part == '급등':
         for i in day_list:
             get_risting_keyword(i, target)
@@ -379,7 +379,7 @@ def get_complaint_data(part, date, target):
         for i in day_list:
             get_dfTopN_keyword(i, target)
     elif part == '핵심':
-        get_topN_keyword(date+"01", getMonthRange(int(date[:4]), int(date[-2:])).strftime('%Y%m%d'), target)
+        get_topN_keyword(date+"01", getMonthRange(date[:4], date[-2:]).strftime('%Y%m%d'), target)
 
 
 

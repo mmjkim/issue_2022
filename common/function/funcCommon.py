@@ -18,12 +18,12 @@ from dateutil.relativedelta import relativedelta
 #     return (year,month,last_day)
 def getMonthRange(year, month):
     # date = datetime(year=year, month=month, day=1).date()
-    if (year == datetime.today().year) & (month == datetime.today().month):
-        last_day = datetime.strptime(datetime.today().date().strftime("%Y%m%d"), "%Y%m%d")
+    if (year == str(datetime.today().year)) & (month == str(datetime.today().month)):
+        date = datetime.strptime(datetime.today().date().strftime("%Y%m%d"), "%Y%m%d").date()
     else:
-        last_day = calendar.monthrange(year, month)[1]
+        last_day = calendar.monthrange(int(year), int(month))[1]
+        date = datetime(year=int(year), month=int(month), day=last_day).date()
     # last_day = 5
-    date = datetime(year=year, month=month, day=last_day).date()
     return date
 
 
@@ -100,8 +100,3 @@ def getDayList(d1):
 #         daylist.append(date.strftime('%Y%m%d'))
 #
 #     return daylist
-
-
-# print(getMonthGap(datetime.strptime("20201031", "%Y%m%d"), datetime.strptime("20211031", "%Y%m%d")))
-#print(datetime.strptime("202110", "%Y%m") - datetime.strptime("202010", "%Y%m") )
-#print(getDayList(datetime.strptime("20201031", "%Y%m%d"),  datetime.strptime("20211031", "%Y%m%d"), 13))

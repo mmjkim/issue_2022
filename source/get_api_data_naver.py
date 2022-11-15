@@ -27,7 +27,7 @@ def naver_trend_search(std_ymd_fr, std_ymd_to, keys):
     end_date_s = std_ymd_to.strftime("%Y-%m-%d")
 
 
-    #timeUnit = date: 일간, week: 주간,  month: 월간
+    #timeUnit = date: 일간, week: 주간, month: 월간
     time_unit = apifp.NAVER_TIME_UNIT
 
     group_nm = keys[0]
@@ -78,15 +78,13 @@ def naver_trend_search(std_ymd_fr, std_ymd_to, keys):
 
     print("The End!!!")
 
-    return df1
+    return df_save_data
 
 
-
-keys = []
-keys.append('이태원')
-keys.append('이태원')
-
-print(naver_trend_search(datetime.strptime('20210901', '%Y%m%d'), datetime.strptime('20221031', '%Y%m%d'), keys))
+# keys = []
+# keys.append('이태원')
+# keys.append('이태원')
+# print(naver_trend_search(datetime.strptime('20210901', '%Y%m%d'), datetime.strptime('20221031', '%Y%m%d'), keys))
 
 
 #naver_trend_search_by_week(datetime.strptime('20210901', '%Y%m%d'), datetime.strptime('20221031', '%Y%m%d'), keys)
