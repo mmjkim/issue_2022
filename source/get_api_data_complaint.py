@@ -267,7 +267,7 @@ def get_similarInfo(keyword):
     dataPath = apifp.COMPLAIN_DATA_PATH_SIMIL
 
     # 분야별 데이터 저장 full path
-    get_complain_data_path = file_path.get_raw_collect_path() + dataPath + "//"
+    get_complain_data_path = file_path.get_raw_use_path()  + "//"
 
     try:
         res = urlopen(url).read()  # URL 열고 읽음
@@ -326,7 +326,7 @@ def get_wd_cloud_info(keyword, std_ymd_fr, std_ymd_to, target):
     dataPath = apifp.COMPLAIN_DATA_PATH_WDCLOUD
 
     # 분야별 데이터 저장 full path
-    get_complain_data_path = file_path.get_raw_collect_path() + dataPath + "//"
+    get_complain_data_path = file_path.get_raw_use_path() + "//"
 
     try:
 
@@ -338,8 +338,8 @@ def get_wd_cloud_info(keyword, std_ymd_fr, std_ymd_to, target):
         if file_path.is_path_exist_check(get_complain_data_path) == False:
             file_path.make_path(get_complain_data_path)
 
-        route = "{0}{1}_{2}_{3}.json".format(get_complain_data_path,  dataPath, analysis_date_fr, analysis_date_to)
-        route_csv = "{0}{1}_{2}_{3}.csv".format(get_complain_data_path, dataPath, analysis_date_fr, analysis_date_to)
+        route = "{0}{1}.json".format(get_complain_data_path,  dataPath)
+        route_csv = "{0}{1}.csv".format(get_complain_data_path, dataPath)
         df1.to_csv(route_csv, index=False, encoding="utf-8-sig")
         df1.to_json(route, orient='table')
 

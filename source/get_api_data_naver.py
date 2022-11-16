@@ -51,7 +51,7 @@ def naver_trend_search(std_ymd_fr, std_ymd_to, keys):
 
     dataPath = apifp.NAVER_DATA_PATH_KEYWORD
     # 분야별 데이터 저장 full path
-    get_complain_data_path = file_path.get_raw_collect_path() + dataPath + "//"
+    get_complain_data_path = file_path.get_raw_use_path()  + "//"
 
     result = json.loads(scraped)
     df1 = json_normalize(result)
@@ -72,7 +72,7 @@ def naver_trend_search(std_ymd_fr, std_ymd_to, keys):
     df_save_data = df_save_data.reset_index()
 
     df_save_data = df_save_data.drop(['index'], axis=1)
-    savefile = "{0}{1}_{2}_{3}_{4}.csv".format(get_complain_data_path, dataPath, keys[1], start_date_t_s, end_date_s)
+    savefile = "{0}{1}_{2}.csv".format(get_complain_data_path, dataPath, keys[1])
 
     df_save_data.to_csv(savefile, encoding='euc-kr')
 
