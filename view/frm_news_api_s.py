@@ -8,6 +8,8 @@ from datetime import datetime
 from source.get_api_data_news import *
 import common.config.apiinfo as apifp
 from common.config.filepassclass import *
+from source.save_anal_mart import anal_mart_news
+
 
 class Ui_news_collect_win(object):
     def setupUi(self, news_collect_win):
@@ -132,12 +134,26 @@ class Ui_news_collect_win(object):
         QtCore.QMetaObject.connectSlotsByName(news_collect_win)
 
         self.btn_sel.clicked.connect(self.get_news)
+        self.btn_mart.clicked.connect(self.save_mart)
 
         self.tbl_politics.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tbl_social.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tbl_economy.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
         self.show_folders()
+
+
+    def save_mart(self):
+        if self.rad_type_1.isChecked():
+            anal_mart_news('정치')
+        elif self.rad_type_2.isChecked():
+            anal_mart_news('사회')
+        elif self.rad_type_3.isChecked():
+            anal_mart_news('경제')
+        elif self.rad_type_4.isChecked():
+            anal_mart_news('정치')
+            anal_mart_news('사회')
+            anal_mart_news('경제')
 
 
     def show_folders(self):
