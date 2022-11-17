@@ -10,12 +10,19 @@ import common.config.apiinfo as apifp
 import pandas as pd
 import numpy as np
 
-def compare_keyword():
+def compare_keyword(part):
 
     # 파일 path
     file_path = FilePathClass()
-    #오늘의 민원 가져오기
-    filename = "{0}{1}\\1차마트_{2}.csv".format(file_path.get_raw_use_path(), apifp.COMPLAIN_DATA_PATH_TOPIC, '오늘')
+    if part == "오늘" :
+        #오늘의 민원 가져오기
+        filename = "{0}{1}\\1차마트_{2}.csv".format(file_path.get_raw_use_path(), apifp.COMPLAIN_DATA_PATH_TOPIC, part)
+    elif part == "급등":
+        filename = "{0}{1}\\1차마트_{2}.csv".format(file_path.get_raw_use_path(), apifp.COMPLAIN_DATA_PATH_RISE, part)
+    elif part == "최다":
+        filename = "{0}{1}\\1차마트_{2}.csv".format(file_path.get_raw_use_path(), apifp.COMPLAIN_DATA_PATH_DFTOPKW, part)
+
+
     si_complain_data = pd.read_csv(filename, encoding="utf-8-sig")
 
     #뉴스_사회
@@ -63,7 +70,7 @@ def compare_keyword():
         os.makedirs(file_path.get_raw_use_path())
 
     # 저장할 파일명 생성
-    savefile = "{0}\\마트_{1}.csv".format(file_path.get_raw_use_path(), "동시출현키워드")
+    savefile = "{0}\\{1}_{2}.csv".format(file_path.get_raw_use_path(), "동시출현키워드", part)
     # 파일저장
     df_overlap_keyword = df_overlap_keyword.sort_values(by=['overlap_keyword'])
     df_overlap_keyword.to_csv(savefile, encoding="utf-8-sig", index=False)
@@ -102,4 +109,4 @@ def get_overlap_keyword(df_source_data, si_target_data, type_info):
 
     return df_return
 
-# compare_keyword()
+#compare_keyword('최다')

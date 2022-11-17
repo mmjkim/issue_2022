@@ -81,12 +81,12 @@ def naver_trend_search(std_ymd_fr, std_ymd_to, keys):
     return df_save_data
 
 
-# keys = []
-# keys.append('이태원')
-# keys.append('이태원')
+keys = []
+keys.append('이태원')
+keys.append('크리스마스')
 # print(naver_trend_search(datetime.strptime('20210901', '%Y%m%d'), datetime.strptime('20221031', '%Y%m%d'), keys))
 
 
-#naver_trend_search_by_week(datetime.strptime('20210901', '%Y%m%d'), datetime.strptime('20221031', '%Y%m%d'), keys)
+#naver_trend_search(datetime.strptime('20210901', '%Y%m%d'), datetime.strptime('20221031', '%Y%m%d'), keys)
 
 

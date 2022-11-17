@@ -383,8 +383,8 @@ def get_complaint_data(part, date, target):
 
 
 
-# get_wd_cloud_info('전기차', datetime.strptime('20210901', '%Y%m%d'), datetime.strptime('20221031', '%Y%m%d'), 'pttn,dfpt,saeol,prpl,qna_origin')
-
+#get_wd_cloud_info('이태원', datetime.strptime('20210901', '%Y%m%d'), datetime.strptime('20221031', '%Y%m%d'), 'pttn,dfpt,saeol,prpl,qna_origin')
+#get_similarInfo('이태원')
 #aa = get_news_uuid_list('정치')
 
 #bb = get_news(aa, '정치', '20220430')
