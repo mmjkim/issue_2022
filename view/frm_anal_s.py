@@ -146,6 +146,9 @@ class Ui_Anal_Dialog(object):
         QtCore.QMetaObject.connectSlotsByName(Anal_Dialog)
 
         self.tbl_naver.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tbl_naver.verticalHeader().setDefaultSectionSize(35)
+        self.tbl_word.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tbl_word.verticalHeader().setDefaultSectionSize(35)
 
         self.btn_coll.clicked.connect(self.get_data)
         self.btn_anal.clicked.connect(self.get_anal)
@@ -274,6 +277,7 @@ class Ui_Anal_Dialog(object):
         self.btn_coll_c.setText(_translate("Anal_Dialog", "데이터 수집"))
         self.label_3.setText(_translate("Anal_Dialog", "뉴스 크롤링 데이터"))
         self.tbl_naver.setSortingEnabled(True)
+        self.tbl_word.setSortingEnabled(True)
 
 
 if __name__ == "__main__":
