@@ -146,6 +146,9 @@ class Ui_Anal_Dialog(object):
         QtCore.QMetaObject.connectSlotsByName(Anal_Dialog)
 
         self.tbl_naver.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tbl_naver.verticalHeader().setDefaultSectionSize(35)
+        self.tbl_word.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tbl_word.verticalHeader().setDefaultSectionSize(35)
 
         self.btn_coll.clicked.connect(self.get_data)
         self.btn_anal.clicked.connect(self.get_anal)
@@ -177,7 +180,7 @@ class Ui_Anal_Dialog(object):
 
     def show_folders(self):
         file_path = FilePathClass()
-        path_naver = file_path.get_raw_collect_path() + apifp.NAVER_DATA_PATH_KEYWORD
+        path_naver = file_path.get_raw_use_path()
 
         if file_path.is_path_exist_check(path_naver) is False:
             file_path.make_path(path_naver)
@@ -187,7 +190,7 @@ class Ui_Anal_Dialog(object):
         naver_list = []
 
         for i in range(0, len(folderNaver)):
-            if folderNaver[i][-3:] == 'csv':
+            if (folderNaver[i][-3:] == 'csv') & (folderNaver[i][:3] == '네이버'):
                 naver_list.append(folderNaver[i])
 
         self.tbl_naver.setRowCount(len(naver_list))
@@ -202,7 +205,7 @@ class Ui_Anal_Dialog(object):
         s_yy_end = self.sel_yy_end.currentText()
         s_mm_end = self.sel_mm_end.currentText()
 
-        keywords = self.txt_anal_word.toPlainText()
+        keywords = '검색,' + self.txt_anal_word.toPlainText()
         anal_keywords = keywords.split(',')
 
         naver_trend_search(datetime.strptime(s_yy_start+s_mm_start+"01", '%Y%m%d'),
@@ -210,7 +213,7 @@ class Ui_Anal_Dialog(object):
                            anal_keywords)
 
         self.show_folders()
-        get_wd_cloud_info(anal_keywords, s_yy_start+s_mm_start, s_yy_end,s_mm_end, 'pttn,dfpt,saeol,prpl,qna,qna_origin')
+        # get_wd_cloud_info(anal_keywords, s_yy_start+s_mm_start, s_yy_end,s_mm_end, 'pttn,dfpt,saeol,prpl,qna,qna_origin')
 
 
     def retranslateUi(self, Anal_Dialog):
@@ -274,6 +277,7 @@ class Ui_Anal_Dialog(object):
         self.btn_coll_c.setText(_translate("Anal_Dialog", "데이터 수집"))
         self.label_3.setText(_translate("Anal_Dialog", "뉴스 크롤링 데이터"))
         self.tbl_naver.setSortingEnabled(True)
+        self.tbl_word.setSortingEnabled(True)
 
 
 if __name__ == "__main__":
