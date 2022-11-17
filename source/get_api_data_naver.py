@@ -51,7 +51,8 @@ def naver_trend_search(std_ymd_fr, std_ymd_to, keys):
 
     dataPath = apifp.NAVER_DATA_PATH_KEYWORD
     # 분야별 데이터 저장 full path
-    get_complain_data_path = file_path.get_raw_use_path()  + "//"
+    get_complain_data_path = file_path.get_raw_use_path()
+
 
     result = json.loads(scraped)
     df1 = json_normalize(result)
@@ -72,7 +73,7 @@ def naver_trend_search(std_ymd_fr, std_ymd_to, keys):
     df_save_data = df_save_data.reset_index()
 
     df_save_data = df_save_data.drop(['index'], axis=1)
-    savefile = "{0}{1}_{2}.csv".format(get_complain_data_path, dataPath, keys[1])
+    savefile = "{0}/{1}_{2}.csv".format(get_complain_data_path, dataPath, keys[1])
 
     df_save_data.to_csv(savefile, encoding='euc-kr')
 
@@ -88,5 +89,3 @@ def naver_trend_search(std_ymd_fr, std_ymd_to, keys):
 
 
 #naver_trend_search_by_week(datetime.strptime('20210901', '%Y%m%d'), datetime.strptime('20221031', '%Y%m%d'), keys)
-
-
