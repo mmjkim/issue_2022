@@ -70,6 +70,7 @@ def compare_keyword():
 
     print('The End!!!')
 
+    return df_overlap_keyword
 
 
 
@@ -101,4 +102,4 @@ def get_overlap_keyword(df_source_data, si_target_data, type_info):
 
     return df_return
 
-compare_keyword()
+# compare_keyword()
