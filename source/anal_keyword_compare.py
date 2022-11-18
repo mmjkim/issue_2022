@@ -75,6 +75,9 @@ def compare_keyword(part):
     df_overlap_keyword = df_overlap_keyword.sort_values(by=['overlap_keyword'])
     df_overlap_keyword.to_csv(savefile, encoding="utf-8-sig", index=False)
 
+    #피벗 데이터 저장
+    savefile = "{0}\\{1}_{2}.csv".format(file_path.get_raw_use_path(), "동시출현키워드_pivot", part)
+    keyword_pivot(df_overlap_keyword, savefile)
     print('The End!!!')
 
     return df_overlap_keyword
@@ -109,4 +112,27 @@ def get_overlap_keyword(df_source_data, si_target_data, type_info):
 
     return df_return
 
-#compare_keyword('최다')
+
+
+def keyword_pivot(df_data,save_file_name):
+
+    data_p = df_data[df_data['type'] == '뉴스_정치']
+    data_s = df_data[df_data['type'] == '뉴스_사회']
+    data_e = df_data[df_data['type'] == '뉴스_경제']
+
+    dataJoin = pd.merge(data_p, data_s, how='outer', on=['keyword'])
+    dataJoin1 = pd.merge(dataJoin, data_e, how='outer', on=['keyword'])
+
+    dataJoin1.columns = ['keyword', 'part_p', '뉴스_정치', 'part_s', '뉴스_사회', 'part_e', '뉴스_경제']
+    dataAnal = dataJoin1[['keyword', '뉴스_정치', '뉴스_사회', '뉴스_경제']]
+    dataAnal = dataAnal.fillna(('-'))
+
+    print(dataAnal)
+
+    # 파일저장
+    #dataAnal = dataAnal.sort_values(by=['keyword'])
+    dataAnal.to_csv(save_file_name, encoding="utf-8-sig", index=False)
+
+
+
+#compare_keyword('급등')

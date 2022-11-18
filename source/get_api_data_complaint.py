@@ -313,7 +313,7 @@ def get_similarInfo(keyword):
 def get_wd_cloud_info(keyword, std_ymd_fr, std_ymd_to, target):
 
     file_path = FilePathClass()
-    maxResult = apifp.COMPLAIN_MAX_ROW
+    maxResult = '100' #apifp.COMPLAIN_MAX_ROW
     analysis_date_fr = std_ymd_fr.strftime("%Y%m%d")
     analysis_date_to = std_ymd_to.strftime("%Y%m%d")
 
@@ -338,8 +338,8 @@ def get_wd_cloud_info(keyword, std_ymd_fr, std_ymd_to, target):
         if file_path.is_path_exist_check(get_complain_data_path) == False:
             file_path.make_path(get_complain_data_path)
 
-        route = "{0}{1}.json".format(get_complain_data_path,  dataPath)
-        route_csv = "{0}{1}.csv".format(get_complain_data_path, dataPath)
+        route = "{0}{1}_{2}.json".format(get_complain_data_path,  dataPath, keyword)
+        route_csv = "{0}{1}_{2}.csv".format(get_complain_data_path, dataPath, keyword)
         df1.to_csv(route_csv, index=False, encoding="utf-8-sig")
         df1.to_json(route, orient='table')
 
