@@ -2,7 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 from view.frm_news_api_s import Ui_news_collect_win
 from view.frm_complaint_api_s import Ui_complaint_api_win
-from view.frm_anal_s import Ui_Anal_Dialog
+from view.frm_anal_keyword_compare_s import Ui_Anal_Dialog
 
 class Ui_MainWindow(object):
     def anal_window(self):
