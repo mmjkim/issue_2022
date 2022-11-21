@@ -19,43 +19,6 @@ class Ui_Anal_Dialog(object):
 
         Anal_Dialog.setObjectName("Anal_Dialog")
         Anal_Dialog.resize(1024, 768)
-        # self.group1 = QtWidgets.QGroupBox(Anal_Dialog)
-        # self.group1.setGeometry(QtCore.QRect(10, 10, 1001, 311))
-        # self.group1.setObjectName("group1")
-        # self.tabWidget = QtWidgets.QTabWidget(self.group1)
-        # self.tabWidget.setGeometry(QtCore.QRect(10, 30, 981, 271))
-        # self.tabWidget.setObjectName("tabWidget")
-        # self.tab_today = QtWidgets.QWidget()
-        # self.tab_today.setObjectName("tab_today")
-        # self.tbl_today = QtWidgets.QTableWidget(self.tab_today)
-        # self.tbl_today.setGeometry(QtCore.QRect(0, 0, 971, 241))
-        # self.tbl_today.setObjectName("tbl_today")
-        # self.tbl_today.setColumnCount(4)
-        # self.tbl_today.setRowCount(0)
-        # item = QtWidgets.QTableWidgetItem()
-        # self.tbl_today.setHorizontalHeaderItem(0, item)
-        # item = QtWidgets.QTableWidgetItem()
-        # self.tbl_today.setHorizontalHeaderItem(1, item)
-        # item = QtWidgets.QTableWidgetItem()
-        # self.tbl_today.setHorizontalHeaderItem(2, item)
-        # item = QtWidgets.QTableWidgetItem()
-        # self.tbl_today.setHorizontalHeaderItem(3, item)
-        # self.tbl_today.horizontalHeader().setStretchLastSection(False)
-        # self.tbl_today.verticalHeader().setStretchLastSection(False)
-        # self.tabWidget.addTab(self.tab_today, "")
-        # self.tab_rise = QtWidgets.QWidget()
-        # self.tab_rise.setObjectName("tab_rise")
-        # self.tabWidget.addTab(self.tab_rise, "")
-        # self.tab_top = QtWidgets.QWidget()
-        # self.tab_top.setObjectName("tab_top")
-        # self.tabWidget.addTab(self.tab_top, "")
-        # self.btn_search = QtWidgets.QPushButton(self.group1)
-        # self.btn_search.setGeometry(QtCore.QRect(904, 20, 79, 23))
-        # self.btn_search.setObjectName("btn_search")
-        # self.btn_anal = QtWidgets.QPushButton(self.group1)
-        # self.btn_anal.setGeometry(QtCore.QRect(820, 20, 79, 23))
-        # self.btn_anal.setObjectName("btn_anal")
-        #
 
         self.group1 = QtWidgets.QGroupBox(Anal_Dialog)
         self.group1.setGeometry(QtCore.QRect(10, 10, 1001, 311))
@@ -298,16 +261,17 @@ class Ui_Anal_Dialog(object):
         self.tbl_complain_wdcloud.horizontalHeader().setStyleSheet("QHeaderView::section {background-color:#404040;color:#FFFFFF;}")
 
 
-
+        self.btn_news.clicked.connect(self.get_news)
         self.btn_naver.clicked.connect(self.get_naver_data)
         self.btn_anal.clicked.connect(self.get_anal)
         self.btn_complain.clicked.connect(self.get_complain_data)
 
         #self.tab_today.clicked.connect(self.get_word_compare, 'today')
         self.tabWidget.currentChanged.connect(self.get_word_compare)
-        self.get_word_compare()
+        # self.get_word_compare()
         self.show_folders('네이버')
         self.show_folders('민원')
+        self.show_folders('크롤링')
 
 
     def retranslateUi(self, Anal_Dialog):
@@ -315,18 +279,6 @@ class Ui_Anal_Dialog(object):
         _translate = QtCore.QCoreApplication.translate
         Anal_Dialog.setWindowTitle(_translate("Anal_Dialog", "Anal_Dialog"))
         self.group1.setTitle(_translate("Anal_Dialog", " [ 동시출현 키워드 ] "))
-        # item = self.tbl_today.horizontalHeaderItem(0)
-        # item.setText(_translate("Anal_Dialog", "민원"))
-        # item = self.tbl_today.horizontalHeaderItem(1)
-        # item.setText(_translate("Anal_Dialog", "뉴스_정치"))
-        # item = self.tbl_today.horizontalHeaderItem(2)
-        # item.setText(_translate("Anal_Dialog", "뉴스_경제"))
-        # item = self.tbl_today.horizontalHeaderItem(3)
-        # item.setText(_translate("Anal_Dialog", "뉴스_사회"))
-        # self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_today), _translate("Anal_Dialog", "민원_오늘"))
-        # self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_rise), _translate("Anal_Dialog", "민원_급등"))
-        # self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_top), _translate("Anal_Dialog", "민원_핵심"))
-        #
         item = self.tbl_today.horizontalHeaderItem(0)
         item.setText(_translate("Anal_Dialog", "민원_오늘"))
         item = self.tbl_today.horizontalHeaderItem(1)
@@ -419,11 +371,100 @@ class Ui_Anal_Dialog(object):
         self.tbl_complain_wdcloud.setSortingEnabled(True)
 
 #  -------------------------------------------------<  logic def >----------------------------------------------------------
+    def get_news(self):
+        import time
+        from selenium import webdriver
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.common.keys import Keys
+
+        dr = webdriver.Chrome("D:/issue_2022/view/chromedriver.exe")
+        dr.implicitly_wait(3)
+        dr.get('https://www.bigkinds.or.kr/v2/news/index.do')
+        dr.maximize_window()
+
+        # 빅카인즈 로그인
+        login_element = dr.find_element(By.XPATH, '//*[@id="header"]/div[1]/div/div[2]/button[1]')
+        login_element.click()
+        id_element = dr.find_element(By.ID, 'login-user-id')
+        id_element.send_keys('20191497@daejin.ac.kr')
+        pw_element = dr.find_element(By.ID, 'login-user-password')
+        pw_element.send_keys('wqw1301wqw**')
+        pw_element.send_keys(Keys.RETURN)
+
+        close_element = dr.find_element(By.XPATH, '//*[@id="login-btn"]')
+        close_element.send_keys(Keys.ENTER)
+
+        # 데이터 수집
+        for i in self.txt_anal_word.toPlainText().split(','):
+            # 키워드 입력
+            input_element = dr.find_element(By.ID, 'total-search-key')
+            input_element.send_keys(Keys.CONTROL + "a")
+            input_element.send_keys(Keys.DELETE)
+            input_element.send_keys(i)
+            input_element.send_keys(Keys.TAB)
+
+            if i == self.txt_anal_word.toPlainText().split(',')[0]:
+                # 기간 설정
+                date_tab_element = dr.find_element(By.XPATH, '//*[@id="collapse-step-1-body"]/div[3]/div/div[1]/div[1]/a')
+                date_tab_element.send_keys(Keys.ENTER)
+
+                start_element = dr.find_element(By.ID, 'search-begin-date')
+                start_element.click()
+                start_element.send_keys(Keys.CONTROL + "a")
+                start_element.send_keys(Keys.DELETE)
+                start_date = self.sel_yy_start.currentText() + self.sel_mm_start.currentText() + "01"
+                start_element.send_keys(start_date)
+                end_element = dr.find_element(By.ID, 'search-end-date')
+                end_element.send_keys(Keys.CONTROL + "a")
+                end_element.send_keys(Keys.DELETE)
+                end_date = getMonthRange(self.sel_yy_end.currentText(), self.sel_mm_end.currentText()).strftime("%Y%m%d")
+                end_element.send_keys(end_date)
+
+            apply_element = dr.find_element(By.XPATH, '//*[@id="search-foot-div"]/div[2]/button[2]')
+            apply_element.click()
+
+            # 데이터 다운로드
+            time.sleep(1)
+            step3_element = dr.find_element(By.ID, 'collapse-step-3')
+            step3_element.send_keys(Keys.ENTER)
+
+            down_path = FilePathClass()
+            down_file_path = "{0}{1}_{2}-{3}.xlsx".format("C:\\Users\\hjshi\\Downloads\\", "NewsResult", start_date, end_date)
+
+            if os.path.isfile(down_file_path):
+                os.remove(down_file_path)
+
+            time.sleep(1)
+            down_element = dr.find_element(By.XPATH, '//*[@id="analytics-data-download"]/div[3]/button')
+            down_element.send_keys(Keys.ENTER)
+
+            # 데이터 경로 및 이름 변경
+            time.sleep(1)
+            downloaded = False
+            while downloaded == False:
+                try:
+                    down_file = pd.read_excel(down_file_path)
+                    route = "{0}\\{1}_{2}_{3}.csv".format(down_path.get_raw_use_path(), "크롤링", '뉴스', i)
+                    down_file.to_csv(route, encoding="utf-8-sig", index=False)
+                    downloaded = True
+                except FileNotFoundError:
+                    downloaded = False
+                except PermissionError:
+                    time.sleep(1)
+                    downloaded = False
+
+            # 뉴스 검색으로 돌아가기
+            step1_element = dr.find_element(By.ID, 'collapse-step-1')
+            step1_element.send_keys(Keys.ENTER)
+
+        dr.quit()
+
+        self.show_folders('크롤링')
 
     def get_anal(self):
 
         data = compare_keyword('오늘')
-       # self.get_anal_search(data)
+        # self.get_anal_search(data)
 
     def get_anal_search(self, data):
 
@@ -492,6 +533,7 @@ class Ui_Anal_Dialog(object):
 
         data_all_list = os.listdir(search_path)
 
+        data_list_news = []
         data_list_naver = []
         data_list_simil = []
         data_list_wdcloud = []
@@ -506,6 +548,8 @@ class Ui_Anal_Dialog(object):
                         data_list_simil.append(data_all_list[i])
                     elif filename[1] == '연관어분석정보':
                         data_list_wdcloud.append(data_all_list[i])
+                elif (data_all_list[i][-3:] == 'csv') & (filename[0] == '크롤링'):
+                    data_list_news.append(data_all_list[i])
 
 
 
@@ -514,6 +558,10 @@ class Ui_Anal_Dialog(object):
             self.tbl_naver.setRowCount(len(data_list_naver))
             for j in range(0, len(data_list_naver)):
                 self.tbl_naver.setItem(j, 0, QTableWidgetItem(data_list_naver[j]))
+        elif part == '크롤링':
+            self.tbl_news.setRowCount(len(data_list_news))
+            for j in range(0, len(data_list_news)):
+                self.tbl_news.setItem(j, 0, QTableWidgetItem(data_list_news[j]))
         else:
             #민원_유사 사례
             self.tbl_complain_simil.setRowCount(len(data_list_simil))
@@ -570,15 +618,20 @@ class Ui_Anal_Dialog(object):
                 self.tbl_top.setItem(i, 3, QTableWidgetItem(df_data_anal['뉴스_사회'][i]))
 
 
-
-def error_event(self):
-    QMessageBox.about(self, 'Error', 'file path not fount!!')
-
 if __name__ == "__main__":
     import sys
+
+    def my_exception_hook(exctype, value, traceback):
+        print(exctype, value, traceback)
+        sys._excepthook(exctype, value, traceback)
+
     app = QtWidgets.QApplication(sys.argv)
     Anal_Dialog = QtWidgets.QDialog()
     ui = Ui_Anal_Dialog()
     ui.setupUi(Anal_Dialog)
     Anal_Dialog.show()
+
+    sys._excepthook = sys.excepthook
+    sys.excepthook = my_exception_hook
+
     sys.exit(app.exec_())
