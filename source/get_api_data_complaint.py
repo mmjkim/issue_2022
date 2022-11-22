@@ -305,17 +305,15 @@ def get_similarInfo(keyword):
 #  공공데이터 포털에서 api i/f 통한 민원 데이터 가져오기
 #  연관어 분석 정보
 #  param :
-#      target = 'pttn:일반민원, dfpt:고충민원, saeol:수집민원, prpl:제안, qna:정책Q&A, qna_origin:공개민원'
-#      std_ymd_fr = yyyymm (기준월 시작일자)
-#      std_ymd_to = yyyymm (기준월 종료일자)
+#      target = 'pttn:일반민원, dfpt:고충민원, saeol:수집민원, prpl:제안, qna_origin:공개민원'
 #  return :
 #-----------------------------------------------------
 def get_wd_cloud_info(keyword, std_ymd_fr, std_ymd_to, target):
 
     file_path = FilePathClass()
-    maxResult = '100' #apifp.COMPLAIN_MAX_ROW
-    analysis_date_fr = std_ymd_fr.strftime("%Y%m%d")
-    analysis_date_to = std_ymd_to.strftime("%Y%m%d")
+    maxResult = '10' #apifp.COMPLAIN_MAX_ROW
+    analysis_date_fr = std_ymd_fr
+    analysis_date_to = std_ymd_to
 
 
     url = apifp.COMPLAIN_API_URL + apifp.COMPLAIN_API_URL_WDCLOUD +'?serviceKey=' + apifp.COMPLAIN_API_KEY + '&searchword=' + quote(keyword) + '&resultCount=' + maxResult + '&target=' + target + '&omitDuplicate=true' + '&dateFrom=' + analysis_date_fr + '&dateTo='+ analysis_date_to
@@ -361,7 +359,6 @@ def get_wd_cloud_info(keyword, std_ymd_fr, std_ymd_to, target):
 
 
 def get_complaint_data(part, date, target):
-    print('ekjlj')
     day_list = getDayList(date)
     if part == '전체':
         for i in day_list:
@@ -380,8 +377,6 @@ def get_complaint_data(part, date, target):
             get_dfTopN_keyword(i, target)
     elif part == '핵심':
         get_topN_keyword(date+"01", getMonthRange(date[:4], date[-2:]).strftime('%Y%m%d'), target)
-
-    print('dere')
 
 
 #get_complaint_data('오늘', '202203', 'pttn,dfpt,saeol,prpl,qna_origin')

@@ -1,15 +1,20 @@
 import calendar
+import glob
+
+import pandas as pd
 from datetime import datetime
+import warnings
+warnings.filterwarnings(action='ignore')
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import *
 
 from common.config.filepassclass import *
-import common.config.apiinfo as apifp
 from source.get_api_data_naver import *
 from common.function.funcCommon import *
-from source.get_api_data_complaint import get_wd_cloud_info
+from source.get_api_data_complaint import get_wd_cloud_info, get_similarInfo
 from source.anal_keyword_compare import *
+import common.config.apiinfo as apifp
 
 
 class Ui_Anal_Dialog(object):
@@ -80,12 +85,9 @@ class Ui_Anal_Dialog(object):
         self.tbl_top.horizontalHeader().setStretchLastSection(False)
         self.tbl_top.verticalHeader().setStretchLastSection(False)
         self.tabWidget.addTab(self.tab_top, "")
-        self.btn_search = QtWidgets.QPushButton(self.group1)
-        self.btn_search.setGeometry(QtCore.QRect(904, 20, 79, 23))
-        self.btn_search.setObjectName("btn_search")
         self.btn_anal = QtWidgets.QPushButton(self.group1)
-        self.btn_anal.setGeometry(QtCore.QRect(820, 20, 79, 23))
-        self.btn_anal.setObjectName("btn_anal")
+        self.btn_anal.setGeometry(QtCore.QRect(904, 20, 79, 23))
+        self.btn_anal.setObjectName("btn_search")
 
         self.group2 = QtWidgets.QGroupBox(Anal_Dialog)
         self.group2.setGeometry(QtCore.QRect(10, 330, 1001, 61))
@@ -260,21 +262,20 @@ class Ui_Anal_Dialog(object):
         self.tbl_complain_wdcloud.horizontalHeader().setSectionResizeMode(True)
         self.tbl_complain_wdcloud.horizontalHeader().setStyleSheet("QHeaderView::section {background-color:#404040;color:#FFFFFF;}")
 
-
-        #self.btn_news.clicked.connect(self.get_news)
+        self.btn_news.clicked.connect(self.get_news)
         self.btn_naver.clicked.connect(self.get_naver_data)
-        #self.btn_anal.clicked.connect(self.get_anal)
+        self.btn_anal.clicked.connect(self.get_anal)
         self.btn_complain.clicked.connect(self.get_complain_data)
 
-        #self.tab_today.clicked.connect(self.get_word_compare, 'today')
         self.tabWidget.currentChanged.connect(self.get_word_compare)
 
         self.show_folders('네이버')
         self.show_folders('민원')
         self.show_folders('크롤링')
 
-        #동시출현 데이터 조회
+        # 동시출현 데이터 조회
         self.get_word_compare()
+
 
     def retranslateUi(self, Anal_Dialog):
 
@@ -309,7 +310,6 @@ class Ui_Anal_Dialog(object):
         item.setText(_translate("Anal_Dialog", "뉴스_사회"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_top), _translate("Anal_Dialog", "민원_핵심"))
 
-        self.btn_search.setText(_translate("Anal_Dialog", "조회"))
         self.btn_anal.setText(_translate("Anal_Dialog", "분석"))
         self.group2.setTitle(_translate("Anal_Dialog", " [ 분석 ] "))
         self.label_5.setText(_translate("Anal_Dialog", "~"))
@@ -320,6 +320,7 @@ class Ui_Anal_Dialog(object):
         self.sel_yy_end.setItemText(3, _translate("Anal_Dialog", str(datetime.today().year-3)))
         self.sel_yy_end.setItemText(4, _translate("Anal_Dialog", str(datetime.today().year-4)))
         self.sel_yy_end.setItemText(5, _translate("Anal_Dialog", str(datetime.today().year-5)))
+        self.sel_yy_end.setCurrentText(str(datetime.today().year))
         self.sel_mm_start.setItemText(0, _translate("Anal_Dialog", "01"))
         self.sel_mm_start.setItemText(1, _translate("Anal_Dialog", "02"))
         self.sel_mm_start.setItemText(2, _translate("Anal_Dialog", "03"))
@@ -338,6 +339,7 @@ class Ui_Anal_Dialog(object):
         self.sel_yy_start.setItemText(3, _translate("Anal_Dialog", str(datetime.today().year - 3)))
         self.sel_yy_start.setItemText(4, _translate("Anal_Dialog", str(datetime.today().year - 4)))
         self.sel_yy_start.setItemText(5, _translate("Anal_Dialog", str(datetime.today().year - 5)))
+        self.sel_yy_start.setCurrentText(str(datetime.today().year))
         self.sel_mm_end.setItemText(0, _translate("Anal_Dialog", "01"))
         self.sel_mm_end.setItemText(1, _translate("Anal_Dialog", "02"))
         self.sel_mm_end.setItemText(2, _translate("Anal_Dialog", "03"))
@@ -350,13 +352,14 @@ class Ui_Anal_Dialog(object):
         self.sel_mm_end.setItemText(9, _translate("Anal_Dialog", "10"))
         self.sel_mm_end.setItemText(10, _translate("Anal_Dialog", "11"))
         self.sel_mm_end.setItemText(11, _translate("Anal_Dialog", "12"))
+        self.sel_mm_end.setCurrentText(str(datetime.today().month))
         self.label_7.setText(_translate("Anal_Dialog", "분석 키워드"))
 
         self.group3.setTitle(_translate("Anal_Dialog", " [ 네이버 ] "))
         item = self.tbl_naver.horizontalHeaderItem(0)
         item.setText(_translate("Anal_Dialog", "파일명"))
         self.btn_naver.setText(_translate("Anal_Dialog", "데이터 수집"))
-        self.group5.setTitle(_translate("Anal_Dialog", " [민원 ] "))
+        self.group5.setTitle(_translate("Anal_Dialog", " [ 민원 ] "))
         self.btn_complain.setText(_translate("Anal_Dialog", "데이터 수집"))
         item = self.tbl_complain_simil.horizontalHeaderItem(0)
         item.setText(_translate("Anal_Dialog", "파일명[유사사례]"))
@@ -373,35 +376,147 @@ class Ui_Anal_Dialog(object):
         self.tbl_complain_wdcloud.setSortingEnabled(True)
 
 #  -------------------------------------------------<  logic def >----------------------------------------------------------
+    def get_anal(self):
+        if self.tabWidget.currentIndex() == 0:
+            part_name = '오늘'
+        elif self.tabWidget.currentIndex() == 1:
+            part_name = '급등'
+        elif self.tabWidget.currentIndex() == 2:
+            part_name = '최다'
 
-    # def get_anal(self):
-    #
-    #     data = compare_keyword('오늘')
-    #     # self.get_anal_search(data)
+        data = compare_keyword(part_name)
 
-    # def get_anal_search(self, data):
-    #
-    #     data_p = data[data['type'] == '뉴스_정치']
-    #     data_s = data[data['type'] == '뉴스_사회']
-    #     data_e = data[data['type'] == '뉴스_경제']
-    #
-    #     dataJoin = pd.merge(data_p, data_s, how='outer', on=['keyword'])
-    #     dataJoin1 = pd.merge(dataJoin, data_e, how='outer', on=['keyword'])
-    #
-    #     dataJoin1.columns = ['keyword', 'part_p', '뉴스_정치', 'part_s', '뉴스_사회', 'part_e', '뉴스_경제']
-    #     dataAnal = dataJoin1[['keyword', '뉴스_정치', '뉴스_사회', '뉴스_경제']]
-    #     dataAnal = dataAnal.fillna(('-'))
-    #
-    #     self.tbl_today.setRowCount(len(dataAnal))  #tbl_today
-    #
-    #     for i in range(len(dataAnal)):
-    #         self.tbl_today.setItem(i, 0, QTableWidgetItem(dataAnal['keyword'][i]))
-    #         self.tbl_today.setItem(i, 1, QTableWidgetItem(dataAnal['뉴스_정치'][i]))
-    #         self.tbl_today.setItem(i, 2, QTableWidgetItem(dataAnal['뉴스_경제'][i]))
-    #         self.tbl_today.setItem(i, 3, QTableWidgetItem(dataAnal['뉴스_사회'][i]))
-    #
-    #
-    #
+        self.get_word_compare()
+
+
+    def get_news(self):
+        import time
+        from selenium import webdriver
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.common.keys import Keys
+        from selenium.webdriver.chrome.options import Options
+        from webdriver_manager.chrome import ChromeDriverManager
+        from selenium.webdriver.support.ui import WebDriverWait
+        from selenium.webdriver.support import expected_conditions as EC
+
+        down_path = FilePathClass()
+
+        chrome_options = Options()
+        chrome_options.add_experimental_option("detach", True)
+        dr = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+        dr.implicitly_wait(3)
+        dr.get('https://www.bigkinds.or.kr/v2/news/index.do')
+        dr.maximize_window()
+
+        # 빅카인즈 로그인
+        login_element = dr.find_element(By.XPATH, '//*[@id="header"]/div[1]/div/div[2]/button[1]')
+        login_element.click()
+        id_element = dr.find_element(By.ID, 'login-user-id')
+        id_element.send_keys(apifp.BIGKINDS_ID)
+        pw_element = dr.find_element(By.ID, 'login-user-password')
+        pw_element.send_keys(apifp.BIGKINDS_PW)
+        pw_element.send_keys(Keys.ENTER)
+        modal_content = dr.find_element(By.XPATH, '//*[@id="login-modal"]/div')
+        modal_content.click()
+
+        # 데이터 수집
+        for i in self.txt_anal_word.toPlainText().split(','):
+            # 키워드 입력
+            input_element = dr.find_element(By.ID, 'total-search-key')
+            input_element.send_keys(Keys.CONTROL + "a")
+            input_element.send_keys(Keys.DELETE)
+            input_element.send_keys(i)
+            input_element.send_keys(Keys.TAB)
+
+            if i == self.txt_anal_word.toPlainText().split(',')[0]:
+                # 기간 설정
+                date_tab_element = dr.find_element(By.XPATH, '//*[@id="collapse-step-1-body"]/div[3]/div/div[1]/div[1]/a')
+                date_tab_element.send_keys(Keys.ENTER)
+
+                start_element = dr.find_element(By.ID, 'search-begin-date')
+                start_element.click()
+                start_element.send_keys(Keys.CONTROL + "a")
+                start_element.send_keys(Keys.DELETE)
+                start_date = self.sel_yy_start.currentText() + self.sel_mm_start.currentText() + "01"
+                start_element.send_keys(start_date)
+                end_element = dr.find_element(By.ID, 'search-end-date')
+                end_element.send_keys(Keys.CONTROL + "a")
+                end_element.send_keys(Keys.DELETE)
+                end_date = getMonthRange(self.sel_yy_end.currentText(), self.sel_mm_end.currentText()).strftime("%Y%m%d")
+                end_element.send_keys(end_date)
+
+            apply_element = dr.find_element(By.XPATH, '//*[@id="search-foot-div"]/div[2]/button[2]')
+            apply_element.click()
+
+            # 데이터 다운로드
+            time.sleep(1)
+            step3_element = dr.find_element(By.ID, 'collapse-step-3')
+            step3_element.send_keys(Keys.ENTER)
+
+            import getpass
+            down_file_path = "{0}{1}_{2}-{3}.xlsx".format('C:\\Users\\' + getpass.getuser() + '\\Downloads\\', "NewsResult", start_date, end_date)
+
+            if os.path.isfile(down_file_path):
+                os.remove(down_file_path)
+
+            time.sleep(1)
+            down_element = dr.find_element(By.XPATH, '//*[@id="analytics-data-download"]/div[3]/button')
+            down_element.send_keys(Keys.ENTER)
+
+            # alert 창 닫기
+            try:
+                WebDriverWait(dr, 3).until(EC.alert_is_present())
+                alert = dr.switch_to.alert
+
+                # 확인하기
+                alert.accept()
+            except:
+                print("no alert")
+
+            # 데이터 경로 및 이름 변경
+            time.sleep(1)
+            downloaded = False
+            while downloaded == False:
+                try:
+                    down_file = pd.read_excel(down_file_path)
+                    route = "{0}\\{1}_{2}_{3}.csv".format(down_path.get_raw_use_path(), "크롤링", '뉴스', i)
+                    down_file.to_csv(route, encoding="utf-8-sig", index=False)
+                    downloaded = True
+                except FileNotFoundError:
+                    downloaded = False
+                except PermissionError:
+                    time.sleep(1)
+                    downloaded = False
+
+            # 뉴스 검색으로 돌아가기
+            step1_element = dr.find_element(By.ID, 'collapse-step-1')
+            step1_element.send_keys(Keys.ENTER)
+
+        self.show_folders('크롤링')
+
+
+    def get_anal_search(self, data):
+
+        data_p = data[data['type'] == '뉴스_정치']
+        data_s = data[data['type'] == '뉴스_사회']
+        data_e = data[data['type'] == '뉴스_경제']
+
+        dataJoin = pd.merge(data_p, data_s, how='outer', on=['keyword'])
+        dataJoin1 = pd.merge(dataJoin, data_e, how='outer', on=['keyword'])
+
+        dataJoin1.columns = ['keyword', 'part_p', '뉴스_정치', 'part_s', '뉴스_사회', 'part_e', '뉴스_경제']
+        dataAnal = dataJoin1[['keyword', '뉴스_정치', '뉴스_사회', '뉴스_경제']]
+        dataAnal = dataAnal.fillna(('-'))
+
+        self.tbl_today.setRowCount(len(dataAnal))  #tbl_today
+
+        for i in range(len(dataAnal)):
+            self.tbl_today.setItem(i, 0, QTableWidgetItem(dataAnal['keyword'][i]))
+            self.tbl_today.setItem(i, 1, QTableWidgetItem(dataAnal['뉴스_정치'][i]))
+            self.tbl_today.setItem(i, 2, QTableWidgetItem(dataAnal['뉴스_경제'][i]))
+            self.tbl_today.setItem(i, 3, QTableWidgetItem(dataAnal['뉴스_사회'][i]))
+
+
     def get_naver_data(self):
         s_yy_start = self.sel_yy_start.currentText()
         s_mm_start = self.sel_mm_start.currentText()
@@ -418,7 +533,6 @@ class Ui_Anal_Dialog(object):
         self.show_folders('네이버')
 
 
-
     def get_complain_data(self):
 
         s_yy_start = self.sel_yy_start.currentText()
@@ -426,12 +540,12 @@ class Ui_Anal_Dialog(object):
         s_yy_end = self.sel_yy_end.currentText()
         s_mm_end = self.sel_mm_end.currentText()
 
-        keywords = '검색,' + self.txt_anal_word.toPlainText()
-        anal_keywords = keywords.split(',')
+        keywords = self.txt_anal_word.toPlainText().split(',')
 
-        naver_trend_search(datetime.strptime(s_yy_start+s_mm_start+"01", '%Y%m%d'),
-                           getMonthRange(s_yy_end,s_mm_end),
-                           anal_keywords)
+        for i in keywords:
+            get_wd_cloud_info(i, (s_yy_start+s_mm_start+"01"),
+                           getMonthRange(s_yy_end,s_mm_end).strftime("%Y%m%d"), 'pttn,dfpt,saeol,prpl,qna_origin')
+            get_similarInfo(i)
 
         self.show_folders('민원')
 
@@ -463,8 +577,6 @@ class Ui_Anal_Dialog(object):
                 elif (data_all_list[i][-3:] == 'csv') & (filename[0] == '크롤링'):
                     data_list_news.append(data_all_list[i])
 
-
-
         if part == '네이버' :
             #네이버
             self.tbl_naver.setRowCount(len(data_list_naver))
@@ -484,6 +596,7 @@ class Ui_Anal_Dialog(object):
             for j in range(0, len(data_list_wdcloud)):
                 self.tbl_complain_wdcloud.setItem(j, 0, QTableWidgetItem(data_list_wdcloud[j]))
 
+
     #-----------------------------------------------------------
     # 탭 클릭시 데이터 조회
     # self.tabWidget.currentIndex() : 0=오늘, 1=급등, 2=최다
@@ -491,8 +604,9 @@ class Ui_Anal_Dialog(object):
     def get_word_compare(self):
 
         file_path = FilePathClass()
+
         #search_path = file_path.get_raw_use_path()
-        print(self.tabWidget.currentIndex())
+
         if self.tabWidget.currentIndex() == 0:
             file_name = '동시출현키워드_pivot_오늘'
         elif self.tabWidget.currentIndex() == 1:
@@ -500,12 +614,13 @@ class Ui_Anal_Dialog(object):
         elif self.tabWidget.currentIndex() == 2:
             file_name = '동시출현키워드_pivot_최다'
 
-        search_file_name = "{0}/{1}.csv".format(file_path.get_raw_use_path(), file_name)
-        df_data_anal = pd.read_csv(search_file_name, encoding="utf-8-sig")
+        all_files = glob.glob(file_path.get_raw_use_path() + file_name + ".csv")
 
-        # table = self.ui.tableWidget
-        # header = table.horizontalHeader()
-        # header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        if len(all_files) > 0:
+            search_file_name = "{0}/{1}.csv".format(file_path.get_raw_use_path(), file_name)
+            df_data_anal = pd.read_csv(search_file_name, encoding="utf-8-sig")
+        else:
+            return
 
         if self.tabWidget.currentIndex() == 0:
             self.tbl_today.setRowCount(len(df_data_anal))  # tbl_today
@@ -529,8 +644,10 @@ class Ui_Anal_Dialog(object):
                 self.tbl_top.setItem(i, 2, QTableWidgetItem(df_data_anal['뉴스_경제'][i]))
                 self.tbl_top.setItem(i, 3, QTableWidgetItem(df_data_anal['뉴스_사회'][i]))
 
+
 def error_event(self):
     QMessageBox.about(self, 'Error', 'file path not fount!!')
+
 
 if __name__ == "__main__":
     import sys

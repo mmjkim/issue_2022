@@ -98,3 +98,8 @@ NAVER_API_ID = 'ofFM6m12_MDK11rfyoct'
 NAVER_API_PW = 'jYvpWgXSZg'
 NAVER_DATA_PATH_KEYWORD = '네이버_검색어'
 NAVER_TIME_UNIT = 'month'
+
+
+#----------------- 빅카인즈 로그인 정보 -----------------
+BIGKINDS_ID = '20191497@daejin.ac.kr'
+BIGKINDS_PW = 'wqw1301wqw**'

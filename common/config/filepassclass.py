@@ -13,8 +13,6 @@ class FilePathClass:
         self.result_path = fp.DATA_RESULT_PATH
         self.log_path = fp.LOG_PATH
         self.data_api = fp.DATA_API_PATH
-        self.bigkinds_crawl = fp.BIGKINDS_CRAWL_PATH
-        self.download = fp.DOWNLOAD_PATH
 
         try:
             if not os.path.exists(self.root_path):
@@ -72,12 +70,6 @@ class FilePathClass:
     # get api 데이터 폴더명
     def get_bas_api_path(self):
         folder = self.root_path + '\\' + self.data_path + '\\' + self.data_api + '\\'
-        print("================ : ", folder)
-        return self.make_path(folder)
-
-    # get bigkinds crawl 데이터 폴더명
-    def get_bigkinds_crawl_path(self):
-        folder = self.root_path + '\\' + self.bigkinds_crawl + '\\'
         print("================ : ", folder)
         return self.make_path(folder)
 

@@ -110,10 +110,19 @@ class Ui_MainWindow(object):
 
 if __name__ == "__main__":
     import sys
+
+    def my_exception_hook(exctype, value, traceback):
+        print(exctype, value, traceback)
+        sys._excepthook(exctype, value, traceback)
+
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
+
+    sys._excepthook = sys.excepthook
+    sys.excepthook = my_exception_hook
+
     sys.exit(app.exec_())
 

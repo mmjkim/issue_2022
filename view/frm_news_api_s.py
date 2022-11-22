@@ -250,6 +250,7 @@ class Ui_news_collect_win(object):
         self.sel_yy_end.setItemText(3, _translate("news_collect_win", str(datetime.today().year-3)))
         self.sel_yy_end.setItemText(4, _translate("news_collect_win", str(datetime.today().year-4)))
         self.sel_yy_end.setItemText(5, _translate("news_collect_win", str(datetime.today().year-5)))
+        self.sel_yy_end.setCurrentText(str(datetime.today().year))
         self.sel_mm_start.setItemText(0, _translate("news_collect_win", "01"))
         self.sel_mm_start.setItemText(1, _translate("news_collect_win", "02"))
         self.sel_mm_start.setItemText(2, _translate("news_collect_win", "03"))
@@ -270,6 +271,7 @@ class Ui_news_collect_win(object):
         self.sel_yy_start.setItemText(3, _translate("news_collect_win", str(datetime.today().year-3)))
         self.sel_yy_start.setItemText(4, _translate("news_collect_win", str(datetime.today().year-4)))
         self.sel_yy_start.setItemText(5, _translate("news_collect_win", str(datetime.today().year-5)))
+        self.sel_yy_start.setCurrentText(str(datetime.today().year))
         self.sel_mm_end.setItemText(0, _translate("news_collect_win", "01"))
         self.sel_mm_end.setItemText(1, _translate("news_collect_win", "02"))
         self.sel_mm_end.setItemText(2, _translate("news_collect_win", "03"))
@@ -282,6 +284,7 @@ class Ui_news_collect_win(object):
         self.sel_mm_end.setItemText(9, _translate("news_collect_win", "10"))
         self.sel_mm_end.setItemText(10, _translate("news_collect_win", "11"))
         self.sel_mm_end.setItemText(11, _translate("news_collect_win", "12"))
+        self.sel_mm_end.setCurrentText(str(datetime.today().month))
 
 
 if __name__ == "__main__":
