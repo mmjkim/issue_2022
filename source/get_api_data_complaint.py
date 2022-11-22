@@ -319,7 +319,6 @@ def get_wd_cloud_info(keyword, std_ymd_fr, std_ymd_to, target):
 
 
     url = apifp.COMPLAIN_API_URL + apifp.COMPLAIN_API_URL_WDCLOUD +'?serviceKey=' + apifp.COMPLAIN_API_KEY + '&searchword=' + quote(keyword) + '&resultCount=' + maxResult + '&target=' + target + '&omitDuplicate=true' + '&dateFrom=' + analysis_date_fr + '&dateTo='+ analysis_date_to
-    #url = apifp.COMPLAIN_API_URL + apifp.COMPLAIN_API_URL_WDCLOUD + '?serviceKey=' + apifp.COMPLAIN_API_KEY + '&searchword=' + keyword + '&resultCount=' + maxResult + '&target=' + target #+ '&omitDuplicate=true' + '&dateFrom=' + analysis_date_fr + '&dateTo='+ analysis_date_to
 
     print('URL: ', url)
 
@@ -362,6 +361,7 @@ def get_wd_cloud_info(keyword, std_ymd_fr, std_ymd_to, target):
 
 
 def get_complaint_data(part, date, target):
+    print('ekjlj')
     day_list = getDayList(date)
     if part == '전체':
         for i in day_list:
@@ -381,9 +381,10 @@ def get_complaint_data(part, date, target):
     elif part == '핵심':
         get_topN_keyword(date+"01", getMonthRange(date[:4], date[-2:]).strftime('%Y%m%d'), target)
 
+    print('dere')
 
 
-#get_wd_cloud_info('이태원', datetime.strptime('20210901', '%Y%m%d'), datetime.strptime('20221031', '%Y%m%d'), 'pttn,dfpt,saeol,prpl,qna_origin')
+#get_complaint_data('오늘', '202203', 'pttn,dfpt,saeol,prpl,qna_origin')
 #get_similarInfo('이태원')
 #aa = get_news_uuid_list('정치')
 
