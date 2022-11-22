@@ -96,6 +96,14 @@ class Ui_MainWindow(object):
         self.actionAnal.triggered.connect(self.anal_window)
 
 
+        self.label = QtWidgets.QLabel(MainWindow)
+        self.label.setGeometry(QtCore.QRect(12, 30, 1000, 720))
+        self.label.setAutoFillBackground(True)
+        self.label.setText("")
+        self.label.setObjectName("label")
+        self.label.setStyleSheet('background-color:white')
+        self.label.setPixmap(QtGui.QPixmap("main_img.png"))
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
