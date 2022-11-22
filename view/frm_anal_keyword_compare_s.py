@@ -370,6 +370,7 @@ class Ui_Anal_Dialog(object):
         item.setText(_translate("Anal_Dialog", "파일명"))
         self.btn_news.setText(_translate("Anal_Dialog", "데이터 수집"))
 
+        self.tbl_news.setSortingEnabled(True)
         self.tbl_today.setSortingEnabled(True)
         self.tbl_naver.setSortingEnabled(True)
         self.tbl_complain_simil.setSortingEnabled(True)
@@ -419,8 +420,11 @@ class Ui_Anal_Dialog(object):
         modal_content = dr.find_element(By.XPATH, '//*[@id="login-modal"]/div')
         modal_content.click()
 
+        anal_word = self.txt_anal_word.toPlainText().replace(" ", "")
+        anal_word = anal_word.split(',')
+
         # 데이터 수집
-        for i in self.txt_anal_word.toPlainText().split(','):
+        for i in anal_word:
             # 키워드 입력
             input_element = dr.find_element(By.ID, 'total-search-key')
             input_element.send_keys(Keys.CONTROL + "a")
