@@ -83,7 +83,7 @@ class FilePathClass:
 
     # 다운로드 폴더명
     def get_download_path(self):
-        folder = 'C:/Users/hjshi/Downloads/'
+        folder = self.root_path + '\\' +'Downloads/'
         print("================ : ", folder)
         return self.make_path(folder)
 
