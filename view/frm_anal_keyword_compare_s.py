@@ -483,7 +483,7 @@ class Ui_Anal_Dialog(object):
             while downloaded == False:
                 try:
                     down_file = pd.read_excel(down_file_path)
-                    route = "{0}\\{1}_{2}_{3}.csv".format(down_path.get_raw_use_path(), "크롤링", '뉴스', i)
+                    route = "{0}\\{1}_{2}_{3}.csv".format(down_path.get_raw_use_path(), "뉴스", '크롤링', i)
                     down_file.to_csv(route, encoding="utf-8-sig", index=False)
                     downloaded = True
                 except FileNotFoundError:
