@@ -45,7 +45,7 @@ class FilePathClass:
 
     # get ResultPath 폴더명
     def get_result_path(self):
-        folder = self.root_path + '\\' + self.result_path + '\\'
+        folder = self.root_path + '\\' + self.data_path +  '\\' + self.result_path + '\\'
         print("================ : ", folder)
         return self.make_path(folder)
 
