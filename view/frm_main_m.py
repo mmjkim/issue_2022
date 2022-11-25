@@ -3,8 +3,15 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from view.frm_news_api_s import Ui_news_collect_win
 from view.frm_complaint_api_s import Ui_complaint_api_win
 from view.frm_anal_keyword_compare_s import Ui_Anal_Dialog
+from view.frm_view_news_s import Ui_frmViewNews
 
 class Ui_MainWindow(object):
+    def visual_window(self):
+        self.visual_win = QtWidgets.QDialog()
+        self.visual_ui = Ui_frmViewNews()
+        self.visual_ui.setupUi(self.visual_win)
+        self.visual_win.show()
+
     def anal_window(self):
         self.anal_win = QtWidgets.QDialog()
         self.anal_ui = Ui_Anal_Dialog()
@@ -51,11 +58,11 @@ class Ui_MainWindow(object):
         font.setPointSize(11)
         self.menu_anal.setFont(font)
         self.menu_anal.setObjectName("menu_anal")
-        self.menu_4 = QtWidgets.QMenu(self.menubar)
+        self.menu_visual = QtWidgets.QMenu(self.menubar)
         font = QtGui.QFont()
         font.setPointSize(11)
-        self.menu_4.setFont(font)
-        self.menu_4.setObjectName("menu_4")
+        self.menu_visual.setFont(font)
+        self.menu_visual.setObjectName("menu_visual")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -79,13 +86,34 @@ class Ui_MainWindow(object):
         self.actionAnal.setFont(font)
         self.actionAnal.setObjectName("actionAnal")
 
+        self.actionVisual = QtWidgets.QAction(MainWindow)
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        self.actionVisual.setFont(font)
+        self.actionVisual.setObjectName("actionVisual")
+
+        self.actionVisual2 = QtWidgets.QAction(MainWindow)
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        self.actionVisual2.setFont(font)
+        self.actionVisual2.setObjectName("actionVisual2")
+
+        self.actionVisual3 = QtWidgets.QAction(MainWindow)
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        self.actionVisual3.setFont(font)
+        self.actionVisual3.setObjectName("actionVisual3")
+
         self.menu_complaint.addAction(self.actionComplaint)
         self.menu_news.addAction(self.actionNews)
         self.menu_anal.addAction(self.actionAnal)
+        self.menu_visual.addAction(self.actionVisual)
+        self.menu_visual.addAction(self.actionVisual2)
+        self.menu_visual.addAction(self.actionVisual3)
         self.menubar.addAction(self.menu_complaint.menuAction())
         self.menubar.addAction(self.menu_news.menuAction())
         self.menubar.addAction(self.menu_anal.menuAction())
-        self.menubar.addAction(self.menu_4.menuAction())
+        self.menubar.addAction(self.menu_visual.menuAction())
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -94,6 +122,7 @@ class Ui_MainWindow(object):
 
         self.actionNews.triggered.connect(self.collect_news_window)
         self.actionAnal.triggered.connect(self.anal_window)
+        self.actionVisual.triggered.connect(self.visual_window)
 
 
         self.label = QtWidgets.QLabel(MainWindow)
@@ -110,10 +139,13 @@ class Ui_MainWindow(object):
         self.menu_complaint.setTitle(_translate("MainWindow", "민원 데이터 수집"))
         self.menu_news.setTitle(_translate("MainWindow", "뉴스 데이터 수집"))
         self.menu_anal.setTitle(_translate("MainWindow", "키워드 분석"))
-        self.menu_4.setTitle(_translate("MainWindow", "SAMPLE"))
+        self.menu_visual.setTitle(_translate("MainWindow", "시각화"))
         self.actionComplaint.setText(_translate("MainWindow", "Complaint"))
         self.actionNews.setText(_translate("MainWindow", "News"))
         self.actionAnal.setText(_translate("MainWindow", "Analysis"))
+        self.actionVisual.setText(_translate("MainWindow", "News"))
+        self.actionVisual2.setText(_translate("MainWindow", "Complaints"))
+        self.actionVisual3.setText(_translate("MainWindow", "Naver"))
 
 
 if __name__ == "__main__":
