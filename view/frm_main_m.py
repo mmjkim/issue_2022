@@ -36,7 +36,7 @@ class Ui_MainWindow(object):
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1024, 737))
         self.menubar.setObjectName("menubar")
-        self.menu_complaint= QtWidgets.QMenu(self.menubar)
+        self.menu_complaint = QtWidgets.QMenu(self.menubar)
         font = QtGui.QFont()
         font.setPointSize(11)
         self.menu_complaint.setFont(font)

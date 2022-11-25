@@ -1,8 +1,8 @@
-import calendar
 import glob
-
+import calendar
 import pandas as pd
 from datetime import datetime
+
 import warnings
 warnings.filterwarnings(action='ignore')
 
@@ -24,7 +24,7 @@ class Ui_Anal_Dialog(object):
 
         Anal_Dialog.setObjectName("Anal_Dialog")
         Anal_Dialog.resize(1024, 768)
-
+        Anal_Dialog.setMaximumSize(1024, 768)
         self.group1 = QtWidgets.QGroupBox(Anal_Dialog)
         self.group1.setGeometry(QtCore.QRect(10, 10, 1001, 311))
         self.group1.setObjectName("group1")
