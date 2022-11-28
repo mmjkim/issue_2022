@@ -578,7 +578,7 @@ class Ui_Anal_Dialog(object):
                         data_list_simil.append(data_all_list[i])
                     elif filename[1] == '연관어분석정보':
                         data_list_wdcloud.append(data_all_list[i])
-                elif (data_all_list[i][-3:] == 'csv') & (filename[0] == '크롤링'):
+                elif (data_all_list[i][-3:] == 'csv') & (filename[0] == '뉴스'):
                     data_list_news.append(data_all_list[i])
 
         if part == '네이버' :
