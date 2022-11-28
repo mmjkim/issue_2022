@@ -207,6 +207,11 @@ class Ui_frmViewNews(object):
         self.tbl_data3.verticalHeader().setDefaultSectionSize(25)
         self.tbl_data3.horizontalHeader().setStyleSheet("QHeaderView::section {background-color:#404040;color:#FFFFFF;}")
 
+        self.label = QtWidgets.QLabel(self.group3)
+        self.label.setGeometry(QtCore.QRect(10, 51, 981, 500))
+        self.label.setObjectName("label")
+        self.label.setAlignment(Qt.AlignCenter)
+
         self.fig = plt.Figure()
         self.canvas = FigureCanvas(self.fig)
         self.gridLayout.addWidget(self.canvas)
@@ -224,34 +229,49 @@ class Ui_frmViewNews(object):
 
     # 그래프 출력
     def show_graph(self):
+        self.label.clear()
         df = self.show_chart()
         self.fig.clear(True)
         ax = self.fig.add_subplot(111)
 
-        for i in range(int(self.txt_top_n.text())):
-            if self.rdo_line.isChecked():
-                ax.plot(df.columns.values.astype(int),
+        df.columns = df.columns + '01'
+        df.columns = pd.to_datetime(df.columns).date
+
+        if self.rdo_line.isChecked():
+            for i in range(int(self.txt_top_n.text())):
+                ax.plot(df.columns,
                         df.head(int(self.txt_top_n.text())).values[i].astype(int),
                         label=df.index.values[i], alpha=0.5, linewidth=2)
-            elif self.rdo_bar.isChecked():
-                ax.bar(df.columns.values.astype(int)+(i/(int(self.txt_top_n.text())+1)),
-                        df.head(int(self.txt_top_n.text())).values[i].astype(int),
-                        label=df.index.values[i], width=1/int(self.txt_top_n.text()), alpha=0.5)
-            elif self.rdo_area.isChecked():
-                ax.scatter(df.columns.values.astype(int),
+            ax.grid(True)
+            ax.legend()
+            ax.set_title('월별 키워드 빈도수 추이')
+            ax.set_xticks(df.columns)
+            ax.set_xticklabels(df.columns, rotation=15)
+            ax.set_ylim([0, df.values.astype(int).max() + 1000])
+
+            self.canvas.draw()
+
+        elif self.rdo_bar.isChecked():
+            df.head(int(self.txt_top_n.text())).T.plot.bar(figsize=(10, 5), alpha=0.5)
+            plt.xticks(rotation=15)
+            plt.legend(df.head(int(self.txt_top_n.text())).T.columns)
+            plt.title('월별 키워드 빈도수 추이')
+            plt.savefig('graph_img.png', dpi=100)
+            self.label.setPixmap(QtGui.QPixmap('graph_img.png'))
+
+        elif self.rdo_area.isChecked():
+            for i in range(int(self.txt_top_n.text())):
+                ax.scatter(df.columns,
                        df.head(int(self.txt_top_n.text())).values[i].astype(int),
                        label=df.index.values[i], alpha=0.5)
+            ax.grid(True)
+            ax.legend()
+            ax.set_title('월별 키워드 빈도수 추이')
+            ax.set_xticks(df.columns)
+            ax.set_xticklabels(df.columns, rotation=15)
+            ax.set_ylim([0, df.values.astype(int).max() + 1000])
 
-        ax.grid(True)
-        ax.legend()
-        ax.set_xlabel('연월')
-        ax.set_ylabel('빈도수')
-        ax.set_title('월별 키워드 빈도수 추이')
-        ax.set_xticks(df.columns.values.astype(int))
-        ax.set_xticklabels(df.columns.values.astype(int))
-        ax.set_ylim([0, df.values.astype(int).max()+1000])
-
-        self.canvas.draw()
+            self.canvas.draw()
 
 
     # 차트 출력
@@ -271,8 +291,17 @@ class Ui_frmViewNews(object):
 
         news = pd.read_csv(file_path.get_raw_use_path() + '뉴스_' + part + '\\1차마트_' + part + '.csv')
         news_pivot = news.pivot(index='keyword', columns='stdym', values='freq')
-        news_pivot.columns = news_pivot.columns.astype(str)
+
+        if news_pivot.columns[0] >= int(anal_s_date):
+            anal_s_date = news_pivot.columns[0].astype(str)
+        if news_pivot.columns[-1] <= int(anal_e_date):
+            anal_e_date = news_pivot.columns[-1].astype(str)
+
         news_sel = news_pivot.loc[:, anal_s_date:anal_e_date]
+        if (int(sort_date) < news_sel.columns[0]) | (int(sort_date) > news_sel.columns[-1]):
+            sort_date = news_sel.columns[-1].astype(str)
+
+        news_sel.columns = news_sel.columns.astype(str)
         news_sel = news_sel.sort_values(sort_date, ascending=False)
 
         if self.tabWidget.currentIndex() == 0:
