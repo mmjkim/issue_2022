@@ -38,3 +38,4 @@ def file_data_save(file_path, file_name, df_save_data, bindex):
     # 파일저장
     df_save_data.to_csv(savefile, encoding='euc-kr', index=bindex)
 
+

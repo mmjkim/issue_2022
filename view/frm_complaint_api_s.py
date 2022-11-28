@@ -14,7 +14,6 @@ from PyQt5.QtCore import QBasicTimer, QThread, pyqtSignal
 import time
 from random import randint
 
-
 class Ui_complaint_api_win(object):
 
     def setupUi(self, complaint_api_win):
@@ -143,31 +142,36 @@ class Ui_complaint_api_win(object):
         self.tbl_top.horizontalHeader().setStretchLastSection(True)
         self.tbl_top.verticalHeader().setDefaultSectionSize(35)
 
-        self.progressBar = QtWidgets.QProgressBar(self.frame_2)
-        self.progressBar.setGeometry(QtCore.QRect(580, 0, 421, 23))
-        self.progressBar.setProperty("value", 0)
-        self.progressBar.setObjectName("progressBar")
+       #  self.lbl_loading = QtWidgets.QLabel(self.frame_2)
+       #  self.lbl_loading.setGeometry(QtCore.QRect(370, 130, 181, 141))
+       #  self.lbl_loading.setAutoFillBackground(True)
+       # # self.lbl_loading.setObjectName("lbl_loading")
+
+
+        # self.progressBar = QtWidgets.QProgressBar(self.frame_2)
+        # self.progressBar.setGeometry(QtCore.QRect(580, 0, 421, 23))
+        # self.progressBar.setProperty("value", 0)
+        # self.progressBar.setObjectName("progressBar")
 
         #gif 프로그래스바
-        # self.lbl_prg_bar = QtWidgets.QLabel(self.frame_2)
-        # self.lbl_prg_bar.setGeometry(QtCore.QRect(410, 180, 182, 182))
-        # self.lbl_prg_bar.setMinimumSize(QtCore.QSize(200, 200))
-        # self.lbl_prg_bar.setMaximumSize(QtCore.QSize(200, 200))
-        # self.lbl_prg_bar.setAutoFillBackground(True)
-        # self.lbl_prg_bar.setObjectName("lbl_prg_bar")
-        # self.movie = QMovie('loading.gif')
-        # self.lbl_prg_bar.setMovie(self.movie)
-        # self.lbl_prg_bar.show()
-        # self.movie.start()
+        self.lbl_prg_bar = QtWidgets.QLabel(self.frame_2)
+        self.lbl_prg_bar.setGeometry(QtCore.QRect(410, 180, 182, 182))
+        self.lbl_prg_bar.setMaximumSize(QtCore.QSize(200, 200))
+        self.lbl_prg_bar.setAutoFillBackground(False)
+        self.lbl_prg_bar.setObjectName("lbl_prg_bar")
+
+        self.movie = QMovie('loading.gif')
+        self.lbl_prg_bar.setMovie(self.movie)
+        #self.movie.start()
 
         complaint_api_win.setCentralWidget(self.centralwidget)
 
 
         self.retranslateUi(complaint_api_win)
+
+        # ---------- data init ----------------------------
         QtCore.QMetaObject.connectSlotsByName(complaint_api_win)
-
         # self.btn_sel.clicked.connect(self.get_news)
-
         self.tbl_rising.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tbl_today.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tbl_top.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -177,7 +181,23 @@ class Ui_complaint_api_win(object):
 
         self.btn_sel.clicked.connect(self.get_complaints)
         self.btn_mart.clicked.connect(self.save_mart)
-        self.progressBar.hide()
+
+
+
+
+        # self.lbl_prg_bar = QtWidgets.QLabel(self.frame_2)
+        # self.lbl_prg_bar.setGeometry(QtCore.QRect(410, 180, 182, 182))
+        # self.lbl_prg_bar.setAutoFillBackground(True)
+
+        # self.lbl_prg_bar.setObjectName("lbl_prg_bar")
+        # self.move = QMovie('loading.gif', QByteArray(), self.frame_2)
+        # self.movie.setCacheMode(QMovie.CacheAll)
+        # # QLabel에 동적 이미지 삽입
+        # self.lbl_prg_bar.setMovie(self.movie)
+        # self.movie.start()
+
+
+        #self.progressBar.hide()
 
         #self.progressBar = QProgressBar(self)
 
@@ -187,14 +207,14 @@ class Ui_complaint_api_win(object):
 
 
 
-    def progressbar_view(self):
-        print(11111)
-        for i in range(1, 100, 1):
-            if self.progressBar.value() == 100:
-                break
-            self.progressBar.setValue(i)
-            print(i)
-            time.sleep(1)
+    # def progressbar_view(self):
+    #     print(11111)
+    #     for i in range(1, 100, 1):
+    #         if self.progressBar.value() == 100:
+    #             break
+    #         self.progressBar.setValue(i)
+    #         print(i)
+    #         time.sleep(1)
 
         # # print(11111)
         # while num < 100:
@@ -269,34 +289,48 @@ class Ui_complaint_api_win(object):
             target_list.append('qna_origin')
 
         target = "%s" % ",".join(target_list)
-
-
-        self.progressBar.show()
-        th = threading.Thread(target=self.progressbar_load_start)
+        th1 = threading.Thread(target=self.movie.start())
+        #self.movie.start()
+        th1.start()
+        temp = s_yy_start+s_mm_start
+        th = threading.Thread(target=get_complaint_data, args=(part, temp, target))
         th.start()
 
-        get_complaint_data(part, s_yy_start+s_mm_start, target)
-        time.sleep(1)
-        self.progressBar.setValue(100)
-        self.progressBar.hide()
-        # self.progressBar.show()
-        # self.progressbar_view()
+        th1.join()
+        th.join()
+
+        #self.movie.deleteLater()
+        # main_thread = threading.currentThread()
+        # for thread in threading.enumerate():
+        #     if thread is main_thread:
+        #         continue
+        #     thread.join()
         #
-        # th = threading.Thread(target=self.test, args=[part, s_yy_start+s_mm_start, target])
-        # th.start()
+        # for thread in threading.enumerate():
+        #     print(thread.name, thread.is_alive())
 
-        time.sleep(1)
+        #self.movie.deleteLater()
+        #get_complaint_data(part, s_yy_start + s_mm_start, target)
 
+        # self.progressBar.show()
+        # th = threading.Thread(target=self.loding_show)
 
+        #self.loding_show()
+        #th = threading.Thread(target=self.test)
+        # th2 = threading.Thread(target=get_complaint_data, args=(part, s_yy_start+s_mm_start, target))
+        # #get_complaint_data(part, s_yy_start + s_mm_start, target)
+        # # th = threading.Thread(target=self.test, args=[part, s_yy_start+s_mm_start, target])
+        # # th.run()
+        # th.join()
+        # th2.join()
+        # self.movie.deleteLater()
 
-        #self.movie.stop()
-       # self.self.progressbar_view(100)
+        # self.lbl_prg_bar.show()
+        # self.worker = ChangeGif(self)
+        # self.worker.start()
 
-
-
-    def test(self, part, stym, target):
-        print('test')
-        get_complaint_data(part, stym, target)
+        print("get_complaints End")
+        #self.loding_hide()
 
 
     def show_folders(self):
@@ -460,14 +494,33 @@ class Ui_complaint_api_win(object):
 #         self.worker_complete.emit({"aa":1, "bb":"bb", "cc":"ddd"})
 
 
-def progressbar_load_start(self):
-    print("probressbar!!!")
+# def progressbar_load_start(self):
+#     print("probressbar!!!")
+#
+#     self.movie.start()
+#
+# def progressbar_load_end(self):
+#     time.sleep(1)
+#     self.movie.stop()
 
-    self.movie.start()
+    def loding_show(self):
+        # print("loding_show")
+       # self.lbl_prg_bar.show()
+        print("loding_showssssss")
+       # self.lbl_prg_bar.setMovie(self.movie)
+        th = threading.Thread(target=self.movie.start())
+        th.start()
 
-def progressbar_load_end(self):
-    time.sleep(1)
-    self.movie.stop()
+
+        #th = threading.Thread(target=self.movie.start())
+        #th.start()
+
+    def loding_hide(self):
+        print("loding_hide")
+        self.movie.deleteLater()
+        #self.lbl_prg_bar.hide()
+
+
 
 if __name__ == "__main__":
     import sys

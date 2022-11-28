@@ -8,9 +8,10 @@
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5 import QtWebEngineWidgets
-# from PyQt5.QtWebKit import *
-# from PyQt5.QtWebKitWidgets import *
-# from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow
+
+from common.function import funcC3Chart
+from common.function.funcCommon import *
+from common.function.funcDataControl import dfToString
 
 
 class Ui_Dialog(object):
@@ -74,10 +75,11 @@ class Ui_Dialog(object):
         self.m_output = QtWebEngineWidgets.QWebEngineView()
 
         file_name = 'D:\\issue_2022\\data\\03_결과데이터\\LDA\\lda_result_유사사례_이태원_ 할로인.html'
+        #file_name = 'D:\\issue_2022\\view\\chart_sample.html'
         self.load_lda_html(file_name)
         view = QtWidgets.QVBoxLayout(self.group4)
         view.addWidget(self.m_output)
-        view.setStretch(200, 551)
+
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
@@ -104,6 +106,41 @@ class Ui_Dialog(object):
         with open(fileName, 'r') as f:
             html = f.read()
         self.m_output.setHtml(html)
+
+        # data = dfToString()
+        # print(type(data))
+        # print("data:", data)
+        # html = funcC3Chart.c3chart_html_write(data)
+        # temp = "zoom:{enabled: false}"
+        # self.m_output.setHtml(html.replace(temp, "zoom: {enabled: true}"))
+        # loadCSS(self.m_output, "c3Chart/c3.css", "script1")
+
+        #print(html)
+
+
+def loadCSS(view, path, name):
+    path = QtCore.QFile(path)
+    if not path.open(QtCore.QFile.ReadOnly | QtCore.QFile.Text):
+        return
+    css = path.readAll().data().decode("utf-8")
+    SCRIPT = """
+    (function() {
+    css = document.createElement('style');
+    css.type = 'text/css';
+    css.id = "%s";
+    document.head.appendChild(css);
+    css.innerText = `%s`;
+    })()
+    """ % (name, css)
+
+    script = QtWebEngineWidgets.QWebEngineScript()
+    view.page().runJavaScript(SCRIPT, QtWebEngineWidgets.QWebEngineScript.ApplicationWorld)
+    script.setName(name)
+    script.setSourceCode(SCRIPT)
+    script.setInjectionPoint(QtWebEngineWidgets.QWebEngineScript.DocumentReady)
+    script.setRunsOnSubFrames(True)
+    script.setWorldId(QtWebEngineWidgets.QWebEngineScript.ApplicationWorld)
+    view.page().scripts().insert(script)
 
 if __name__ == "__main__":
     import sys
