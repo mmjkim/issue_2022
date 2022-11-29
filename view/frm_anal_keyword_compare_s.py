@@ -280,7 +280,7 @@ class Ui_Anal_Dialog(object):
     def retranslateUi(self, Anal_Dialog):
 
         _translate = QtCore.QCoreApplication.translate
-        Anal_Dialog.setWindowTitle(_translate("Anal_Dialog", "Anal_Dialog"))
+        Anal_Dialog.setWindowTitle(_translate("Anal_Dialog", "키워드 분석"))
         self.group1.setTitle(_translate("Anal_Dialog", " [ 동시출현 키워드 ] "))
         item = self.tbl_today.horizontalHeaderItem(0)
         item.setText(_translate("Anal_Dialog", "민원_오늘"))
@@ -527,12 +527,16 @@ class Ui_Anal_Dialog(object):
         s_yy_end = self.sel_yy_end.currentText()
         s_mm_end = self.sel_mm_end.currentText()
 
-        keywords = '검색,' + self.txt_anal_word.toPlainText()
-        anal_keywords = keywords.split(',')
+        # keywords = '검색,' + self.txt_anal_word.toPlainText()
+        # anal_keywords = keywords.split(',')
 
-        naver_trend_search(datetime.strptime(s_yy_start+s_mm_start+"01", '%Y%m%d'),
-                           getMonthRange(s_yy_end,s_mm_end),
-                           anal_keywords)
+        keywords = self.txt_anal_word.toPlainText().split(',')
+
+        for i in keywords:
+            i = ('검색,' + i).split(',')
+            naver_trend_search(datetime.strptime(s_yy_start+s_mm_start+"01", '%Y%m%d'),
+                               getMonthRange(s_yy_end,s_mm_end),
+                               i)
 
         self.show_folders('네이버')
 

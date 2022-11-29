@@ -174,6 +174,7 @@ class Ui_frmViewNews(object):
         self.rdo_line = QtWidgets.QRadioButton(self.group3)
         self.rdo_line.setGeometry(QtCore.QRect(20, 26, 86, 16))
         self.rdo_line.setObjectName("rdo_line")
+        self.rdo_line.setChecked(True)
         self.rdo_bar = QtWidgets.QRadioButton(self.group3)
         self.rdo_bar.setGeometry(QtCore.QRect(80, 26, 86, 16))
         self.rdo_bar.setObjectName("rdo_bar")
@@ -218,6 +219,7 @@ class Ui_frmViewNews(object):
 
         self.onlyInt = QIntValidator()
         self.txt_top_n.setValidator(self.onlyInt)
+        self.txt_top_n.setText('5')
 
         self.retranslateUi(frmViewNews)
         self.tabWidget.setCurrentIndex(0)
@@ -348,7 +350,7 @@ class Ui_frmViewNews(object):
 
     def retranslateUi(self, frmViewNews):
         _translate = QtCore.QCoreApplication.translate
-        frmViewNews.setWindowTitle(_translate("frmViewNews", "Dialog"))
+        frmViewNews.setWindowTitle(_translate("frmViewNews", "키워드 시각화"))
         self.group1.setTitle(_translate("frmViewNews", " [ 분석 ] "))
         self.label_5.setText(_translate("frmViewNews", "~"))
         self.label_6.setText(_translate("frmViewNews", "분석기간: "))
@@ -388,6 +390,9 @@ class Ui_frmViewNews(object):
         self.sel_mm_end.setItemText(9, _translate("frmViewNews", "10"))
         self.sel_mm_end.setItemText(10, _translate("frmViewNews", "11"))
         self.sel_mm_end.setItemText(11, _translate("frmViewNews", "12"))
+        self.sel_yy_end.setCurrentText(str(datetime.today().year))
+        self.sel_mm_end.setCurrentText(str(datetime.today().month))
+        self.sel_yy_start.setCurrentText(str(datetime.today().year))
         self.btn_search.setText(_translate("frmViewNews", "조회"))
         self.label_7.setText(_translate("frmViewNews", "정렬기준 년월 :"))
         self.sort_yy.setItemText(0, _translate("frmViewNews", str(datetime.today().year)))
@@ -408,6 +413,8 @@ class Ui_frmViewNews(object):
         self.sort_mm.setItemText(9, _translate("frmViewNews", "10"))
         self.sort_mm.setItemText(10, _translate("frmViewNews", "11"))
         self.sort_mm.setItemText(11, _translate("frmViewNews", "12"))
+        self.sort_yy.setCurrentText(str(datetime.today().year))
+        self.sort_mm.setCurrentText(str(datetime.today().month))
         self.group2.setTitle(_translate("frmViewNews", " [ 데이터 현황 ] "))
         item = self.tbl_data1.horizontalHeaderItem(0)
         item.setText(_translate("frmViewNews", "키워드"))

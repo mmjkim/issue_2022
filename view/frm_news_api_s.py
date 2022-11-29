@@ -59,6 +59,7 @@ class Ui_news_collect_win(object):
         self.rad_type_1 = QtWidgets.QRadioButton(self.groupBox)
         self.rad_type_1.setGeometry(QtCore.QRect(40, 30, 86, 20))
         self.rad_type_1.setObjectName("rad_type_1")
+        self.rad_type_1.setChecked(True)
         self.rad_type_2 = QtWidgets.QRadioButton(self.groupBox)
         self.rad_type_2.setGeometry(QtCore.QRect(141, 30, 86, 21))
         self.rad_type_2.setObjectName("rad_type_2")
@@ -139,6 +140,13 @@ class Ui_news_collect_win(object):
         self.tbl_politics.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tbl_social.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tbl_economy.setEditTriggers(QAbstractItemView.NoEditTriggers)
+
+        self.tbl_politics.horizontalHeader().setStyleSheet(
+            "QHeaderView::section {background-color:#404040;color:#FFFFFF;}")
+        self.tbl_social.horizontalHeader().setStyleSheet(
+            "QHeaderView::section {background-color:#404040;color:#FFFFFF;}")
+        self.tbl_economy.horizontalHeader().setStyleSheet(
+            "QHeaderView::section {background-color:#404040;color:#FFFFFF;}")
 
         self.show_folders()
 
@@ -230,7 +238,7 @@ class Ui_news_collect_win(object):
 
     def retranslateUi(self, news_collect_win):
         _translate = QtCore.QCoreApplication.translate
-        news_collect_win.setWindowTitle(_translate("news_collect_win", "MainWindow"))
+        news_collect_win.setWindowTitle(_translate("news_collect_win", "뉴스 데이터 수집"))
         item = self.tbl_politics.horizontalHeaderItem(0)
         item.setText(_translate("news_collect_win", "정치"))
         item = self.tbl_social.horizontalHeaderItem(0)

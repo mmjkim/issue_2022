@@ -18,7 +18,7 @@
     <rect>
      <x>7</x>
      <y>10</y>
-     <width>151</width>
+     <width>251</width>
      <height>191</height>
     </rect>
    </property>
@@ -28,7 +28,7 @@
    <widget class="QPushButton" name="btn_search">
     <property name="geometry">
      <rect>
-      <x>59</x>
+      <x>160</x>
       <y>22</y>
       <width>79</width>
       <height>23</height>
@@ -43,7 +43,7 @@
      <rect>
       <x>10</x>
       <y>50</y>
-      <width>131</width>
+      <width>231</width>
       <height>131</height>
      </rect>
     </property>
@@ -60,6 +60,11 @@
     </column>
     <column>
      <property name="text">
+      <string>분야</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
       <string>키워드</string>
      </property>
     </column>
@@ -68,9 +73,9 @@
   <widget class="QGroupBox" name="group2">
    <property name="geometry">
     <rect>
-     <x>170</x>
+     <x>270</x>
      <y>10</y>
-     <width>211</width>
+     <width>241</width>
      <height>191</height>
     </rect>
    </property>
@@ -82,7 +87,7 @@
      <rect>
       <x>10</x>
       <y>20</y>
-      <width>191</width>
+      <width>231</width>
       <height>161</height>
      </rect>
     </property>
@@ -99,6 +104,11 @@
     </column>
     <column>
      <property name="text">
+      <string>분야</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
       <string>키워드</string>
      </property>
     </column>
@@ -107,9 +117,9 @@
   <widget class="QGroupBox" name="group3">
    <property name="geometry">
     <rect>
-     <x>390</x>
+     <x>520</x>
      <y>10</y>
-     <width>621</width>
+     <width>791</width>
      <height>191</height>
     </rect>
    </property>
@@ -121,12 +131,12 @@
      <rect>
       <x>10</x>
       <y>20</y>
-      <width>601</width>
+      <width>771</width>
       <height>91</height>
      </rect>
     </property>
     <attribute name="horizontalHeaderStretchLastSection">
-     <bool>false</bool>
+     <bool>true</bool>
     </attribute>
     <attribute name="verticalHeaderStretchLastSection">
      <bool>false</bool>
@@ -142,7 +152,7 @@
      <rect>
       <x>10</x>
       <y>120</y>
-      <width>601</width>
+      <width>771</width>
       <height>51</height>
      </rect>
     </property>

@@ -29,6 +29,7 @@ class Ui_complaint_api_win(object):
         self.rad_type_rising = QtWidgets.QRadioButton(self.groupBox)
         self.rad_type_rising.setGeometry(QtCore.QRect(20, 26, 125, 20))
         self.rad_type_rising.setObjectName("rad_type_rising")
+        self.rad_type_rising.setChecked(True)
         self.rad_type_top = QtWidgets.QRadioButton(self.groupBox)
         self.rad_type_top.setGeometry(QtCore.QRect(160, 26, 141, 21))
         self.rad_type_top.setObjectName("rad_type_top")
@@ -161,6 +162,15 @@ class Ui_complaint_api_win(object):
         # self.movie.start()
 
         complaint_api_win.setCentralWidget(self.centralwidget)
+
+        self.tbl_rising.horizontalHeader().setStyleSheet(
+            "QHeaderView::section {background-color:#404040;color:#FFFFFF;}")
+        self.tbl_today.horizontalHeader().setStyleSheet(
+            "QHeaderView::section {background-color:#404040;color:#FFFFFF;}")
+        self.tbl_top.horizontalHeader().setStyleSheet(
+            "QHeaderView::section {background-color:#404040;color:#FFFFFF;}")
+        self.tbl_dftop.horizontalHeader().setStyleSheet(
+            "QHeaderView::section {background-color:#404040;color:#FFFFFF;}")
 
 
         self.retranslateUi(complaint_api_win)
@@ -367,7 +377,7 @@ class Ui_complaint_api_win(object):
 
     def retranslateUi(self, complaint_api_win):
         _translate = QtCore.QCoreApplication.translate
-        complaint_api_win.setWindowTitle(_translate("complaint_api_win", "MainWindow"))
+        complaint_api_win.setWindowTitle(_translate("complaint_api_win", "민원 데이터 수집"))
         self.groupBox.setTitle(_translate("complaint_api_win", " [ 민원 ] "))
         self.rad_type_rising.setText(_translate("complaint_api_win", "급등 키워드 정보"))
         self.rad_type_top.setText(_translate("complaint_api_win", "핵심 키워드 정보"))

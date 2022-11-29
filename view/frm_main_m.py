@@ -4,8 +4,15 @@ from view.frm_news_api_s import Ui_news_collect_win
 from view.frm_complaint_api_s import Ui_complaint_api_win
 from view.frm_anal_keyword_compare_s import Ui_Anal_Dialog
 from view.frm_view_news_s import Ui_frmViewNews
+from view.frm_view_lda_s import Ui_Dialog
 
 class Ui_MainWindow(object):
+    def lda_window(self):
+        self.lda_win = QtWidgets.QDialog()
+        self.lda_ui = Ui_Dialog()
+        self.lda_ui.setupUi(self.lda_win)
+        self.lda_win.show()
+
     def visual_window(self):
         self.visual_win = QtWidgets.QDialog()
         self.visual_ui = Ui_frmViewNews()
@@ -104,12 +111,19 @@ class Ui_MainWindow(object):
         self.actionVisual3.setFont(font)
         self.actionVisual3.setObjectName("actionVisual3")
 
+        self.actionVisual4 = QtWidgets.QAction(MainWindow)
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        self.actionVisual4.setFont(font)
+        self.actionVisual4.setObjectName("actionVisual4")
+
         self.menu_complaint.addAction(self.actionComplaint)
         self.menu_news.addAction(self.actionNews)
         self.menu_anal.addAction(self.actionAnal)
         self.menu_visual.addAction(self.actionVisual)
         self.menu_visual.addAction(self.actionVisual2)
         self.menu_visual.addAction(self.actionVisual3)
+        self.menu_visual.addAction(self.actionVisual4)
         self.menubar.addAction(self.menu_complaint.menuAction())
         self.menubar.addAction(self.menu_news.menuAction())
         self.menubar.addAction(self.menu_anal.menuAction())
@@ -123,6 +137,7 @@ class Ui_MainWindow(object):
         self.actionNews.triggered.connect(self.collect_news_window)
         self.actionAnal.triggered.connect(self.anal_window)
         self.actionVisual.triggered.connect(self.visual_window)
+        self.actionVisual4.triggered.connect(self.lda_window)
 
 
         self.label = QtWidgets.QLabel(MainWindow)
@@ -146,6 +161,7 @@ class Ui_MainWindow(object):
         self.actionVisual.setText(_translate("MainWindow", "News"))
         self.actionVisual2.setText(_translate("MainWindow", "Complaints"))
         self.actionVisual3.setText(_translate("MainWindow", "Naver"))
+        self.actionVisual4.setText(_translate("MainWindow", "LDA"))
 
 
 if __name__ == "__main__":

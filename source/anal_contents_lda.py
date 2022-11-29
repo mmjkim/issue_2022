@@ -4,7 +4,7 @@ import warnings # 경고 메시지 무시
 warnings.filterwarnings(action='ignore')
 from konlpy.tag import Mecab # 형태소 분석기
 #경로 픽스
-mecab  = Mecab(dicpath=r"C:\mecab\mecab-ko-dic")
+mecab = Mecab(dicpath=r"C:\mecab\mecab-ko-dic")
 # 작업 프로세스 시각화
 from tqdm import tqdm
 # 문자열 처리를 위한 정규표현식 패키지
@@ -37,7 +37,7 @@ def lda_model_proc(part, keyword):
     # print(find_files, ":", filePath + find_files)
     all_files = glob.glob(filePath + find_files)
     #분석대상 키워드
-    list_keyword = keyword.replace(' ', '' ).split(',')
+    list_keyword = keyword.replace(' ', '').split(',')
 
     # print(list_keyword)
     df_anal_data = pd.DataFrame()
@@ -51,10 +51,9 @@ def lda_model_proc(part, keyword):
                df_dis_use = pd.read_csv(anal_file, encoding="utf-8-sig")
                if part == "유사사례":
                    df_dis_use = df_dis_use.loc[:, ['title','content']]
-               elif part == "크롤링":
+               elif part == "뉴스":
                    df_dis_use = df_dis_use.loc[:, ['제목', '본문']]
                    df_dis_use.rename(columns={'제목': 'title', '본문': 'content'}, inplace=True)
-
 
                df_dis_use = df_dis_use.drop_duplicates()
                df_anal_data = pd.concat([df_anal_data, df_dis_use])
@@ -169,4 +168,4 @@ def lda_visualize(model, corpus, dictionary, lda_keyword):
 #     return data
 
 
-#lda_model_proc("유사사례", "이태원, 할로인")
+# lda_model_proc("유사사례", "이태원")
