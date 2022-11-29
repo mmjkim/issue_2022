@@ -40,43 +40,43 @@ class FilePathClass:
     # get Data 폴더명
     def get_data_path(self):
         folder = self.root_path + '\\' + self.data_path + '\\'
-        print("================ : ", folder)
+       # print("================ : ", folder)
         return self.make_path(folder)
 
     # get ResultPath 폴더명
     def get_result_path(self):
         folder = self.root_path + '\\' + self.data_path +  '\\' + self.result_path + '\\'
-        print("================ : ", folder)
+       # print("================ : ", folder)
         return self.make_path(folder)
 
     # get LogPath 폴더명
     def get_log_path(self):
         folder = self.root_path + '\\' + self.result_path + '\\' + self.log_path + '\\'
-        print("================ : ", folder)
+       # print("================ : ", folder)
         return self.make_path(folder)
 
     # get 수집데이터 폴더명
     def get_raw_collect_path(self):
         folder = self.root_path + '\\' + self.data_path +  '\\' + self.collect_path + '\\'
-        print("================ : ", folder)
+       # print("================ : ", folder)
         return self.make_path(folder)
 
     # get 사용데이터 폴더명
     def get_raw_use_path(self):
         folder = self.root_path + '\\' + self.data_path + '\\' + self.use_path + '\\'
-        print("================ : ", folder)
+       # print("================ : ", folder)
         return self.make_path(folder)
 
     # get api 데이터 폴더명
     def get_bas_api_path(self):
         folder = self.root_path + '\\' + self.data_path + '\\' + self.data_api + '\\'
-        print("================ : ", folder)
+       # print("================ : ", folder)
         return self.make_path(folder)
 
     # 다운로드 폴더명
     def get_download_path(self):
         folder = self.root_path + '\\' +'Downloads/'
-        print("================ : ", folder)
+       # print("================ : ", folder)
         return self.make_path(folder)
 
     def set_year(self, year):
