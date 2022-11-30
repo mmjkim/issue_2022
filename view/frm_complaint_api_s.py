@@ -143,27 +143,6 @@ class Ui_complaint_api_win(object):
         self.tbl_top.horizontalHeader().setStretchLastSection(True)
         self.tbl_top.verticalHeader().setDefaultSectionSize(35)
 
-       #  self.lbl_loading = QtWidgets.QLabel(self.frame_2)
-       #  self.lbl_loading.setGeometry(QtCore.QRect(370, 130, 181, 141))
-       #  self.lbl_loading.setAutoFillBackground(True)
-       # # self.lbl_loading.setObjectName("lbl_loading")
-
-
-        # self.progressBar = QtWidgets.QProgressBar(self.frame_2)
-        # self.progressBar.setGeometry(QtCore.QRect(580, 0, 421, 23))
-        # self.progressBar.setProperty("value", 0)
-        # self.progressBar.setObjectName("progressBar")
-
-        #gif 프로그래스바
-        self.lbl_prg_bar = QtWidgets.QLabel(self.frame_2)
-        self.lbl_prg_bar.setGeometry(QtCore.QRect(410, 180, 182, 182))
-        self.lbl_prg_bar.setMaximumSize(QtCore.QSize(200, 200))
-        self.lbl_prg_bar.setAutoFillBackground(False)
-        self.lbl_prg_bar.setObjectName("lbl_prg_bar")
-
-        self.movie = QMovie('loading.gif')
-        self.lbl_prg_bar.setMovie(self.movie)
-        #self.movie.start()
 
         complaint_api_win.setCentralWidget(self.centralwidget)
 
@@ -192,65 +171,6 @@ class Ui_complaint_api_win(object):
         self.btn_sel.clicked.connect(self.get_complaints)
         self.btn_mart.clicked.connect(self.save_mart)
 
-
-
-
-        # self.lbl_prg_bar = QtWidgets.QLabel(self.frame_2)
-        # self.lbl_prg_bar.setGeometry(QtCore.QRect(410, 180, 182, 182))
-        # self.lbl_prg_bar.setAutoFillBackground(True)
-
-        # self.lbl_prg_bar.setObjectName("lbl_prg_bar")
-        # self.move = QMovie('loading.gif', QByteArray(), self.frame_2)
-        # self.movie.setCacheMode(QMovie.CacheAll)
-        # # QLabel에 동적 이미지 삽입
-        # self.lbl_prg_bar.setMovie(self.movie)
-        # self.movie.start()
-
-
-        #self.progressBar.hide()
-
-        #self.progressBar = QProgressBar(self)
-
-    # def test(self):
-    #     self.progressbar_load_start()
-
-
-
-
-    # def progressbar_view(self):
-    #     print(11111)
-    #     for i in range(1, 100, 1):
-    #         if self.progressBar.value() == 100:
-    #             break
-    #         self.progressBar.setValue(i)
-    #         print(i)
-    #         time.sleep(1)
-
-        # # print(11111)
-        # while num < 100:
-        #     i = randint(1, 90)
-        #     self.progressBar.setValue(i)
-        #     time.sleep(0.5)
-
-
-
-    # def test(self):
-    #
-    #     self.thread_progressbar.start()
-    #     #self.get_complaints()
-
-    #     t1 = threading.Thread(target=self.get_complaints()).start()
-    #     t2 = threading.Timer(2, target=self.progressbar_exc()).start()
-    #
-    #     # sub = theard_pogressbar()
-    #     # th = threading.Thread(target= sub.run())
-    #     # th.start()
-    #     # self.get_complaints()
-    #
-    # def progressbar_exc(self):
-    #     print(2)
-    #     th2 = threading.Thread(2, self.progressbar_exc())
-    #     th2.start()
 
     def save_mart(self):
         if self.rad_type_rising.isChecked():
@@ -299,48 +219,7 @@ class Ui_complaint_api_win(object):
             target_list.append('qna_origin')
 
         target = "%s" % ",".join(target_list)
-        th1 = threading.Thread(target=self.movie.start())
-        #self.movie.start()
-        th1.start()
-        temp = s_yy_start+s_mm_start
-        th = threading.Thread(target=get_complaint_data, args=(part, temp, target))
-        th.start()
-
-        th1.join()
-        th.join()
-
-        #self.movie.deleteLater()
-        # main_thread = threading.currentThread()
-        # for thread in threading.enumerate():
-        #     if thread is main_thread:
-        #         continue
-        #     thread.join()
-        #
-        # for thread in threading.enumerate():
-        #     print(thread.name, thread.is_alive())
-
-        #self.movie.deleteLater()
-        #get_complaint_data(part, s_yy_start + s_mm_start, target)
-
-        # self.progressBar.show()
-        # th = threading.Thread(target=self.loding_show)
-
-        #self.loding_show()
-        #th = threading.Thread(target=self.test)
-        # th2 = threading.Thread(target=get_complaint_data, args=(part, s_yy_start+s_mm_start, target))
-        # #get_complaint_data(part, s_yy_start + s_mm_start, target)
-        # # th = threading.Thread(target=self.test, args=[part, s_yy_start+s_mm_start, target])
-        # # th.run()
-        # th.join()
-        # th2.join()
-        # self.movie.deleteLater()
-
-        # self.lbl_prg_bar.show()
-        # self.worker = ChangeGif(self)
-        # self.worker.start()
-
-        print("get_complaints End")
-        #self.loding_hide()
+        get_complaint_data(part, s_yy_start+s_mm_start, target)
 
 
     def show_folders(self):
@@ -397,16 +276,6 @@ class Ui_complaint_api_win(object):
         for j in range(0, len(dftop_list)):
             self.tbl_dftop.setItem(j, 0, QTableWidgetItem(dftop_list[j]))
 
-    #     self.tbl_rising.cellClicked.connect(self.get_value)
-    #
-    #
-    # def get_value(self, row, column):
-    #     item = self.tbl_rising.item(row, column).text()
-    #     print(item)
-
-
-
-
 
 
     def retranslateUi(self, complaint_api_win):
@@ -460,75 +329,6 @@ class Ui_complaint_api_win(object):
         self.tbl_top.setSortingEnabled(True)
         item = self.tbl_top.horizontalHeaderItem(0)
         item.setText(_translate("complaint_api_win", "핵심 키워드"))
-
-
-    # def call_progressbar(self):
-    #
-    #     self.worker = WarkerThread()
-    #     self.worker.start()
-    #     self.worker.finished.connect(self.evt_worker_finished)
-    #     self.worker.update_progress.connect(self.evt_update_progress)
-    #
-    # def evt_worker_finished(self, emp):
-    #     QMessageBox.information(self, "Done!!", "End\n{}{}".format(emp["aa"], emp["bb"]))
-    #
-    # def evt_update_progress(self, val):
-    #     self.progressBar.setValue(val)
-
-
-# s = threading.Semaphore(3)
-# class prg_thread(threading.Thread):
-#     def __init__(self, pBar):
-#         super().__init__()
-#         self.pBar = pBar
-#
-#     def run(self):
-#         s.acquire()
-#         for v in range(1, 101):
-#             self.pBar.setValue(v)
-#             time.sleep(1)
-#         s.release()
-
-
-# class WarkerThread(QThread):
-#     update_progress = pyqtSignal(int)
-#     worker_complete = pyqtSignal(dict)
-#     def run_progressBar(self):
-#
-#         for i in range(20, 101, 20):
-#             #per = i + 1
-#             #self.progressBar.setValue(per)
-#             print('%%', i)
-#             time.sleep(2)
-#             self.update_progress.emit(i)
-#         self.worker_complete.emit({"aa":1, "bb":"bb", "cc":"ddd"})
-
-
-# def progressbar_load_start(self):
-#     print("probressbar!!!")
-#
-#     self.movie.start()
-#
-# def progressbar_load_end(self):
-#     time.sleep(1)
-#     self.movie.stop()
-
-    def loding_show(self):
-        # print("loding_show")
-       # self.lbl_prg_bar.show()
-        print("loding_showssssss")
-       # self.lbl_prg_bar.setMovie(self.movie)
-        th = threading.Thread(target=self.movie.start())
-        th.start()
-
-
-        #th = threading.Thread(target=self.movie.start())
-        #th.start()
-
-    def loding_hide(self):
-        print("loding_hide")
-        self.movie.deleteLater()
-        #self.lbl_prg_bar.hide()
 
 
 

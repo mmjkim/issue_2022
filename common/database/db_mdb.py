@@ -4,6 +4,7 @@ from common.config.filepassclass import *
 
 class DbUseAnalClass:
 
+
     MDB_FILE_NAME = "issue_db.accdb;"
     file_path = FilePathClass()
     db_name_path = file_path.get_data_path() + MDB_FILE_NAME  # "D:\issue_2022\data\issue_db.accdb;"
@@ -46,7 +47,7 @@ class DbUseAnalClass:
         self.cursor.execute(qry)
         self.conn.commit()
 #
-#udb = DbUseAnalClass()
+udb = DbUseAnalClass()
 # aa = ["insert into CONPLAIN_TO_DAY (YMD, TOPIC, RANK, COUNT) VALUES ('20221129', '테스트3', 2, 5);",
 #      "insert into CONPLAIN_TO_DAY (YMD, TOPIC, RANK, COUNT) VALUES ('20221130', '테스트4', 2, 5);",
 #      "insert into CONPLAIN_TO_DAY (YMD, TOPIC, RANK, COUNT) VALUES ('20221201', '테스트5', 2, 5);"]
@@ -59,8 +60,8 @@ class DbUseAnalClass:
 # #
 #udb.insert_one_qry(aa)
 #
-# aa = 'select * from CONPLAIN_TO_DAY'
-# udb.select_qry(aa)
+#aa = 'select * from CONPLAIN_TO_DAY'
+#udb.select_qry(aa)
 # # print(bb)
 
 #aa = 'DELETE FROM CONPLAIN_TO_DAY'

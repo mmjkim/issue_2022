@@ -10,17 +10,14 @@
 #
 
 import glob      # 파일들의 리스트를 뽑을 때 사용(*.*)
-import pandas as pd
 import os.path
-import datetime as dt
-import pandas as pd
-import numpy as np
-
 
 from common.config.filepassclass import *
 import common.config.apiinfo as apifp
 from common.function.funcCommon import *
-import anal_use_database as mdb
+from common.database import db_mdb as mdb
+
+
 def anal_mart_news(part):
 
     #파일 path
@@ -216,45 +213,82 @@ def set_dftopkw_data(files):
 
 
 
-#오늘의 민원 키워드 데이터 생성(MDB에 저장)
-def save_db_topic_data():
+#네이버 키워드 데이터 생성(MDB에 저장)
+def save_db_naver_data():
 
     #파일 path
     file_path = FilePathClass()
     dataPath = apifp.COMPLAIN_DATA_PATH_TOPIC
 
     # 데이타를 읽어서 df에 저장 (std_ymd, keyword, freq, rank=0)
-    temp = "{0}{1}\*.csv".format(file_path.get_raw_collect_path(), dataPath)
+    temp = "{0}\*네이버*.csv".format(file_path.get_raw_use_path())
 
     all_files = glob.glob(temp)
-
-    # print(all_files)
+    print(all_files)
     connect_db = mdb.DbUseAnalClass()
-    connect_db.delete_qry("DELETE FROM CONPLAIN_TO_DAY")
-    for filename in all_files:
-        temp = filename.split('_')
-        i = len(temp) - 1
-        # '수집년월' 컬럼 추가(파일명을 활용하여 기준년월 삽입)
-        ymd = str(os.path.basename(temp[i]).replace('.csv', ''))
+    connect_db.delete_qry("DELETE FROM NAVER_KEYWORD")
 
-        df_dis_use = pd.read_csv(filename, encoding="utf-8-sig")
-        insert_qry = "insert into CONPLAIN_TO_DAY (YMD, TOPIC, RANK, COUNT) VALUES ("
+    insert_qry = "insert into NAVER_KEYWORD (KEYWORD, YMD, VAL) VALUES ("
+    for i in range(0, len(all_files)):
+        filename = all_files[i] #.split('_')
         list_qry = []
+        #네이버 데이터 파일 읽기
+        df_temp = pd.read_csv(filename, encoding='euc-kr')
+        df_dis_use = df_temp[['keyword','Time','Value']]
+
+
         for row in df_dis_use.values.tolist():
             #print(type(row))
-            value_qry = "'" + str(ymd) + "', '"
+            value_qry = "'"
             value_qry += "', '".join(str(e) for e in row) + "'"
-            value_qry += ");"
+            value_qry += ");\n"
             list_qry.append(insert_qry + value_qry)
-
+           # print (insert_qry + value_qry)
 
         connect_db.insert_many_qry(list_qry)
 
-    #mdb.DbUseAnalClass.select_qry("select * from CONPLAIN_TO_DAY")
+    # 오늘의 민원 키워드 데이터 생성(MDB에 저장)
+    def save_db_topic_data():
+
+        # 파일 path
+        file_path = FilePathClass()
+        dataPath = apifp.COMPLAIN_DATA_PATH_TOPIC
+
+        # 데이타를 읽어서 df에 저장 (std_ymd, keyword, freq, rank=0)
+        temp = "{0}{1}\*.csv".format(file_path.get_raw_collect_path(), dataPath)
+
+        all_files = glob.glob(temp)
+
+        # print(all_files)
+        connect_db = mdb.DbUseAnalClass()
+        connect_db.delete_qry("DELETE FROM CONPLAIN_TO_DAY")
+        for filename in all_files:
+            temp = filename.split('_')
+            i = len(temp) - 1
+            # '수집년월' 컬럼 추가(파일명을 활용하여 기준년월 삽입)
+            ymd = str(os.path.basename(temp[i]).replace('.csv', ''))
+
+            df_dis_use = pd.read_csv(filename, encoding="utf-8-sig")
+            insert_qry = "insert into CONPLAIN_TO_DAY (YMD, TOPIC, RANK, COUNT) VALUES ("
+            list_qry = []
+            for row in df_dis_use.values.tolist():
+                # print(type(row))
+                value_qry = "'" + str(ymd) + "', '"
+                value_qry += "', '".join(str(e) for e in row) + "'"
+                value_qry += ");"
+                list_qry.append(insert_qry + value_qry)
+
+            connect_db.insert_many_qry(list_qry)
+
+
+# mdb.DbUseAnalClass.select_qry("select * from CONPLAIN_TO_DAY")
 # anal_mart_complaint('핵심')
 # anal_mart_news('경제')
 #save_db_topic_data()
 #connect_db = mdb.DbUseAnalClass()
-#df = connect_db.select_qry("select * from CONPLAIN_TO_DAY ")
+#df = connect_db.select_qry("select * from NAVER_KEYWORD ")
 
 #print(df)
+
+
+#save_db_naver_data()

@@ -98,7 +98,7 @@ def test(row_data):
     return html
 
 
-def c3chart_html_write(df_data):
+def c3chart_html_write(df_data, type):
 
 
     json_temp = df_data.to_json(orient="records")
@@ -115,7 +115,7 @@ def c3chart_html_write(df_data):
     keys_data = keys_data.replace("'ymd',", '')
     print("keys_data:", keys_data)
 
-    chart_type = 'line'
+    chart_type = type
     blable = 'false'
     bsub_chart = 'true'
     bzoom = 'true'
@@ -135,7 +135,6 @@ def c3chart_html_write(df_data):
     html += "    	var chart = c3.generate({                                                         \n"
     html += "  				bindto: '#chart',                                                             \n"
     html += "			    data: {                                                                       \n"
-
     html += "                     json : " + str_json_data + " , \n"
     html += "                     keys: { value: ["+ keys_data +"] },  \n"
     html += "					  type:'" + chart_type + "',  \n"
@@ -199,29 +198,29 @@ def c3chart_html_write(df_data):
 
 
 # 뉴스 데이터 그래프 전치리
-file_name = 'D:\\issue_2022\\data\\02_분석데이터\\뉴스_사회\\1차마트_사회.csv'
-df_dis_use = pd.read_csv(file_name)
-
-dfpt = pd.pivot_table(df_dis_use, index='keyword', columns='stdym', values='freq', fill_value=0)
-
-dfpt = dfpt.sort_values((202208), ascending=False)
-temp = dfpt.head(5)
-
-df_marge = pd.DataFrame()
-i = 0
-for key_word in temp.index.values:
-    df_temp = df_dis_use[df_dis_use['keyword'] == key_word]
-    df_data = df_temp[['stdym', 'freq']]
-    df_data = df_data.rename(columns={'stdym':'ymd', 'freq':key_word})
-    if i == 0 :
-       df_marge = df_data
-       i = 1
-    else:
-       df_marge = pd.merge(df_marge, df_data, how='outer', on='ymd')
-
-df_marge = df_marge.fillna(0)
-
-a = c3chart_html_write(df_marge)
-#print(a)
-
-
+# file_name = 'D:\\issue_2022\\data\\02_분석데이터\\뉴스_사회\\1차마트_사회.csv'
+# df_dis_use = pd.read_csv(file_name)
+#
+# dfpt = pd.pivot_table(df_dis_use, index='keyword', columns='stdym', values='freq', fill_value=0)
+#
+# dfpt = dfpt.sort_values((202208), ascending=False)
+# temp = dfpt.head(5)
+#
+# df_marge = pd.DataFrame()
+# i = 0
+# for key_word in temp.index.values:
+#     df_temp = df_dis_use[df_dis_use['keyword'] == key_word]
+#     df_data = df_temp[['stdym', 'freq']]
+#     df_data = df_data.rename(columns={'stdym':'ymd', 'freq':key_word})
+#     if i == 0 :
+#        df_marge = df_data
+#        i = 1
+#     else:
+#        df_marge = pd.merge(df_marge, df_data, how='outer', on='ymd')
+#
+# df_marge = df_marge.fillna(0)
+#
+# a = c3chart_html_write(df_marge)
+# #print(a)
+#
+#
