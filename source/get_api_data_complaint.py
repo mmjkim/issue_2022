@@ -86,7 +86,7 @@ def get_topN_keyword(std_ymd_fr, std_ymd_to, target):
     file_path = FilePathClass()
     analysis_date_fr = std_ymd_fr
     analysis_date_to = std_ymd_to
-    maxResult = apifp.COMPLAIN_MAX_ROW
+    maxResult = apifp.COMPLAIN_TOPN_MAX_ROW
 
     url = apifp.COMPLAIN_API_URL + apifp.COMPLAIN_API_URL_TOP + '?serviceKey=' + apifp.COMPLAIN_API_KEY + '&resultCount=' + maxResult + '&target=' + target + '&dateFrom=' + analysis_date_fr + '&dateTo=' + analysis_date_to
     print('URL: ', url)
@@ -311,7 +311,7 @@ def get_similarInfo(keyword):
 def get_wd_cloud_info(keyword, std_ymd_fr, std_ymd_to, target):
 
     file_path = FilePathClass()
-    maxResult = '10' #apifp.COMPLAIN_MAX_ROW
+    maxResult = '50' #apifp.COMPLAIN_MAX_ROW
     analysis_date_fr = std_ymd_fr
     analysis_date_to = std_ymd_to
 

@@ -5,8 +5,22 @@ from view.frm_complaint_api_s import Ui_complaint_api_win
 from view.frm_anal_keyword_compare_s import Ui_Anal_Dialog
 from view.frm_view_news_s import Ui_frmViewNews
 from view.frm_view_lda_s import Ui_Dialog
+from view.frm_view_complaints_s import Ui_frmViewComplaints
+from view.frm_view_relate_s import Ui_frmComplaintWC
 
 class Ui_MainWindow(object):
+    def view_wc_window(self):
+        self.view_wc_win = QtWidgets.QDialog()
+        self.view_wc_ui = Ui_frmComplaintWC()
+        self.view_wc_ui.setupUi(self.view_wc_win)
+        self.view_wc_win.show()
+
+    def view_complaint_window(self):
+        self.view_com_win = QtWidgets.QDialog()
+        self.view_com_ui = Ui_frmViewComplaints()
+        self.view_com_ui.setupUi(self.view_com_win)
+        self.view_com_win.show()
+
     def lda_window(self):
         self.lda_win = QtWidgets.QDialog()
         self.lda_ui = Ui_Dialog()
@@ -137,8 +151,9 @@ class Ui_MainWindow(object):
         self.actionNews.triggered.connect(self.collect_news_window)
         self.actionAnal.triggered.connect(self.anal_window)
         self.actionVisual.triggered.connect(self.visual_window)
+        self.actionVisual2.triggered.connect(self.view_complaint_window)
+        self.actionVisual3.triggered.connect(self.view_wc_window)
         self.actionVisual4.triggered.connect(self.lda_window)
-
 
         self.label = QtWidgets.QLabel(MainWindow)
         self.label.setGeometry(QtCore.QRect(12, 30, 1000, 720))
@@ -159,8 +174,8 @@ class Ui_MainWindow(object):
         self.actionNews.setText(_translate("MainWindow", "News"))
         self.actionAnal.setText(_translate("MainWindow", "Analysis"))
         self.actionVisual.setText(_translate("MainWindow", "News"))
-        self.actionVisual2.setText(_translate("MainWindow", "Complaints"))
-        self.actionVisual3.setText(_translate("MainWindow", "Naver"))
+        self.actionVisual2.setText(_translate("MainWindow", "Complaints-1"))
+        self.actionVisual3.setText(_translate("MainWindow", "Complaints-2"))
         self.actionVisual4.setText(_translate("MainWindow", "LDA"))
 
 

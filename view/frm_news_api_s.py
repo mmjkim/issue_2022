@@ -8,7 +8,7 @@ from datetime import datetime
 from source.get_api_data_news import *
 import common.config.apiinfo as apifp
 from common.config.filepassclass import *
-from source.save_anal_mart import anal_mart_news
+# from source.save_anal_mart import anal_mart_news
 
 
 class Ui_news_collect_win(object):

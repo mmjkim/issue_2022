@@ -257,6 +257,7 @@ class Ui_frmViewNews(object):
             df.head(int(self.txt_top_n.text())).T.plot.bar(figsize=(10, 5), alpha=0.5)
             plt.xticks(rotation=15)
             plt.legend(df.head(int(self.txt_top_n.text())).T.columns)
+            plt.ylim([0, df.values.astype(int).max() + 1000])
             plt.title('월별 키워드 빈도수 추이')
             plt.savefig('graph_img.png', dpi=100)
             self.label.setPixmap(QtGui.QPixmap('graph_img.png'))
