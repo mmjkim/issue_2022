@@ -405,8 +405,9 @@ class Ui_frmViewComplaints(object):
         # 민원 핵심
         elif self.tabWidget.currentIndex() == 2:
             df = df[[self.sort_yy_2.currentText() + self.sort_mm_2.currentText()]]
-            df = df.fillna(0)
-            df = df.apply(lambda x: x + 0.000001)
+            df = df.dropna(axis = 0)
+            # df = df.fillna(0)
+            # df = df.apply(lambda x: x + 0.000001)
             df.columns = df.columns.astype(str) + '01'
             df.columns = pd.to_datetime(df.columns).date
             self.label_3.clear()
