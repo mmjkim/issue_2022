@@ -181,7 +181,7 @@ class Ui_frmViewNaver(object):
         for c in range(len(df.columns)):
             for i in range(len(df)):
                 self.tbl_naver.setItem(i, c, QTableWidgetItem(str(df[df.columns[c]][i])))
-
+        df = df.rename(columns={'기준일자': 'ymd'})
         return df
 
 
