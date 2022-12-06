@@ -113,21 +113,24 @@ def get_overlap_keyword(df_source_data, si_target_data, type_info):
     return df_return
 
 
-
+# 동시출현 키워드 테이블 출력
 def keyword_pivot(df_data,save_file_name):
-
     data_p = df_data[df_data['type'] == '뉴스_정치']
     data_s = df_data[df_data['type'] == '뉴스_사회']
     data_e = df_data[df_data['type'] == '뉴스_경제']
 
+    # 데이터 프레임 병합
     dataJoin = pd.merge(data_p, data_s, how='outer', on=['keyword'])
     dataJoin1 = pd.merge(dataJoin, data_e, how='outer', on=['keyword'])
 
+    # 컬럼명 변경
     dataJoin1.columns = ['keyword', 'part_p', '뉴스_정치', 'part_s', '뉴스_사회', 'part_e', '뉴스_경제']
+    # 컬럼 선택
     dataAnal = dataJoin1[['keyword', '뉴스_정치', '뉴스_사회', '뉴스_경제']]
+    # 결측치 대체
     dataAnal = dataAnal.fillna(('-'))
 
-    print(dataAnal)
+    # print(dataAnal)
 
     # 파일저장
     #dataAnal = dataAnal.sort_values(by=['keyword'])
