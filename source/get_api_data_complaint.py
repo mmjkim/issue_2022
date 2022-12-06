@@ -13,7 +13,7 @@ from urllib.parse import quote # 문자열을 URL encoding
 from urllib.parse import unquote
 
 from common.function.funcCommon import *
-
+from common.database import db_mdb as mdb
 
 #-----------------------------------------------------
 #  공공데이터 포털에서 api i/f 통한 민원 데이터 가져오기
@@ -53,6 +53,12 @@ def get_risting_keyword(std_ymd, target):
         df1.to_csv(route_csv, index=False, encoding="utf-8-sig")
         df1.to_json(route, orient='table')
 
+        # ------------ 마트 적재 데이타 Log 저장 -------------------------
+        save_log = mdb.DbUseAnalClass()
+        now = datetime.now()
+        # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
+        save_log.mart_log_save(now.strftime('%Y-%m-%d %H:%M%S'),'민원', route, analysis_date, analysis_date, len(df1), 'API', '')
+
         print('The End!!!')
 
     except requests.exceptions.Timeout as errd:  # 요청 시간 초과
@@ -67,6 +73,9 @@ def get_risting_keyword(std_ymd, target):
     except requests.exceptions.RequestException as erra:  # 요청에 의해 명시적으로 발생한 모든 예외에서 상속
         print("AnyException : ", erra)
 
+    except Exception:
+        import traceback
+        traceback.print_exc()
 
     return df1
 
@@ -110,6 +119,14 @@ def get_topN_keyword(std_ymd_fr, std_ymd_to, target):
         df1.to_csv(route_csv, index=False, encoding="utf-8-sig")
         df1.to_json(route, orient='table')
 
+
+        # ------------ 마트 적재 데이타 Log 저장 -------------------------
+        save_log = mdb.DbUseAnalClass()
+        now = datetime.now()
+        # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
+        save_log.mart_log_save(now.strftime('%Y-%m-%d %H:%M%S'),'민원', route, analysis_date_fr, analysis_date_to, len(df1), 'API', '')
+
+
         print('The End!!!')
 
     except requests.exceptions.Timeout as errd:
@@ -124,6 +141,9 @@ def get_topN_keyword(std_ymd_fr, std_ymd_to, target):
     except requests.exceptions.RequestException as erra:
         print("AnyException : ", erra)
 
+    except Exception:
+        import traceback
+        traceback.print_exc()
 
     return df1
 
@@ -166,6 +186,13 @@ def get_today_topic_keyword(std_ymd,  target):
         df1.to_csv(route_csv, index=False, encoding="utf-8-sig")
         df1.to_json(route, orient='table')
 
+
+        # ------------ 마트 적재 데이타 Log 저장 -------------------------
+        save_log = mdb.DbUseAnalClass()
+        now = datetime.now()
+        # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
+        save_log.mart_log_save(now.strftime('%Y-%m-%d %H:%M%S'),'민원', route, analysis_date, analysis_date, len(df1), 'API', '')
+
         print('The End!!!')
 
     except requests.exceptions.Timeout as errd:
@@ -181,6 +208,9 @@ def get_today_topic_keyword(std_ymd,  target):
         print("AnyException : ", erra)
 
 
+    except Exception:
+        import traceback
+        traceback.print_exc()
     return df1
 
 
@@ -227,6 +257,13 @@ def get_dfTopN_keyword(std_ymd,  target):
         df1.to_csv(route_csv, index=False, encoding="utf-8-sig")
         df1.to_json(route, orient='table')
 
+        # ------------ 마트 적재 데이타 Log 저장 -------------------------
+        save_log = mdb.DbUseAnalClass()
+        now = datetime.now()
+        # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
+        save_log.mart_log_save(now.strftime('%Y-%m-%d %H:%M%S'),'민원', route, analysis_date, analysis_date, len(df1), 'API', '')
+
+
         print('The End!!!')
 
     except requests.exceptions.Timeout as errd:
@@ -242,6 +279,9 @@ def get_dfTopN_keyword(std_ymd,  target):
         print("AnyException : ", erra)
 
 
+    except Exception:
+        import traceback
+        traceback.print_exc()
     return df1
 
 
@@ -283,6 +323,13 @@ def get_similarInfo(keyword):
         df1.to_csv(route_csv, index=False, encoding="utf-8-sig")
         df1.to_json(route, orient='table')
 
+        # ------------ 마트 적재 데이타 Log 저장 -------------------------
+        save_log = mdb.DbUseAnalClass()
+        now = datetime.now()
+        # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
+        save_log.mart_log_save(now.strftime('%Y-%m-%d %H:%M%S'),'민원', route, '', '', len(df1), '키워드', keyword)
+
+
         print('The End!!!')
 
     except requests.exceptions.Timeout as errd:
@@ -298,6 +345,9 @@ def get_similarInfo(keyword):
         print("AnyException : ", erra)
 
 
+    except Exception:
+        import traceback
+        traceback.print_exc()
     return df1
 
 
@@ -340,6 +390,13 @@ def get_wd_cloud_info(keyword, std_ymd_fr, std_ymd_to, target):
         df1.to_csv(route_csv, index=False, encoding="utf-8-sig")
         df1.to_json(route, orient='table')
 
+
+        # ------------ 마트 적재 데이타 Log 저장 -------------------------
+        save_log = mdb.DbUseAnalClass()
+        now = datetime.now()
+        # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
+        save_log.mart_log_save(now.strftime('%Y-%m-%d %H:%M%S'),'민원', route, analysis_date_fr, analysis_date_to, len(df1), '키워드', keyword)
+
         print('The End!!!')
 
     except requests.exceptions.Timeout as errd:
@@ -354,6 +411,9 @@ def get_wd_cloud_info(keyword, std_ymd_fr, std_ymd_to, target):
     except requests.exceptions.RequestException as erra:
         print("AnyException : ", erra)
 
+    except Exception:
+        import traceback
+        traceback.print_exc()
 
     return df1
 

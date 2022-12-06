@@ -6,7 +6,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QValidator, QIntValidator
 from PyQt5.QtWidgets import QTableWidgetItem, QCheckBox
-from pyqt_checkbox_table_widget.checkBoxTableWidget import CheckBoxTableWidget
+#from pyqt_checkbox_table_widget.checkBoxTableWidget import CheckBoxTableWidget
 
 import matplotlib.pyplot as plt
 import matplotlib

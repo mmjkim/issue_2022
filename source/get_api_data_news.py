@@ -11,6 +11,10 @@ import common.config.apiinfo as apifp
 
 from common.function.funcCommon import *
 
+from common.database import db_mdb as mdb
+from datetime import  datetime
+
+
 # -----------------------------------------------------
 #  공공데이터 포덜에서 api i/f 통한 뉴스 데이터 uuid 가져오기
 #  param :
@@ -57,55 +61,57 @@ def get_news_uuid_list(psPart):
 #  return :
 #-----------------------------------------------------
 def get_news(uddi, part, day):
+    try :
+        df_uddi = uddi
 
-    df_uddi = uddi
+        get_uddi = df_uddi[(df_uddi['part'] == part) & (df_uddi['date'] == day)]
+        get_data = get_uddi[['uddi', 'date']]
 
-    # if day == 'ALL':
-    #     get_uddi = df_uddi[(df_uddi['part'] == part)]
-    #     get_data = get_uddi[['uddi', 'date']]
-    #     #list_day = df[(df['part'] == psPart)]['date']
-    # else:
-    #     get_uddi = df_uddi[(df_uddi['part'] == part) & (df_uddi['date'] == day)]
-    #     get_data = get_uddi[['uddi', 'date']]
+        #파일 path
+        file_path = FilePathClass()
 
+        #분야별 데이터 저장 path
+        if part == '정치':
+            dataPath = apifp.NEWS_DATA_PATH_POLITICS
+        elif part == '경제':
+            dataPath = apifp.NEWS_DATA_PATH_ECONOMY
+        elif part == '사회':
+            dataPath = apifp.NEWS_DATA_PATH_SOCIETY
 
-    get_uddi = df_uddi[(df_uddi['part'] == part) & (df_uddi['date'] == day)]
-    get_data = get_uddi[['uddi', 'date']]
+        #분야별 데이터 저장 full path
+        get_news_data_path = file_path.get_raw_collect_path() +  dataPath + "//"
 
-    #파일 path
-    file_path = FilePathClass()
+        #폴더 존재 여부 확인하여 없으면 폴더 생성
+        if file_path.is_path_exist_check(get_news_data_path) == False:
+           file_path.make_path(get_news_data_path)
 
-    #분야별 데이터 저장 path
-    if part == '정치':
-        dataPath = apifp.NEWS_DATA_PATH_POLITICS
-    elif part == '경제':
-        dataPath = apifp.NEWS_DATA_PATH_ECONOMY
-    elif part == '사회':
-        dataPath = apifp.NEWS_DATA_PATH_SOCIETY
+        #uuid 값으로 api 호출 후 데이터를 csv로 저장
+        for index, row in get_data.iterrows():
 
-    #분야별 데이터 저장 full path
-    get_news_data_path = file_path.get_raw_collect_path() +  dataPath + "//"
+            url = apifp.NEWS_API_URL + row['uddi'] + '?age=1&perPage=200&serviceKey=' + apifp.NEWS_API_KEY
+            url = url.replace("['", '')
+            url = url.replace("']", '')
 
-    #폴더 존재 여부 확인하여 없으면 폴더 생성
-    if file_path.is_path_exist_check(get_news_data_path) == False:
-       file_path.make_path(get_news_data_path)
+            res = urlopen(url).read()
+            resJson = json.loads(res)
+            df = json_normalize(resJson.get('data'))
+            # print("---")
+            route = get_news_data_path + "{0}_{1}.csv".format(dataPath, row['date'])
+            df.to_csv(route, index=False, encoding="utf-8-sig")
 
-    #uuid 값으로 api 호출 후 데이터를 csv로 저장
-    for index, row in get_data.iterrows():
+            #------------ 마트 적재 데이타 Log 저장 -------------------------
+            save_log = mdb.DbUseAnalClass()
+            now = datetime.now()
+            # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
+            save_log.mart_log_save(now.strftime('%Y-%m-%d %H:%M%S'),'뉴스' ,route, row['date'], row['date'],  len(df), 'API', '')
 
-        url = apifp.NEWS_API_URL + row['uddi'] + '?age=1&perPage=200&serviceKey=' + apifp.NEWS_API_KEY
-        url = url.replace("['", '')
-        url = url.replace("']", '')
+    except:
+        print("get_news -> Error")
 
-        res = urlopen(url).read()
-        resJson = json.loads(res)
-        df = json_normalize(resJson.get('data'))
-        # print("---")
-        route = get_news_data_path + "{0}_{1}.csv".format(dataPath, row['date'])
-        df.to_csv(route, index=False, encoding="utf-8-sig")
-
-
+ #uuid 값 가져오기
 def get_news_data(part, day1, day2):
+
+
     if part == '전체':
         list_part = ['정치', '사회', '경제']
     else:
@@ -116,9 +122,10 @@ def get_news_data(part, day1, day2):
                  datetime.strptime(day2+"01", "%Y%m%d"),
                  getMonthGap(datetime.strptime(day1+"01", "%Y%m%d"),
                              datetime.strptime(day2+"01", "%Y%m%d")))
-
+    #print("get_news_uuid_list--------->")
     for i in list_part:
         uddi = get_news_uuid_list(i)
+       # print("get_news_uuid_list--------->", uddi)
         for j in date_list:
             get_news(uddi, i, j)
 
@@ -126,4 +133,4 @@ def get_news_data(part, day1, day2):
 # aa = get_news_uuid_list('경제')
 # bb = get_news(aa, '경제', '20220630')
 
-# test('전체', '202109', '202209')
+#get_news_data('전체', '202209', '202212')
