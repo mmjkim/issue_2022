@@ -2,7 +2,6 @@
 # 수집된 데이타를 하나의 파일로 저장
 #-----------------------------------------------------------
 
-
 #
 # 디렉토리안에 있는 파일들의 데이타를 하나로 합치기
 # parameter : filePath = 파일 Path, colList = 컬럼 리스트
@@ -247,38 +246,38 @@ def save_db_naver_data():
 
         connect_db.insert_many_qry(list_qry)
 
-    # 오늘의 민원 키워드 데이터 생성(MDB에 저장)
-    def save_db_topic_data():
+# 오늘의 민원 키워드 데이터 생성(MDB에 저장)
+def save_db_topic_data():
 
-        # 파일 path
-        file_path = FilePathClass()
-        dataPath = apifp.COMPLAIN_DATA_PATH_TOPIC
+    # 파일 path
+    file_path = FilePathClass()
+    dataPath = apifp.COMPLAIN_DATA_PATH_TOPIC
 
-        # 데이타를 읽어서 df에 저장 (std_ymd, keyword, freq, rank=0)
-        temp = "{0}{1}\*.csv".format(file_path.get_raw_collect_path(), dataPath)
+    # 데이타를 읽어서 df에 저장 (std_ymd, keyword, freq, rank=0)
+    temp = "{0}{1}\*.csv".format(file_path.get_raw_collect_path(), dataPath)
 
-        all_files = glob.glob(temp)
+    all_files = glob.glob(temp)
 
-        # print(all_files)
-        connect_db = mdb.DbUseAnalClass()
-        connect_db.delete_qry("DELETE FROM CONPLAIN_TO_DAY")
-        for filename in all_files:
-            temp = filename.split('_')
-            i = len(temp) - 1
-            # '수집년월' 컬럼 추가(파일명을 활용하여 기준년월 삽입)
-            ymd = str(os.path.basename(temp[i]).replace('.csv', ''))
+    # print(all_files)
+    connect_db = mdb.DbUseAnalClass()
+    connect_db.delete_qry("DELETE FROM CONPLAIN_TO_DAY")
+    for filename in all_files:
+        temp = filename.split('_')
+        i = len(temp) - 1
+        # '수집년월' 컬럼 추가(파일명을 활용하여 기준년월 삽입)
+        ymd = str(os.path.basename(temp[i]).replace('.csv', ''))
 
-            df_dis_use = pd.read_csv(filename, encoding="utf-8-sig")
-            insert_qry = "insert into CONPLAIN_TO_DAY (YMD, TOPIC, RANK, COUNT) VALUES ("
-            list_qry = []
-            for row in df_dis_use.values.tolist():
-                # print(type(row))
-                value_qry = "'" + str(ymd) + "', '"
-                value_qry += "', '".join(str(e) for e in row) + "'"
-                value_qry += ");"
-                list_qry.append(insert_qry + value_qry)
+        df_dis_use = pd.read_csv(filename, encoding="utf-8-sig")
+        insert_qry = "insert into CONPLAIN_TO_DAY (YMD, TOPIC, RANK, COUNT) VALUES ("
+        list_qry = []
+        for row in df_dis_use.values.tolist():
+            # print(type(row))
+            value_qry = "'" + str(ymd) + "', '"
+            value_qry += "', '".join(str(e) for e in row) + "'"
+            value_qry += ");"
+            list_qry.append(insert_qry + value_qry)
 
-            connect_db.insert_many_qry(list_qry)
+        connect_db.insert_many_qry(list_qry)
 
 
 # mdb.DbUseAnalClass.select_qry("select * from CONPLAIN_TO_DAY")
@@ -291,4 +290,6 @@ def save_db_naver_data():
 #print(df)
 
 
-#save_db_naver_data()
+# save_db_naver_data()
+
+

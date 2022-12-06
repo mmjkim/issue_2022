@@ -20,6 +20,7 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(1324, 868)
+        Dialog.setMaximumSize(1324, 868)
         self.group1 = QtWidgets.QGroupBox(Dialog)
         self.group1.setGeometry(QtCore.QRect(7, 10, 251, 191))
         self.group1.setObjectName("group1")

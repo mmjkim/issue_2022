@@ -111,9 +111,9 @@ def c3chart_html_write(df_data, type):
     str_json_categories = json.dumps(categories,ensure_ascii=False, indent=4)
 
     keys_data = "'" + "','".join(df_data.columns.values) + "'"
-    print(keys_data)
+    # print(keys_data)
     keys_data = keys_data.replace("'ymd',", '')
-    print("keys_data:", keys_data)
+    # print("keys_data:", keys_data)
 
     chart_type = type
     blable = 'false'
@@ -133,7 +133,8 @@ def c3chart_html_write(df_data, type):
     html += "    <div id='chart'></div>                                                             \n"
     html += "    <script type='text/javascript'>                                                    \n"
     html += "    	var chart = c3.generate({                                                         \n"
-    html += "  				bindto: '#chart',                                                             \n"
+    html += "  				bindto: '#chart',  " \
+            "               size: { height: 550, width: 940 },                                                           \n"
     html += "			    data: {                                                                       \n"
     html += "                     json : " + str_json_data + " , \n"
     html += "                     keys: { value: ["+ keys_data +"] },  \n"
@@ -142,7 +143,8 @@ def c3chart_html_write(df_data, type):
     html += "               },  \n"
     html += "				axis: {                                                                       \n"
     html += "					     x: {                                                                     \n"
-    html += "					         type: 'category',                                                    \n"
+    html += "					         type: 'category',    " \
+            "                            tick: { rotate: 50, multiline: false },                                                \n"
     html += "					         categories: "+ str_json_categories  +"   \n"
     html += "					        }                                                                     \n"
     html += "				},  \n"

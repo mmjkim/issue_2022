@@ -7,8 +7,15 @@ from view.frm_view_news_s import Ui_frmViewNews
 from view.frm_view_lda_s import Ui_Dialog
 from view.frm_view_complaints_s import Ui_frmViewComplaints
 from view.frm_view_relate_s import Ui_frmComplaintWC
+from view.frm_view_naver_s import Ui_frmViewNaver
 
 class Ui_MainWindow(object):
+    def view_naver_window(self):
+        self.view_naver_win = QtWidgets.QDialog()
+        self.view_naver_ui = Ui_frmViewNaver()
+        self.view_naver_ui.setupUi(self.view_naver_win)
+        self.view_naver_win.show()
+
     def view_wc_window(self):
         self.view_wc_win = QtWidgets.QDialog()
         self.view_wc_ui = Ui_frmComplaintWC()
@@ -131,6 +138,12 @@ class Ui_MainWindow(object):
         self.actionVisual4.setFont(font)
         self.actionVisual4.setObjectName("actionVisual4")
 
+        self.actionVisual5 = QtWidgets.QAction(MainWindow)
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        self.actionVisual5.setFont(font)
+        self.actionVisual5.setObjectName("actionVisual5")
+
         self.menu_complaint.addAction(self.actionComplaint)
         self.menu_news.addAction(self.actionNews)
         self.menu_anal.addAction(self.actionAnal)
@@ -138,6 +151,7 @@ class Ui_MainWindow(object):
         self.menu_visual.addAction(self.actionVisual2)
         self.menu_visual.addAction(self.actionVisual3)
         self.menu_visual.addAction(self.actionVisual4)
+        self.menu_visual.addAction(self.actionVisual5)
         self.menubar.addAction(self.menu_complaint.menuAction())
         self.menubar.addAction(self.menu_news.menuAction())
         self.menubar.addAction(self.menu_anal.menuAction())
@@ -154,6 +168,7 @@ class Ui_MainWindow(object):
         self.actionVisual2.triggered.connect(self.view_complaint_window)
         self.actionVisual3.triggered.connect(self.view_wc_window)
         self.actionVisual4.triggered.connect(self.lda_window)
+        self.actionVisual5.triggered.connect(self.view_naver_window)
 
         self.label = QtWidgets.QLabel(MainWindow)
         self.label.setGeometry(QtCore.QRect(12, 30, 1000, 720))
@@ -177,6 +192,7 @@ class Ui_MainWindow(object):
         self.actionVisual2.setText(_translate("MainWindow", "Complaints-1"))
         self.actionVisual3.setText(_translate("MainWindow", "Complaints-2"))
         self.actionVisual4.setText(_translate("MainWindow", "LDA"))
+        self.actionVisual5.setText(_translate("MainWindow", "Naver"))
 
 
 if __name__ == "__main__":
