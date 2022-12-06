@@ -6,7 +6,7 @@ warnings.filterwarnings(action='ignore')
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5 import QtWebEngineWidgets
-from PyQt5.QtWidgets import QTableWidgetItem
+from PyQt5.QtWidgets import QTableWidgetItem, QAbstractItemView
 
 from common.config.filepassclass import FilePathClass
 from source.get_chart_data import *
@@ -130,6 +130,10 @@ class Ui_frmViewNaver(object):
         self.btn_search.clicked.connect(self.show_table)
         self.btn_print.clicked.connect(self.show_graph)
 
+        self.tbl_naver.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.tbl_naver.horizontalHeader().setStyleSheet(
+            "QHeaderView::section {background-color:#404040;color:#FFFFFF;}")
+
 
     def show_graph(self):
         df = self.show_table()
@@ -171,6 +175,7 @@ class Ui_frmViewNaver(object):
 
         self.tbl_naver.setRowCount(len(df))
         self.tbl_naver.setColumnCount(len(df.columns))
+        df = df.rename(columns={'ymd':'기준일자'})
         self.tbl_naver.setHorizontalHeaderLabels(df.columns)
 
         for c in range(len(df.columns)):

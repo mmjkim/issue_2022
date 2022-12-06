@@ -166,7 +166,7 @@ class Ui_frmComplaintWC(object):
 
     def retranslateUi(self, frmComplaintWC):
         _translate = QtCore.QCoreApplication.translate
-        frmComplaintWC.setWindowTitle(_translate("frmComplaintWC", "민원 연관어 시각화"))
+        frmComplaintWC.setWindowTitle(_translate("frmComplaintWC", "민원 연관어 분석"))
         self.groupBox.setTitle(_translate("frmComplaintWC", "  Word Cloud 1  "))
         self.label.setText(_translate("frmComplaintWC", ""))
         self.groupBox_2.setTitle(_translate("frmComplaintWC", "  Word Cloud 2  "))

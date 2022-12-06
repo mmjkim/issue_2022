@@ -351,7 +351,7 @@ class Ui_frmViewNews(object):
 
     def retranslateUi(self, frmViewNews):
         _translate = QtCore.QCoreApplication.translate
-        frmViewNews.setWindowTitle(_translate("frmViewNews", "키워드 시각화"))
+        frmViewNews.setWindowTitle(_translate("frmViewNews", "뉴스 키워드 시각화"))
         self.group1.setTitle(_translate("frmViewNews", " [ 분석 ] "))
         self.label_5.setText(_translate("frmViewNews", "~"))
         self.label_6.setText(_translate("frmViewNews", "분석기간: "))

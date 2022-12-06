@@ -114,6 +114,12 @@ class Ui_MainWindow(object):
         self.actionAnal.setFont(font)
         self.actionAnal.setObjectName("actionAnal")
 
+        self.actionAnal2 = QtWidgets.QAction(MainWindow)
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        self.actionAnal2.setFont(font)
+        self.actionAnal2.setObjectName("actionAnal2")
+
         self.actionVisual = QtWidgets.QAction(MainWindow)
         font = QtGui.QFont()
         font.setPointSize(11)
@@ -132,12 +138,6 @@ class Ui_MainWindow(object):
         self.actionVisual3.setFont(font)
         self.actionVisual3.setObjectName("actionVisual3")
 
-        self.actionVisual4 = QtWidgets.QAction(MainWindow)
-        font = QtGui.QFont()
-        font.setPointSize(11)
-        self.actionVisual4.setFont(font)
-        self.actionVisual4.setObjectName("actionVisual4")
-
         self.actionVisual5 = QtWidgets.QAction(MainWindow)
         font = QtGui.QFont()
         font.setPointSize(11)
@@ -147,10 +147,10 @@ class Ui_MainWindow(object):
         self.menu_complaint.addAction(self.actionComplaint)
         self.menu_news.addAction(self.actionNews)
         self.menu_anal.addAction(self.actionAnal)
+        self.menu_anal.addAction(self.actionAnal2)
         self.menu_visual.addAction(self.actionVisual)
         self.menu_visual.addAction(self.actionVisual2)
         self.menu_visual.addAction(self.actionVisual3)
-        self.menu_visual.addAction(self.actionVisual4)
         self.menu_visual.addAction(self.actionVisual5)
         self.menubar.addAction(self.menu_complaint.menuAction())
         self.menubar.addAction(self.menu_news.menuAction())
@@ -164,10 +164,10 @@ class Ui_MainWindow(object):
 
         self.actionNews.triggered.connect(self.collect_news_window)
         self.actionAnal.triggered.connect(self.anal_window)
+        self.actionAnal2.triggered.connect(self.lda_window)
         self.actionVisual.triggered.connect(self.visual_window)
         self.actionVisual2.triggered.connect(self.view_complaint_window)
         self.actionVisual3.triggered.connect(self.view_wc_window)
-        self.actionVisual4.triggered.connect(self.lda_window)
         self.actionVisual5.triggered.connect(self.view_naver_window)
 
         self.label = QtWidgets.QLabel(MainWindow)
@@ -187,12 +187,12 @@ class Ui_MainWindow(object):
         self.menu_visual.setTitle(_translate("MainWindow", "시각화"))
         self.actionComplaint.setText(_translate("MainWindow", "Complaint"))
         self.actionNews.setText(_translate("MainWindow", "News"))
-        self.actionAnal.setText(_translate("MainWindow", "Analysis"))
-        self.actionVisual.setText(_translate("MainWindow", "News"))
-        self.actionVisual2.setText(_translate("MainWindow", "Complaints-1"))
-        self.actionVisual3.setText(_translate("MainWindow", "Complaints-2"))
-        self.actionVisual4.setText(_translate("MainWindow", "LDA"))
-        self.actionVisual5.setText(_translate("MainWindow", "Naver"))
+        self.actionAnal.setText(_translate("MainWindow", "키워드 분석"))
+        self.actionAnal2.setText(_translate("MainWindow", "LDA"))
+        self.actionVisual.setText(_translate("MainWindow", "뉴스 현황"))
+        self.actionVisual2.setText(_translate("MainWindow", "민원 현황"))
+        self.actionVisual3.setText(_translate("MainWindow", "민원 연관어 현황"))
+        self.actionVisual5.setText(_translate("MainWindow", "Naver 검색어"))
 
 
 if __name__ == "__main__":
