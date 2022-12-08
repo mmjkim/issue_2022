@@ -4,7 +4,7 @@ import warnings # 경고 메시지 무시
 warnings.filterwarnings(action='ignore')
 from konlpy.tag import Mecab # 형태소 분석기
 #경로 픽스
-mecab = Mecab(dicpath=r"C:\mecab\mecab-ko-dic")
+mecab = Mecab(dicpath=r"C:\\mecab\\mecab-ko-dic")
 # 작업 프로세스 시각화
 from tqdm import tqdm
 # 문자열 처리를 위한 정규표현식 패키지
