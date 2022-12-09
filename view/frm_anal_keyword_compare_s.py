@@ -449,17 +449,19 @@ class Ui_Anal_Dialog(object):
         pw_element = dr.find_element(By.ID, 'login-user-password')
         pw_element.send_keys(apifp.BIGKINDS_PW)
         pw_element.send_keys(Keys.ENTER)
+        # 로그인창 닫기
+        time.sleep(1)
         modal_content = dr.find_element(By.XPATH, '//*[@id="login-modal"]/div')
         modal_content.click()
 
         # 검색 키워드
-        anal_word = self.txt_anal_word.toPlainText().replace(" ", "")
+        anal_word = self.txt_anal_word.toPlainText().replace(", ", ",")
         anal_word = anal_word.split(',')
 
         # 데이터 수집
         for i in anal_word:
             # 키워드 입력
-            input_element = dr.find_element(By.ID, 'total-search-key')
+            input_element = dr.find_element(By.XPATH, '//*[@id="total-search-key"]')
             input_element.send_keys(Keys.CONTROL + "a")
             input_element.send_keys(Keys.DELETE)
             input_element.send_keys(i)
@@ -607,21 +609,21 @@ class Ui_Anal_Dialog(object):
 
         if part == '네이버' :
             #네이버
+            self.tbl_naver.setRowCount(len(data_list_naver))
             for j in range(0, len(data_list_naver)):
-                self.tbl_naver.insertRow(j)
                 self.tbl_naver.setItem(j, 0, QTableWidgetItem(data_list_naver[j]))
         elif part == '크롤링':
+            self.tbl_news.setRowCount(len(data_list_news))
             for j in range(0, len(data_list_news)):
-                self.tbl_news.insertRow(j)
                 self.tbl_news.setItem(j, 0, QTableWidgetItem(data_list_news[j]))
         else:
             #민원_유사사례
+            self.tbl_complain_simil.setRowCount(len(data_list_simil))
             for j in range(0, len(data_list_simil)):
-                self.tbl_complain_simil.insertRow(j)
                 self.tbl_complain_simil.setItem(j, 0, QTableWidgetItem(data_list_simil[j]))
             #민원_연관어
+            self.tbl_complain_wdcloud.setRowCount(len(data_list_wdcloud))
             for j in range(0, len(data_list_wdcloud)):
-                self.tbl_complain_wdcloud.insertRow(j)
                 self.tbl_complain_wdcloud.setItem(j, 0, QTableWidgetItem(data_list_wdcloud[j]))
 
 

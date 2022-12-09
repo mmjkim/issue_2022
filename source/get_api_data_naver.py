@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from pandas import json_normalize
 from common.config.filepassclass import *
 import common.config.apiinfo as apifp
-
+from source.save_anal_mart import *
 
 def naver_trend_search(std_ymd_fr, std_ymd_to, keys):
     from urllib import request
@@ -76,6 +76,8 @@ def naver_trend_search(std_ymd_fr, std_ymd_to, keys):
     savefile = "{0}/{1}_{2}.csv".format(get_complain_data_path, dataPath, keys[1])
 
     df_save_data.to_csv(savefile, encoding='euc-kr')
+
+    save_db_naver_data()
 
     print("The End!!!")
 

@@ -225,14 +225,15 @@ class Ui_news_collect_win(object):
                 economy_list.append(folderEconomy[i])
         
         # 리스트 값 테이블에 추가
+        self.tbl_politics.setRowCount(len(politics_list))
+        self.tbl_social.setRowCount(len(social_list))
+        self.tbl_economy.setRowCount(len(economy_list))
+
         for j in range(0, len(politics_list)):
-            self.tbl_politics.insertRow(j)
             self.tbl_politics.setItem(j, 0, QTableWidgetItem(politics_list[j]))
         for j in range(0, len(social_list)):
-            self.tbl_social.insertRow(j)
             self.tbl_social.setItem(j, 0, QTableWidgetItem(social_list[j]))
         for j in range(0, len(economy_list)):
-            self.tbl_economy.insertRow(j)
             self.tbl_economy.setItem(j, 0, QTableWidgetItem(economy_list[j]))
 
 

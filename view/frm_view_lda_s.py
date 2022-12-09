@@ -89,7 +89,7 @@ class Ui_Dialog(object):
         
         # 뉴스 상세 내용
         self.tbl_sel_content = QtWidgets.QTextEdit(self.group3)
-        self.tbl_sel_content.setGeometry(QtCore.QRect(652, 19, 621, 121))
+        self.tbl_sel_content.setGeometry(QtCore.QRect(652, 19, 623, 121))
         self.tbl_sel_content.setObjectName("tbl_sel_content")
         
         self.group4 = QtWidgets.QGroupBox(Dialog)
