@@ -1,4 +1,5 @@
 import os
+import fnmatch
 import pandas as pd
 from matplotlib import pyplot as plt
 from wordcloud import WordCloud
@@ -6,8 +7,6 @@ from wordcloud import WordCloud
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from common.config.filepassclass import FilePathClass
-
-import fnmatch
 
 
 class Ui_frmComplaintWC(object):
@@ -29,7 +28,7 @@ class Ui_frmComplaintWC(object):
         self.groupBox.setObjectName("groupBox")
 
         self.sel_keyword_1 = QtWidgets.QComboBox(self.groupBox)
-        self.sel_keyword_1.setGeometry(QtCore.QRect(7, 19, 485, 25))
+        self.sel_keyword_1.setGeometry(QtCore.QRect(7, 10, 485, 30))
         self.sel_keyword_1.setObjectName("sel_keyword_1")
 
         self.label = QtWidgets.QLabel(self.groupBox)
@@ -41,7 +40,7 @@ class Ui_frmComplaintWC(object):
         self.groupBox_2 = QtWidgets.QGroupBox(self.gridLayoutWidget)
         self.groupBox_2.setObjectName("groupBox_2")
         self.sel_keyword_2 = QtWidgets.QComboBox(self.groupBox_2)
-        self.sel_keyword_2.setGeometry(QtCore.QRect(7, 19, 485, 25))
+        self.sel_keyword_2.setGeometry(QtCore.QRect(7, 10, 485, 30))
         self.sel_keyword_2.setObjectName("sel_keyword_2")
         self.label_2 = QtWidgets.QLabel(self.groupBox_2)
         self.label_2.setGeometry(QtCore.QRect(7, 50, 485, 400))
@@ -51,7 +50,7 @@ class Ui_frmComplaintWC(object):
         self.groupBox_3 = QtWidgets.QGroupBox(self.gridLayoutWidget)
         self.groupBox_3.setObjectName("groupBox_3")
         self.sel_keyword_3 = QtWidgets.QComboBox(self.groupBox_3)
-        self.sel_keyword_3.setGeometry(QtCore.QRect(7, 19, 485, 25))
+        self.sel_keyword_3.setGeometry(QtCore.QRect(7, 10, 485, 30))
         self.sel_keyword_3.setObjectName("sel_keyword_3")
         self.label_3 = QtWidgets.QLabel(self.groupBox_3)
         self.label_3.setGeometry(QtCore.QRect(7, 50, 485, 400))
@@ -61,7 +60,7 @@ class Ui_frmComplaintWC(object):
         self.groupBox_4 = QtWidgets.QGroupBox(self.gridLayoutWidget)
         self.groupBox_4.setObjectName("groupBox_4")
         self.sel_keyword_4 = QtWidgets.QComboBox(self.groupBox_4)
-        self.sel_keyword_4.setGeometry(QtCore.QRect(7, 19, 485, 25))
+        self.sel_keyword_4.setGeometry(QtCore.QRect(7, 10, 485, 30))
         self.sel_keyword_4.setObjectName("sel_keyword_4")
         self.label_4 = QtWidgets.QLabel(self.groupBox_4)
         self.label_4.setGeometry(QtCore.QRect(7, 50, 485, 400))
@@ -88,6 +87,7 @@ class Ui_frmComplaintWC(object):
         self.sel_keyword_4.textActivated.connect(
             lambda: self.draw_wordcloud(self.sel_keyword_4.currentText(), self.label_4))
 
+
     def set_combobox(self):
         file_path = FilePathClass()
         path = file_path.get_raw_use_path()
@@ -97,11 +97,9 @@ class Ui_frmComplaintWC(object):
         file_name = "민원_연관어분석정보_*.csv"
         csv_all_list = [file for file in file_list if fnmatch.fnmatch(file, file_name)]  # os.listdir(path_file)
 
-        print('file_list->', csv_all_list)
         # 연관어분석정보 데이터 파일 리스트에 담기
         for i in range(len(csv_all_list)):
             filename = csv_all_list[i].split('_')
-            print('filename->', filename)
             if (filename[1] == '연관어분석정보'):
                 keyword_list.append(csv_all_list[i])
         # 콤보 박스에 키워드 값 삽입
@@ -111,6 +109,7 @@ class Ui_frmComplaintWC(object):
             self.sel_keyword_2.addItem(dataname[2][:-4])
             self.sel_keyword_3.addItem(dataname[2][:-4])
             self.sel_keyword_4.addItem(dataname[2][:-4])
+
 
     def draw_wordcloud(self, keyword, canvas):
         file_path = FilePathClass()
@@ -131,16 +130,17 @@ class Ui_frmComplaintWC(object):
         plt.savefig(keyword + '_wc.png', dpi=100)
         canvas.setPixmap(QtGui.QPixmap(keyword + '_wc.png'))
 
+
     def retranslateUi(self, frmComplaintWC):
         _translate = QtCore.QCoreApplication.translate
         frmComplaintWC.setWindowTitle(_translate("frmComplaintWC", "민원 연관어 분석"))
-        self.groupBox.setTitle(_translate("frmComplaintWC", "  Word Cloud 1  "))
+        self.groupBox.setTitle(_translate("frmComplaintWC", ""))
         self.label.setText(_translate("frmComplaintWC", ""))
-        self.groupBox_2.setTitle(_translate("frmComplaintWC", "  Word Cloud 2  "))
+        self.groupBox_2.setTitle(_translate("frmComplaintWC", ""))
         self.label_2.setText(_translate("frmComplaintWC", ""))
-        self.groupBox_3.setTitle(_translate("frmComplaintWC", "  Word Cloud 3 "))
+        self.groupBox_3.setTitle(_translate("frmComplaintWC", ""))
         self.label_3.setText(_translate("frmComplaintWC", ""))
-        self.groupBox_4.setTitle(_translate("frmComplaintWC", "  Word Cloud 4  "))
+        self.groupBox_4.setTitle(_translate("frmComplaintWC", ""))
         self.label_4.setText(_translate("frmComplaintWC", ""))
         self.label_5.setText(_translate("frmComplaintWC", "[ 민원 연관어분석 정보 ]"))
 
@@ -148,12 +148,10 @@ class Ui_frmComplaintWC(object):
 if __name__ == "__main__":
     import sys
 
-
     # 에러 발생 > 에러 출력(강제 종료 X)
     def my_exception_hook(exctype, value, traceback):
         print(exctype, value, traceback)
         sys._excepthook(exctype, value, traceback)
-
 
     app = QtWidgets.QApplication(sys.argv)
     frmComplaintWC = QtWidgets.QDialog()
