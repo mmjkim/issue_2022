@@ -138,6 +138,8 @@ class Ui_frmViewComplaints(object):
         self.tbl_data1.horizontalHeader().setStretchLastSection(False)
         self.tbl_data1.verticalHeader().setDefaultSectionSize(25)
         self.tbl_data1.verticalHeader().setStretchLastSection(False)
+        self.tbl_data1.horizontalHeader().setStyleSheet(
+            "QHeaderView::section {background-color:#404040;color:#FFFFFF;}")
 
         self.group3 = QtWidgets.QGroupBox(self.tab_rise)
         self.group3.setGeometry(QtCore.QRect(3, 250, 968, 570))
@@ -193,6 +195,8 @@ class Ui_frmViewComplaints(object):
         self.tbl_data2.horizontalHeader().setStretchLastSection(False)
         self.tbl_data2.verticalHeader().setDefaultSectionSize(25)
         self.tbl_data2.verticalHeader().setStretchLastSection(False)
+        self.tbl_data2.horizontalHeader().setStyleSheet(
+            "QHeaderView::section {background-color:#404040;color:#FFFFFF;}")
         self.group3_2 = QtWidgets.QGroupBox(self.tab_dftop)
         self.group3_2.setGeometry(QtCore.QRect(3, 250, 968, 570))
         self.group3_2.setObjectName("group3_2")
@@ -240,6 +244,8 @@ class Ui_frmViewComplaints(object):
         self.tbl_data3.horizontalHeader().setStretchLastSection(False)
         self.tbl_data3.verticalHeader().setDefaultSectionSize(25)
         self.tbl_data3.verticalHeader().setStretchLastSection(False)
+        self.tbl_data3.horizontalHeader().setStyleSheet(
+            "QHeaderView::section {background-color:#404040;color:#FFFFFF;}")
         self.group3_3 = QtWidgets.QGroupBox(self.tab_top)
         self.group3_3.setGeometry(QtCore.QRect(3, 250, 968, 570))
         self.group3_3.setObjectName("group3_3")
@@ -402,14 +408,19 @@ class Ui_frmViewComplaints(object):
         ax.set_xticks(df.columns)
         ax.set_xticklabels(df.columns, rotation=15)
         ax.set_ylim([0, df.values.astype(int).max() + df.values.astype(int).max()*0.07])
+        ax.get_yaxis().get_major_formatter().set_scientific(False)
         canvas.draw()
 
 
     def draw_bar_chart(self, df, topn, label):
-        df.head(int(topn.text())).T.plot.bar(figsize=(10, 5), alpha=0.5)
+        df = df.head(int(topn.text()))
+        df.columns = pd.to_datetime(df.columns).date
+        df.T.plot.bar(figsize=(10, 5), alpha=0.5)
         plt.xticks(rotation=15)
-        plt.legend(df.head(int(topn.text())).T.columns)
+        plt.legend(df.index)
         plt.ylim([0, df.values.astype(int).max() + df.values.astype(int).max()*0.07])
+        import matplotlib.ticker as mticker
+        plt.gca().yaxis.set_major_formatter(mticker.FormatStrFormatter('%i'))
         plt.title('월별 키워드 빈도수 추이')
         plt.savefig('graph_img.png', dpi=100)
         label.setPixmap(QtGui.QPixmap('graph_img.png'))
@@ -426,6 +437,7 @@ class Ui_frmViewComplaints(object):
         ax.set_xticks(df.columns)
         ax.set_xticklabels(df.columns, rotation=15)
         ax.set_ylim([0, df.values.astype(int).max() + df.values.astype(int).max()*0.07])
+        ax.get_yaxis().get_major_formatter().set_scientific(False)
         canvas.draw()
 
 

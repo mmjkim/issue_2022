@@ -249,15 +249,20 @@ class Ui_frmViewNews(object):
             ax.set_title('월별 키워드 빈도수 추이')
             ax.set_xticks(df.columns)
             ax.set_xticklabels(df.columns, rotation=15)
-            ax.set_ylim([0, df.values.astype(int).max() + 1000])
+            ax.set_ylim([0, df.values.astype(int).max() + df.values.astype(int).max()*0.07])
+            ax.get_yaxis().get_major_formatter().set_scientific(False)
 
             self.canvas.draw()
 
         elif self.rdo_bar.isChecked():
-            df.head(int(self.txt_top_n.text())).T.plot.bar(figsize=(10, 5), alpha=0.5)
+            df = df.head(int(self.txt_top_n.text()))
+            df.columns = pd.to_datetime(df.columns).date
+            df.T.plot.bar(figsize=(10, 5), alpha=0.5)
             plt.xticks(rotation=15)
-            plt.legend(df.head(int(self.txt_top_n.text())).T.columns)
-            plt.ylim([0, df.values.astype(int).max() + 1000])
+            plt.legend(df.index)
+            plt.ylim([0, df.values.astype(int).max() + df.values.astype(int).max()*0.07])
+            import matplotlib.ticker as mticker
+            plt.gca().yaxis.set_major_formatter(mticker.FormatStrFormatter('%i'))
             plt.title('월별 키워드 빈도수 추이')
             plt.savefig('graph_img.png', dpi=100)
             self.label.setPixmap(QtGui.QPixmap('graph_img.png'))
@@ -272,7 +277,8 @@ class Ui_frmViewNews(object):
             ax.set_title('월별 키워드 빈도수 추이')
             ax.set_xticks(df.columns)
             ax.set_xticklabels(df.columns, rotation=15)
-            ax.set_ylim([0, df.values.astype(int).max() + 1000])
+            ax.set_ylim([0, df.values.astype(int).max() + df.values.astype(int).max()*0.07])
+            ax.get_yaxis().get_major_formatter().set_scientific(False)
 
             self.canvas.draw()
 
