@@ -16,10 +16,24 @@ class DbUseAnalClass:
                                    r'DBQ=' + self.db_name_path + '')
         self.cursor = self.conn.cursor()
 
+    #쿼리 실행
+    def execute_qry(self, qry):
+        try:
+            self.cursor.execute('{0}'.format(qry))
+            self.conn.commit()
+            return 1
+        except pyodbc.Error as e:
+            print(e)
+            return -1
+
     def select_count(self, qry):
-        self.cursor.execute('{0}'.format(qry))
-       # print(len(self.cursor.fetchall()))
-        return len(self.cursor.fetchall())
+        try:
+            self.cursor.execute('{0}'.format(qry))
+            #print(self.cursor.fetchall())
+            return len(self.cursor.fetchall())
+        except pyodbc.Error as e:
+            print(e)
+            return -1
 
     def select_qry(self, qry):
         df = pd.read_sql(qry, self.conn)
@@ -70,7 +84,7 @@ class DbUseAnalClass:
         std_ymd = dfAllData['stdym'].iloc[0]
         end_ymd = dfAllData['stdym'].iloc[-1]
         #print("end_ymd:", end_ymd)
-        values = [now.strftime('%Y-%m-%d %H:%M%S'),type, savefile_name, std_ymd, end_ymd, len(dfAllData), '1차마트', '']
+        values = [now.strftime('%Y-%m-%d %H:%M:%S'),type, savefile_name, std_ymd, end_ymd, len(dfAllData), '1차마트', '']
         self.mart_log_save(values)
 
     #----------------------------------------------------------------
