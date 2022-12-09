@@ -7,6 +7,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 from common.config.filepassclass import FilePathClass
 
+import fnmatch
+
 
 class Ui_frmComplaintWC(object):
     def setupUi(self, frmComplaintWC):
@@ -75,25 +77,33 @@ class Ui_frmComplaintWC(object):
 
         # 콤보 박스에 키워드 값 삽입
         self.set_combobox()
-        
-        # 워드클라우드 출력
-        self.sel_keyword_1.textActivated.connect(lambda: self.draw_wordcloud(self.sel_keyword_1.currentText(), self.label))
-        self.sel_keyword_2.textActivated.connect(lambda: self.draw_wordcloud(self.sel_keyword_2.currentText(), self.label_2))
-        self.sel_keyword_3.textActivated.connect(lambda: self.draw_wordcloud(self.sel_keyword_3.currentText(), self.label_3))
-        self.sel_keyword_4.textActivated.connect(lambda: self.draw_wordcloud(self.sel_keyword_4.currentText(), self.label_4))
 
-    
+        # 워드클라우드 출력
+        self.sel_keyword_1.textActivated.connect(
+            lambda: self.draw_wordcloud(self.sel_keyword_1.currentText(), self.label))
+        self.sel_keyword_2.textActivated.connect(
+            lambda: self.draw_wordcloud(self.sel_keyword_2.currentText(), self.label_2))
+        self.sel_keyword_3.textActivated.connect(
+            lambda: self.draw_wordcloud(self.sel_keyword_3.currentText(), self.label_3))
+        self.sel_keyword_4.textActivated.connect(
+            lambda: self.draw_wordcloud(self.sel_keyword_4.currentText(), self.label_4))
+
     def set_combobox(self):
         file_path = FilePathClass()
         path = file_path.get_raw_use_path()
         file_list = os.listdir(path)
         keyword_list = []
-        
+
+        file_name = "민원_연관어분석정보_*.csv"
+        csv_all_list = [file for file in file_list if fnmatch.fnmatch(file, file_name)]  # os.listdir(path_file)
+
+        print('file_list->', csv_all_list)
         # 연관어분석정보 데이터 파일 리스트에 담기
-        for i in range(len(file_list)):
-            filename = file_list[i].split('_')
-            if (file_list[i][-3:] == 'csv') & (filename[1] == '연관어분석정보'):
-                keyword_list.append(file_list[i])
+        for i in range(len(csv_all_list)):
+            filename = csv_all_list[i].split('_')
+            print('filename->', filename)
+            if (filename[1] == '연관어분석정보'):
+                keyword_list.append(csv_all_list[i])
         # 콤보 박스에 키워드 값 삽입
         for i in range(len(keyword_list)):
             dataname = keyword_list[i].split('_')
@@ -101,7 +111,6 @@ class Ui_frmComplaintWC(object):
             self.sel_keyword_2.addItem(dataname[2][:-4])
             self.sel_keyword_3.addItem(dataname[2][:-4])
             self.sel_keyword_4.addItem(dataname[2][:-4])
-
 
     def draw_wordcloud(self, keyword, canvas):
         file_path = FilePathClass()
@@ -119,9 +128,8 @@ class Ui_frmComplaintWC(object):
         plt.figure(figsize=(5, 5))
         plt.imshow(wordCloud)
         plt.axis('off')
-        plt.savefig(keyword+'_wc.png', dpi=100)
-        canvas.setPixmap(QtGui.QPixmap(keyword+'_wc.png'))
-
+        plt.savefig(keyword + '_wc.png', dpi=100)
+        canvas.setPixmap(QtGui.QPixmap(keyword + '_wc.png'))
 
     def retranslateUi(self, frmComplaintWC):
         _translate = QtCore.QCoreApplication.translate
@@ -140,10 +148,12 @@ class Ui_frmComplaintWC(object):
 if __name__ == "__main__":
     import sys
 
+
     # 에러 발생 > 에러 출력(강제 종료 X)
     def my_exception_hook(exctype, value, traceback):
         print(exctype, value, traceback)
         sys._excepthook(exctype, value, traceback)
+
 
     app = QtWidgets.QApplication(sys.argv)
     frmComplaintWC = QtWidgets.QDialog()
