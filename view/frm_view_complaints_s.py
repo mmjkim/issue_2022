@@ -1,45 +1,48 @@
-import os
+import pandas as pd
 from datetime import datetime
 
-import pandas as pd
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QValidator, QIntValidator
-from PyQt5.QtWidgets import QTableWidgetItem, QCheckBox
-#from pyqt_checkbox_table_widget.checkBoxTableWidget import CheckBoxTableWidget
+from PyQt5.QtGui import QIntValidator
+from PyQt5.QtWidgets import QTableWidgetItem
 
 import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.rcParams['font.family'] = 'Malgun Gothic'
 matplotlib.rcParams['axes.unicode_minus'] = False
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas # 그래프 출력 캔버스
 
 from common.config.filepassclass import FilePathClass
 
 
 class Ui_frmViewComplaints(object):
     def setupUi(self, frmViewComplaints):
+        # 화면 크기 설정 및 고정
         frmViewComplaints.setObjectName("frmViewComplaints")
         frmViewComplaints.resize(1024, 968)
         frmViewComplaints.setMaximumSize(1024, 968)
+        frmViewComplaints.setMinimumSize(1024, 968)
+
         self.group1 = QtWidgets.QGroupBox(frmViewComplaints)
         self.group1.setGeometry(QtCore.QRect(10, 10, 1001, 61))
         self.group1.setObjectName("group1")
+
         self.label_5 = QtWidgets.QLabel(self.group1)
         self.label_5.setGeometry(QtCore.QRect(234, 28, 16, 17))
         self.label_5.setObjectName("label_5")
         self.label_6 = QtWidgets.QLabel(self.group1)
         self.label_6.setGeometry(QtCore.QRect(28, 27, 54, 15))
         self.label_6.setObjectName("label_6")
-        self.sel_yy_end = QtWidgets.QComboBox(self.group1)
-        self.sel_yy_end.setGeometry(QtCore.QRect(251, 23, 67, 23))
-        self.sel_yy_end.setObjectName("sel_yy_end")
-        self.sel_yy_end.addItem("")
-        self.sel_yy_end.addItem("")
-        self.sel_yy_end.addItem("")
-        self.sel_yy_end.addItem("")
-        self.sel_yy_end.addItem("")
-        self.sel_yy_end.addItem("")
+
+        self.sel_yy_start = QtWidgets.QComboBox(self.group1)
+        self.sel_yy_start.setGeometry(QtCore.QRect(99, 23, 67, 23))
+        self.sel_yy_start.setObjectName("sel_yy_start")
+        self.sel_yy_start.addItem("")
+        self.sel_yy_start.addItem("")
+        self.sel_yy_start.addItem("")
+        self.sel_yy_start.addItem("")
+        self.sel_yy_start.addItem("")
+        self.sel_yy_start.addItem("")
         self.sel_mm_start = QtWidgets.QComboBox(self.group1)
         self.sel_mm_start.setGeometry(QtCore.QRect(176, 23, 51, 23))
         self.sel_mm_start.setObjectName("sel_mm_start")
@@ -55,15 +58,15 @@ class Ui_frmViewComplaints(object):
         self.sel_mm_start.addItem("")
         self.sel_mm_start.addItem("")
         self.sel_mm_start.addItem("")
-        self.sel_yy_start = QtWidgets.QComboBox(self.group1)
-        self.sel_yy_start.setGeometry(QtCore.QRect(99, 23, 67, 23))
-        self.sel_yy_start.setObjectName("sel_yy_start")
-        self.sel_yy_start.addItem("")
-        self.sel_yy_start.addItem("")
-        self.sel_yy_start.addItem("")
-        self.sel_yy_start.addItem("")
-        self.sel_yy_start.addItem("")
-        self.sel_yy_start.addItem("")
+        self.sel_yy_end = QtWidgets.QComboBox(self.group1)
+        self.sel_yy_end.setGeometry(QtCore.QRect(251, 23, 67, 23))
+        self.sel_yy_end.setObjectName("sel_yy_end")
+        self.sel_yy_end.addItem("")
+        self.sel_yy_end.addItem("")
+        self.sel_yy_end.addItem("")
+        self.sel_yy_end.addItem("")
+        self.sel_yy_end.addItem("")
+        self.sel_yy_end.addItem("")
         self.sel_mm_end = QtWidgets.QComboBox(self.group1)
         self.sel_mm_end.setGeometry(QtCore.QRect(327, 23, 51, 23))
         self.sel_mm_end.setObjectName("sel_mm_end")
@@ -79,12 +82,15 @@ class Ui_frmViewComplaints(object):
         self.sel_mm_end.addItem("")
         self.sel_mm_end.addItem("")
         self.sel_mm_end.addItem("")
+
         self.btn_search = QtWidgets.QPushButton(self.group1)
         self.btn_search.setGeometry(QtCore.QRect(890, 23, 79, 24))
         self.btn_search.setObjectName("btn_search")
+
         self.label_7 = QtWidgets.QLabel(self.group1)
         self.label_7.setGeometry(QtCore.QRect(410, 28, 91, 16))
         self.label_7.setObjectName("label_7")
+
         self.sort_yy = QtWidgets.QComboBox(self.group1)
         self.sort_yy.setGeometry(QtCore.QRect(512, 23, 67, 23))
         self.sort_yy.setObjectName("sort_yy")
@@ -109,28 +115,34 @@ class Ui_frmViewComplaints(object):
         self.sort_mm.addItem("")
         self.sort_mm.addItem("")
         self.sort_mm.addItem("")
+
         self.group2 = QtWidgets.QGroupBox(frmViewComplaints)
         self.group2.setGeometry(QtCore.QRect(10, 80, 1001, 881))
         self.group2.setObjectName("group2")
+
         self.tabWidget = QtWidgets.QTabWidget(self.group2)
-        self.tabWidget.setGeometry(QtCore.QRect(10, 20, 981, 851))
+        self.tabWidget.setGeometry(QtCore.QRect(10, 20, 980, 851))
         self.tabWidget.setTabBarAutoHide(False)
         self.tabWidget.setObjectName("tabWidget")
+
+        # 민원 급등 키워드 탭
         self.tab_rise = QtWidgets.QWidget()
         self.tab_rise.setObjectName("tab_rise")
+        # 민원 급등 키워드 테이블
         self.tbl_data1 = QtWidgets.QTableWidget(self.tab_rise)
-        self.tbl_data1.setGeometry(QtCore.QRect(0, 0, 971, 241))
+        self.tbl_data1.setGeometry(QtCore.QRect(0, 0, 974, 241))
         self.tbl_data1.setObjectName("tbl_data1")
         self.tbl_data1.setColumnCount(1)
-        self.tbl_data1.setRowCount(0)
         item = QtWidgets.QTableWidgetItem()
         self.tbl_data1.setHorizontalHeaderItem(0, item)
         self.tbl_data1.horizontalHeader().setStretchLastSection(False)
         self.tbl_data1.verticalHeader().setDefaultSectionSize(25)
         self.tbl_data1.verticalHeader().setStretchLastSection(False)
+
         self.group3 = QtWidgets.QGroupBox(self.tab_rise)
         self.group3.setGeometry(QtCore.QRect(3, 250, 968, 570))
         self.group3.setObjectName("group3")
+
         self.rdo_line = QtWidgets.QRadioButton(self.group3)
         self.rdo_line.setGeometry(QtCore.QRect(20, 26, 86, 16))
         self.rdo_line.setObjectName("rdo_line")
@@ -141,33 +153,41 @@ class Ui_frmViewComplaints(object):
         self.rdo_area = QtWidgets.QRadioButton(self.group3)
         self.rdo_area.setGeometry(QtCore.QRect(138, 26, 86, 16))
         self.rdo_area.setObjectName("rdo_area")
+
         self.label_8 = QtWidgets.QLabel(self.group3)
         self.label_8.setGeometry(QtCore.QRect(220, 26, 51, 16))
         self.label_8.setObjectName("label_8")
+
         self.txt_top_n = QtWidgets.QLineEdit(self.group3)
         self.txt_top_n.setGeometry(QtCore.QRect(270, 20, 61, 24))
         self.txt_top_n.setToolTip("")
         self.txt_top_n.setObjectName("txt_top_n")
+
         self.btn_print = QtWidgets.QPushButton(self.group3)
         self.btn_print.setGeometry(QtCore.QRect(880, 19, 79, 24))
         self.btn_print.setObjectName("btn_print")
+
         self.gridLayoutWidget = QtWidgets.QWidget(self.group3)
         self.gridLayoutWidget.setGeometry(QtCore.QRect(7, 50, 954, 501))
         self.gridLayoutWidget.setObjectName("gridLayoutWidget")
         self.gridLayout = QtWidgets.QGridLayout(self.gridLayoutWidget)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setObjectName("gridLayout")
+
         self.label = QtWidgets.QLabel(self.group3)
         self.label.setGeometry(QtCore.QRect(10, 51, 951, 500))
         self.label.setObjectName("label")
+
         self.tabWidget.addTab(self.tab_rise, "")
+
+        # 민원 최다 키워드 탭
         self.tab_dftop = QtWidgets.QWidget()
         self.tab_dftop.setObjectName("tab_dftop")
+        # 민원 최다 키워드 테이블
         self.tbl_data2 = QtWidgets.QTableWidget(self.tab_dftop)
-        self.tbl_data2.setGeometry(QtCore.QRect(0, 0, 971, 241))
+        self.tbl_data2.setGeometry(QtCore.QRect(0, 0, 974, 241))
         self.tbl_data2.setObjectName("tbl_data2")
         self.tbl_data2.setColumnCount(1)
-        self.tbl_data2.setRowCount(0)
         item = QtWidgets.QTableWidgetItem()
         self.tbl_data2.setHorizontalHeaderItem(0, item)
         self.tbl_data2.horizontalHeader().setStretchLastSection(False)
@@ -206,13 +226,15 @@ class Ui_frmViewComplaints(object):
         self.label_2.setGeometry(QtCore.QRect(10, 51, 951, 500))
         self.label_2.setObjectName("label_2")
         self.tabWidget.addTab(self.tab_dftop, "")
+
+        # 민원 핵심 키워드 탭
         self.tab_top = QtWidgets.QWidget()
         self.tab_top.setObjectName("tab_top")
+        # 민원 핵심 키워드 테이블
         self.tbl_data3 = QtWidgets.QTableWidget(self.tab_top)
-        self.tbl_data3.setGeometry(QtCore.QRect(0, 0, 971, 241))
+        self.tbl_data3.setGeometry(QtCore.QRect(0, 0, 974, 241))
         self.tbl_data3.setObjectName("tbl_data3")
         self.tbl_data3.setColumnCount(1)
-        self.tbl_data3.setRowCount(0)
         item = QtWidgets.QTableWidgetItem()
         self.tbl_data3.setHorizontalHeaderItem(0, item)
         self.tbl_data3.horizontalHeader().setStretchLastSection(False)
@@ -248,6 +270,7 @@ class Ui_frmViewComplaints(object):
         self.label_12 = QtWidgets.QLabel(self.group3_3)
         self.label_12.setGeometry(QtCore.QRect(310, 26, 51, 16))
         self.label_12.setObjectName("label_12")
+
         self.sort_yy_2 = QtWidgets.QComboBox(self.group3_3)
         self.sort_yy_2.setGeometry(QtCore.QRect(164, 22, 67, 23))
         self.sort_yy_2.setObjectName("sort_yy_2")
@@ -311,53 +334,25 @@ class Ui_frmViewComplaints(object):
     def show_graph(self):
         df = self.show_chart()
 
-        # 민원 급등
+        # 민원 급등 그래프(선, 막대, 산점도)
         if self.tabWidget.currentIndex() == 0:
+            # 컬럼 날짜 형식으로 변경
             df.columns = df.columns + '01'
             df.columns = pd.to_datetime(df.columns).date
 
+            # 그래프 초기화
             self.label.clear()
             self.fig.clear(True)
             ax = self.fig.add_subplot(111)
 
             if self.rdo_line.isChecked():
-                for i in range(int(self.txt_top_n.text())):
-                    ax.plot(df.columns,
-                            df.head(int(self.txt_top_n.text())).values[i].astype(int),
-                            label=df.index.values[i], alpha=0.5, linewidth=2)
-                ax.grid(True)
-                ax.legend()
-                ax.set_title('월별 키워드 빈도수 추이')
-                ax.set_xticks(df.columns)
-                ax.set_xticklabels(df.columns, rotation=15)
-                ax.set_ylim([0, df.values.astype(int).max() + 5000])
-
-                self.canvas.draw()
-
+                self.draw_line_chart(self.txt_top_n, ax, df, self.canvas)
             elif self.rdo_bar.isChecked():
-                df.head(int(self.txt_top_n.text())).T.plot.bar(figsize=(10, 5), alpha=0.5)
-                plt.xticks(rotation=15)
-                plt.legend(df.head(int(self.txt_top_n.text())).T.columns)
-                plt.ylim([0, df.values.astype(int).max() + 5000])
-                plt.title('월별 키워드 빈도수 추이')
-                plt.savefig('graph_img.png', dpi=100)
-                self.label.setPixmap(QtGui.QPixmap('graph_img.png'))
-
+                self.draw_bar_chart(df, self.txt_top_n, self.label)
             elif self.rdo_area.isChecked():
-                for i in range(int(self.txt_top_n.text())):
-                    ax.scatter(df.columns,
-                               df.head(int(self.txt_top_n.text())).values[i].astype(int),
-                               label=df.index.values[i], alpha=0.5)
-                ax.grid(True)
-                ax.legend()
-                ax.set_title('월별 키워드 빈도수 추이')
-                ax.set_xticks(df.columns)
-                ax.set_xticklabels(df.columns, rotation=15)
-                ax.set_ylim([0, df.values.astype(int).max() + 5000])
+                self.draw_scatter(self.txt_top_n, ax, df, self.canvas)
 
-                self.canvas.draw()
-
-        # 민원 최다
+        # 민원 최다 그래프(선, 막대, 산점도)
         elif self.tabWidget.currentIndex() == 1:
             df.columns = df.columns + '01'
             df.columns = pd.to_datetime(df.columns).date
@@ -367,131 +362,76 @@ class Ui_frmViewComplaints(object):
             ax2 = self.fig2.add_subplot(111)
 
             if self.rdo_line_2.isChecked():
-                for i in range(int(self.txt_top_n_2.text())):
-                    ax2.plot(df.columns,
-                            df.head(int(self.txt_top_n_2.text())).values[i].astype(int),
-                            label=df.index.values[i], alpha=0.5, linewidth=2)
-                ax2.grid(True)
-                ax2.legend()
-                ax2.set_title('월별 키워드 빈도수 추이')
-                ax2.set_xticks(df.columns)
-                ax2.set_xticklabels(df.columns, rotation=15)
-                ax2.set_ylim([0, df.values.astype(int).max() + 5000])
-
-                self.canvas2.draw()
-
+                self.draw_line_chart(self.txt_top_n_2, ax2, df, self.canvas2)
             elif self.rdo_bar_2.isChecked():
-                df.head(int(self.txt_top_n_2.text())).T.plot.bar(figsize=(10, 5), alpha=0.5)
-                plt.xticks(rotation=15)
-                plt.legend(df.head(int(self.txt_top_n_2.text())).T.columns)
-                plt.ylim([0, df.values.astype(int).max() + 5000])
-                plt.title('월별 키워드 빈도수 추이')
-                plt.savefig('graph_img.png', dpi=100)
-                self.label_2.setPixmap(QtGui.QPixmap('graph_img.png'))
-
+                self.draw_bar_chart(df, self.txt_top_n_2, self.label_2)
             elif self.rdo_area_2.isChecked():
-                for i in range(int(self.txt_top_n_2.text())):
-                    ax2.scatter(df.columns,
-                               df.head(int(self.txt_top_n_2.text())).values[i].astype(int),
-                               label=df.index.values[i], alpha=0.5)
-                ax2.grid(True)
-                ax2.legend()
-                ax2.set_title('월별 키워드 빈도수 추이')
-                ax2.set_xticks(df.columns)
-                ax2.set_xticklabels(df.columns, rotation=15)
-                ax2.set_ylim([0, df.values.astype(int).max() + 5000])
+                self.draw_scatter(self.txt_top_n_2, ax2, df, self.canvas2)
 
-                self.canvas2.draw()
-
-        # 민원 핵심
+        # 민원 핵심 그래프(트리맵)
         elif self.tabWidget.currentIndex() == 2:
             df = df[[self.sort_yy_2.currentText() + self.sort_mm_2.currentText()]]
-            df = df.dropna(axis = 0)
-            # df = df.fillna(0)
-            # df = df.apply(lambda x: x + 0.000001)
+            df = df.dropna(axis=0)
+
             df.columns = df.columns.astype(str) + '01'
             df.columns = pd.to_datetime(df.columns).date
+
             self.label_3.clear()
             self.fig3.clear(True)
             plt.cla()
+
             import squarify
             squarify.plot(sizes=df.head(int(self.txt_top_n_3.text())).values.astype(float),
                           label=df.head(int(self.txt_top_n_3.text())).index, alpha=.5,
                           bar_kwargs=dict(linewidth=1.5, edgecolor="white"))
-            # df.head(int(self.txt_top_n_3.text())).T.plot.bar(figsize=(10, 5), alpha=0.5)
-            # plt.xticks(rotation=15)
-            # plt.legend(df.head(int(self.txt_top_n_3.text())).T.columns)
-            # plt.ylim([0, df.values.astype(int).max() + 5000])
-            # plt.title('월별 키워드 빈도수 추이')
+
             plt.savefig('graph_img.png', dpi=100)
             self.label_3.setPixmap(QtGui.QPixmap('graph_img.png'))
 
             self.canvas3.draw()
 
-            # self.label_3.clear()
-            # self.fig3.clear(True)
-            # plt.cla()
-            #
-            # import seaborn as sns
-            # ax3 = sns.heatmap(df.head(int(self.txt_top_n_3.text())), annot=True, fmt='.0f',
-            #                   cbar=False, cmap='Blues')
-            # plt.yticks(rotation=0)
-            # plt.ylabel('')
-            # plt.savefig('heatmap_img.png', dpi=105)
-            # self.label_3.setPixmap(QtGui.QPixmap('heatmap_img.png'))
+
+    def draw_scatter(self, topn, ax, df, canvas):
+        for i in range(int(topn.text())):
+            ax.scatter(df.columns,
+                       df.head(int(topn.text())).values[i].astype(int),
+                       label=df.index.values[i], alpha=0.5)
+        ax.grid(True)
+        ax.legend()
+        ax.set_title('월별 키워드 빈도수 추이')
+        ax.set_xticks(df.columns)
+        ax.set_xticklabels(df.columns, rotation=15)
+        ax.set_ylim([0, df.values.astype(int).max() + df.values.astype(int).max()*0.07])
+        canvas.draw()
+
+
+    def draw_bar_chart(self, df, topn, label):
+        df.head(int(topn.text())).T.plot.bar(figsize=(10, 5), alpha=0.5)
+        plt.xticks(rotation=15)
+        plt.legend(df.head(int(topn.text())).T.columns)
+        plt.ylim([0, df.values.astype(int).max() + df.values.astype(int).max()*0.07])
+        plt.title('월별 키워드 빈도수 추이')
+        plt.savefig('graph_img.png', dpi=100)
+        label.setPixmap(QtGui.QPixmap('graph_img.png'))
+
+
+    def draw_line_chart(self, topn, ax, df, canvas):
+        for i in range(int(topn.text())):
+            ax.plot(df.columns,
+                    df.head(int(topn.text())).values[i].astype(int),
+                    label=df.index.values[i], alpha=0.5, linewidth=2)
+        ax.grid(True)
+        ax.legend()
+        ax.set_title('월별 키워드 빈도수 추이')
+        ax.set_xticks(df.columns)
+        ax.set_xticklabels(df.columns, rotation=15)
+        ax.set_ylim([0, df.values.astype(int).max() + df.values.astype(int).max()*0.07])
+        canvas.draw()
 
 
     # 차트 출력
     def show_chart(self):
         file_path = FilePathClass()
-
-        # if self.tabWidget.currentIndex() == 3:
-        #     path = file_path.get_raw_use_path()
-        #     data_all_list = os.listdir(path)
-        #     data_list = []
-        #
-        #     self.checkBoxList = []
-        #
-        #     for i in range(len(data_all_list)):
-        #         filename = data_all_list[i].split('_')
-        #         if (data_all_list[i][-3:] == 'csv') & (filename[1] == '연관어분석정보'):
-        #             data_list.append(data_all_list[i])
-        #     self.tbl_data4.setRowCount(len(data_list))
-        #     self.tbl_data4.setColumnCount(2)
-        #     for i in range(len(data_list)):
-        #         ckbox = QCheckBox()
-        #         self.checkBoxList.append(ckbox)
-        #
-        #     for i in range(len(data_list)):
-        #         # self.tbl_data4.setCellWidget(i, 0, self.checkBoxList[i])
-        #         dataname = data_list[i].split('_')
-        #         self.tbl_data4.setItem(i, 1, QTableWidgetItem(dataname[2][:-4]))
-        #     #     if self.checkBoxList[i].stateChanged():
-        #     #         print('!')
-        #     #     else:
-        #     #         print('--')
-        #         # self.item = MyQTableWidgetItemCheckBox()
-        #         # self.tbl_data4.setItem(i, 0, self.item)
-        #         # self.chbox = MyCheckBox(self.item)
-        #         # self.tbl_data4.setCellWidget(i, 0, self.chbox)
-        #         # print(self.chbox.checkState())
-        #         # print(self.cellclicked(self.chbox.checkState()))
-        #         # self.chbox.stateChanged.connect(self.cellclicked)
-        #         # self.cellclicked()
-        #         # if self.chbox.stateChanged.connect(self.cellclicked) == 2:
-        #         #     print(i)
-        #         # else:
-        #         #     print(self.chbox.stateChanged.connect(self.cellclicked))
-        #         # if self.chbox.checkState() == :
-        #         #     self.cellclicked(self.chbox.checkState(), i)
-        #
-        #     for i in range(len(data_list)):
-        #         self.checkBoxList[i].stateChanged.connect(lambda : self.cellclicked(i, self.checkBoxList[i].checkState()))
-        #
-        #     # self.tbl_data4.resizeColumnsToContents()
-        #     self.tbl_data4.setColumnWidth(0, 5)
-        #     self.tbl_data4.setColumnWidth(1, 100)
-
 
         if self.tabWidget.currentIndex() == 0:
             df = pd.read_csv(file_path.get_raw_use_path() + '민원_급등키워드\\1차마트_급등.csv')
@@ -518,54 +458,33 @@ class Ui_frmViewComplaints(object):
         df_sel.columns = df_sel.columns.astype(str)
         df_sel = df_sel.sort_values(sort_date, ascending=False)
 
-        # 민원 급등
+        # 민원 급등 테이블
         if self.tabWidget.currentIndex() == 0:
-            self.tbl_data1.setRowCount(len(df_sel))
-            self.tbl_data1.setColumnCount(len(df_sel.columns)+1)
-
-            for i in range(len(df_sel)):
-                self.tbl_data1.setItem(i, 0, QTableWidgetItem(df_sel.index[i]))
-                for j in range(len(df_sel.columns)):
-                    if pd.isna(df_sel[df_sel.columns[j]][i]):
-                        self.tbl_data1.setItem(i, j+1, QTableWidgetItem('0.0'))
-                    else:
-                        self.tbl_data1.setItem(i, j+1, QTableWidgetItem(str(df_sel[df_sel.columns[j]][i])))
-                    self.tbl_data1.setHorizontalHeaderItem(j+1, QTableWidgetItem(df_sel.columns[j]))
-
-        # 민원 최다
+            self.set_table(df_sel, self.tbl_data1)
+        # 민원 최다 테이블
         elif self.tabWidget.currentIndex() == 1:
-            self.tbl_data2.setRowCount(len(df_sel))
-            self.tbl_data2.setColumnCount(len(df_sel.columns) + 1)
-
-            for i in range(len(df_sel)):
-                self.tbl_data2.setItem(i, 0, QTableWidgetItem(df_sel.index[i]))
-                for j in range(len(df_sel.columns)):
-                    if pd.isna(df_sel[df_sel.columns[j]][i]):
-                        self.tbl_data2.setItem(i, j + 1, QTableWidgetItem('0.0'))
-                    else:
-                        self.tbl_data2.setItem(i, j + 1, QTableWidgetItem(str(df_sel[df_sel.columns[j]][i])))
-                    self.tbl_data2.setHorizontalHeaderItem(j + 1, QTableWidgetItem(df_sel.columns[j]))
-
-        # 민원 핵심
+            self.set_table(df_sel, self.tbl_data2)
+        # 민원 핵심 테이블
         elif self.tabWidget.currentIndex() == 2:
-            self.tbl_data3.setRowCount(len(df_sel))
-            self.tbl_data3.setColumnCount(len(df_sel.columns) + 1)
-
-            for i in range(len(df_sel)):
-                self.tbl_data3.setItem(i, 0, QTableWidgetItem(df_sel.index[i]))
-                for j in range(len(df_sel.columns)):
-                    if pd.isna(df_sel[df_sel.columns[j]][i]):
-                        self.tbl_data3.setItem(i, j + 1, QTableWidgetItem('0.0'))
-                    else:
-                        self.tbl_data3.setItem(i, j + 1, QTableWidgetItem(str(df_sel[df_sel.columns[j]][i])))
-                    self.tbl_data3.setHorizontalHeaderItem(j + 1, QTableWidgetItem(df_sel.columns[j]))
+            self.set_table(df_sel, self.tbl_data3)
 
         return df_sel
 
-    # def cellclicked(self, i, state):
-    #     print(i)
-    #     print(state)
-    #     # return i
+    
+    # 테이블에 값 삽입
+    def set_table(self, df, table):
+        table.setRowCount(len(df))
+        table.setColumnCount(len(df.columns) + 1)
+
+        for i in range(len(df)):
+            table.setItem(i, 0, QTableWidgetItem(df.index[i]))
+            for j in range(len(df.columns)):
+                if pd.isna(df[df.columns[j]][i]):
+                    table.setItem(i, j + 1, QTableWidgetItem('0.0'))
+                else:
+                    table.setItem(i, j + 1, QTableWidgetItem(str(df[df.columns[j]][i])))
+                table.setHorizontalHeaderItem(j + 1, QTableWidgetItem(df.columns[j]))
+
 
     def retranslateUi(self, frmViewComplaints):
         _translate = QtCore.QCoreApplication.translate
@@ -638,7 +557,7 @@ class Ui_frmViewComplaints(object):
         self.group3.setTitle(_translate("frmViewComplaints", " [ 그래프 ] "))
         self.rdo_line.setText(_translate("frmViewComplaints", "Line"))
         self.rdo_bar.setText(_translate("frmViewComplaints", "Bar"))
-        self.rdo_area.setText(_translate("frmViewComplaints", "Area"))
+        self.rdo_area.setText(_translate("frmViewComplaints", "Scatter"))
         self.label_8.setText(_translate("frmViewComplaints", "Top N :"))
         self.btn_print.setText(_translate("frmViewComplaints", "조회"))
         self.label.setText(_translate("frmViewComplaints", ""))
@@ -648,7 +567,7 @@ class Ui_frmViewComplaints(object):
         self.group3_2.setTitle(_translate("frmViewComplaints", " [ 그래프 ] "))
         self.rdo_line_2.setText(_translate("frmViewComplaints", "Line"))
         self.rdo_bar_2.setText(_translate("frmViewComplaints", "Bar"))
-        self.rdo_area_2.setText(_translate("frmViewComplaints", "Area"))
+        self.rdo_area_2.setText(_translate("frmViewComplaints", "Scatter"))
         self.label_9.setText(_translate("frmViewComplaints", "Top N :"))
         self.btn_print_2.setText(_translate("frmViewComplaints", "조회"))
         self.label_2.setText(_translate("frmViewComplaints", ""))
