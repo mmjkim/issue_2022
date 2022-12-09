@@ -1,6 +1,7 @@
 import os
 import sys
 import warnings
+
 warnings.filterwarnings(action='ignore')
 
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -11,7 +12,7 @@ from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem, QAbstractItemView, QC
 from common.config.filepassclass import FilePathClass
 from source.anal_contents_lda import *
 
-
+import fnmatch
 class Ui_Dialog(object):
 
     def setupUi(self, Dialog):
@@ -32,33 +33,34 @@ class Ui_Dialog(object):
         self.tab_content = QtWidgets.QWidget()
         self.tab_content.setObjectName("tab_content")
         self.tabWidget.addTab(self.tab_content, "")
-    
+
         self.tabWidget.setCurrentIndex(0)
-        
+
         self.group1 = QtWidgets.QGroupBox(self.tab_anal)
         self.group1.setGeometry(QtCore.QRect(10, 10, 251, 148))
         self.group1.setObjectName("group1")
-        
+
         self.btn_search = QtWidgets.QPushButton(self.group1)
         self.btn_search.setGeometry(QtCore.QRect(162, 15, 77, 21))
         self.btn_search.setObjectName("btn_search")
-        
+
         # 데이터 테이블
         self.tbl_keyword = QtWidgets.QTableWidget(self.group1)
         self.tbl_keyword.setGeometry(QtCore.QRect(5, 40, 241, 101))
         self.tbl_keyword.setObjectName("tbl_keyword")
         self.tbl_keyword.setColumnCount(2)
+        self.tbl_keyword.setRowCount(0)
         item = QtWidgets.QTableWidgetItem()
         self.tbl_keyword.setHorizontalHeaderItem(0, item)
         item = QtWidgets.QTableWidgetItem()
         self.tbl_keyword.setHorizontalHeaderItem(1, item)
         self.tbl_keyword.horizontalHeader().setStretchLastSection(False)
         self.tbl_keyword.verticalHeader().setStretchLastSection(False)
-        
+
         self.group2 = QtWidgets.QGroupBox(self.tab_anal)
         self.group2.setGeometry(QtCore.QRect(280, 10, 341, 148))
         self.group2.setObjectName("group2")
-        
+
         # LDA 분석 파일 테이블
         self.tbl_lda_file = QtWidgets.QTableWidget(self.group2)
         self.tbl_lda_file.setGeometry(QtCore.QRect(5, 19, 331, 121))
@@ -71,12 +73,12 @@ class Ui_Dialog(object):
         self.tbl_lda_file.setHorizontalHeaderItem(1, item)
         self.tbl_lda_file.horizontalHeader().setStretchLastSection(False)
         self.tbl_lda_file.verticalHeader().setStretchLastSection(False)
-        
+
         self.group3 = QtWidgets.QGroupBox(self.tab_content)
         self.group3.setGeometry(QtCore.QRect(8, 10, 1284, 151))
         self.group3.setObjectName("group3")
-        
-        # 뉴스 내용 테이블
+
+        # 분석 내용 테이블
         self.tbl_contents = QtWidgets.QTableWidget(self.group3)
         self.tbl_contents.setGeometry(QtCore.QRect(8, 20, 631, 121))
         self.tbl_contents.setObjectName("tbl_contents")
@@ -86,16 +88,15 @@ class Ui_Dialog(object):
         self.tbl_contents.setHorizontalHeaderItem(0, item)
         self.tbl_contents.horizontalHeader().setStretchLastSection(True)
         self.tbl_contents.verticalHeader().setStretchLastSection(False)
-        
-        # 뉴스 상세 내용
+
+        # 분석 내용 상세
         self.tbl_sel_content = QtWidgets.QTextEdit(self.group3)
         self.tbl_sel_content.setGeometry(QtCore.QRect(652, 19, 623, 121))
         self.tbl_sel_content.setObjectName("tbl_sel_content")
-        
+
         self.group4 = QtWidgets.QGroupBox(Dialog)
         self.group4.setGeometry(QtCore.QRect(10, 210, 1306, 651))
         self.group4.setObjectName("group4")
-
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
@@ -130,128 +131,191 @@ class Ui_Dialog(object):
         view = QtWidgets.QVBoxLayout(self.group4)
         view.addWidget(self.m_output)
         view.setStretch(200, 551)
-        
+
         # 데이터 테이블, LDA 파일 테이블 출력
         self.show_files()
 
-        self.btn_search.clicked.connect(self.get_lda) # LDA 분석
-        self.tbl_lda_file.cellClicked.connect(self.get_content) # 내용 테이블 출력
-        self.tbl_contents.cellClicked.connect(self.show_details) # 상세 내용 출력
-
+        self.btn_search.clicked.connect(self.get_lda)  # LDA 분석
+        self.tbl_lda_file.cellClicked.connect(self.show_content)  # 내용 테이블 출력
+        self.tbl_contents.cellClicked.connect(self.show_details)  # 상세 내용 출력
 
     # 상세 내용 출력
     def show_details(self, row, column):
         self.tbl_sel_content.setText(self.tbl_contents.item(row, column).text())
 
-
-    # 내용 테이블 출력
-    def get_content(self, row, column):
+    # 내용 테이블 조회
+    def show_content(self, row, column):
+        # 분석결과 리스트에서 선택된 내용 조회
         self.tbl_sel_content.setText("")
-        self.tbl_contents.scrollToTop() # 테이블 맨 위로 이동
-
-        file_path = FilePathClass()
-        path = file_path.get_raw_use_path()
-        s_path = file_path.get_result_path() + "LDA\\"
-
-        if file_path.is_path_exist_check(s_path) is False:
-            error_event()
-
-        if file_path.is_path_exist_check(path) is False:
-           error_event()
-
-        data_all_list = os.listdir(path)
-
-        part = self.tbl_lda_file.item(row, 0).text()
+        self.tbl_contents.scrollToTop()
+        data_type = self.tbl_lda_file.item(row, 0).text()
         keyword = self.tbl_lda_file.item(row, 1).text()
 
-        for i in range(0, len(data_all_list)):
-            filename = data_all_list[i].split('_')
-            if len(filename) >= 3:
-                if (data_all_list[i][-3:] == 'csv') & ((filename[0] == part) | (part in filename[1])) & (filename[2][:-4] == keyword):
-                    if part == '뉴스':
-                        df = pd.read_csv(path + "\\" + data_all_list[i])
-                        self.tbl_contents.setRowCount(len(df['본문']))
-                        for i in range(self.tbl_contents.rowCount()):
-                            self.tbl_contents.setItem(i, 0, QTableWidgetItem(df['본문'][i]))
-                    else:
-                        df = pd.read_csv(path + "\\" + data_all_list[i])
-                        self.tbl_contents.setRowCount(len(df['content']))
-                        for i in range(self.tbl_contents.rowCount()):
-                            self.tbl_contents.setItem(i, 0, QTableWidgetItem(df['content'][i]))
+        df_data = self.get_content(data_type, keyword)
 
-        self.load_lda_html(s_path + 'lda_result_{0}_{1}.html'.format(
-            self.tbl_lda_file.item(self.tbl_lda_file.currentRow(), 0).text(),
-            self.tbl_lda_file.item(self.tbl_lda_file.currentRow(), 1).text()))
+        self.tbl_contents.setRowCount(0)
+        if df_data.empty == False:
+            self.tbl_contents.setRowCount(len(df_data))
 
+           # print('df_data ->', len(df_data), '\n', df_data)
+
+            for i in range(self.tbl_contents.rowCount()):
+                self.tbl_contents.setItem(i, 0, QTableWidgetItem(df_data['content'][i]))
+
+
+    # 내용 조회
+    def get_content(self, dataType, keyword):
+
+        print(dataType, ':', keyword)
+        file_path = FilePathClass()
+        path = file_path.get_raw_use_path()
+
+        if dataType == '뉴스':
+            file_name = "뉴스_크롤링_*.csv"
+        else:
+            file_name = "민원_유사사례정보_*.csv"
+
+        if file_path.is_path_exist_check(path) is False:
+            error_event()
+
+        # 분석 결과 파일 리스트
+        all_file = os.listdir(path)
+        csv_all_list = [file for file in all_file if fnmatch.fnmatch(file, file_name)]  # os.listdir(path_file)
+
+        keyword_list = keyword.split('_')
+        keyword_data_list = []
+        df_data = pd.DataFrame()
+
+        print(csv_all_list, ':', keyword_list)
+        # 분석 키워드 정보(키워드가 여러개 일 수 있어서 prefix 파일명을 제외한 모든 키워드를 보여줌, '_'로 구분)
+        for i in range(len(keyword_list)):
+
+            temp_list = [file for file in csv_all_list if fnmatch.fnmatch(file, file_name.replace('*', keyword_list[i]))]
+            print("temp_list -> ", temp_list, ':', keyword_list[i], ':', type(temp_list))
+            for j in range(len(temp_list)):
+                try:
+                    df = pd.read_csv(path + "\\" + temp_list[j])
+                    print(pd.read_csv(path + "\\" + temp_list[j]))
+                    if df.empty == False:
+                       df_data = pd.concat([df_data, df])
+                except pd.errors.EmptyDataError:
+                    continue
+
+        if df_data.empty == False:
+            if dataType == '뉴스':
+                df_data.rename(columns={'본문': 'content'}, inplace=True)
+
+
+        # lda 시각화 출력
+        self.load_lda_html(file_path.get_result_path() + "LDA\\" + 'lda_result_{0}_{1}.html'.format(dataType, keyword))
+
+        return df_data
+
+    # 민원 내용 조회
+    def get_content_complaint(self, dataType, keyword):
+        file_path = FilePathClass()
+        path = file_path.get_raw_use_path()
+        if file_path.is_path_exist_check(path) is False:
+            error_event()
+        return ""
 
     # LDA 분석
     def get_lda(self):
+
         file_path = FilePathClass()
         s_path = file_path.get_result_path() + "LDA\\"
 
         if file_path.is_path_exist_check(s_path) is False:
             error_event()
-        
+
         # LDA 분석
         lda_model_proc(self.tbl_keyword.item(self.tbl_keyword.currentRow(), 0).text(),
                        self.tbl_keyword.item(self.tbl_keyword.currentRow(), 1).text())
-        
+
         # 테이블 출력
         self.show_files()
-        
+
         # LDA html 파일 가져오기
         self.load_lda_html(s_path + 'lda_result_{0}_{1}.html'.format(
             self.tbl_keyword.item(self.tbl_keyword.currentRow(), 0).text(),
             self.tbl_keyword.item(self.tbl_keyword.currentRow(), 1).text()))
 
-
     # 데이터 테이블, LDA 파일 테이블 출력
     def show_files(self):
-        file_path = FilePathClass()
-        path = file_path.get_raw_use_path() # 데이터 경로
-        s_path = file_path.get_result_path() + "LDA\\" # LDA 파일 경로
+        # 키워드 기준 수집된 csv 파일 조회
+        self.get_csv_keyword()
+        # LDA 분석 결과 html 파일 조회
+        self.get_html_lda()
 
-        if file_path.is_path_exist_check(path) is False:
-           error_event()
+    # LDA 분석 결과 html 파일 조회
+    def get_html_lda(self):
+
+        file_path = FilePathClass()
+        s_path = file_path.get_result_path() + "LDA\\"  # LDA 파일 경로
+
         if file_path.is_path_exist_check(s_path) is False:
             error_event()
 
-        data_all_list = os.listdir(path)
-        data_saved_list = os.listdir(s_path)
+        # 분석 결과 파일 리스트
+        html_all_files = os.listdir(s_path)
+        # 선택 폴더에서 특정 파일만 가져오기(html 파일만 가져오기)
+        html_saved_list = [file for file in html_all_files if file.endswith(".html")]
+        html_list = []  # LDA 파일 리스트
 
-        data_list = [] # 데이터 리스트
-        saved_list = [] # LDA 파일 리스트
-        
-        # 뉴스, 유사사례 데이터만 리스트에 저장
-        for i in range(0, len(data_all_list)):
-            filename = data_all_list[i].split('_')
-            if (data_all_list[i][-3:] == 'csv') & ((filename[0] == '뉴스') | (filename[1] == '유사사례정보')):
-                data_list.append(data_all_list[i])
-        # self.tbl_keyword.setRowCount(len(data_list))
-        
+        # 분석 결과 파일 목록 (html)
+        self.tbl_lda_file.setRowCount(len(html_saved_list))
+        for i in range(len(html_saved_list)):
+            html_list.append(html_saved_list[i])
+        self.tbl_lda_file.setRowCount(len(html_list))
+        for i in range(len(html_list)):
+            savedname = html_list[i].replace('lda_result_', '').replace('.html', '').split('_')
+            self.tbl_lda_file.setItem(i, 0, QTableWidgetItem(savedname[0]))
+
+            # 분석 키워드 정보(키워드가 여러개 일 수 있어서 prefix 파일명을 제외한 모든 키워드를 보여줌, '_'로 구분)
+            temp = self.get_keyword(savedname, 1)
+            # print(temp)
+            self.tbl_lda_file.setItem(i, 1, QTableWidgetItem(temp))
+            # saved_list.append(data_saved_list[i])
+
+    def get_csv_keyword(self):
+
+        file_path = FilePathClass()
+        path = file_path.get_raw_use_path()  # 데이터 경로
+
+        if file_path.is_path_exist_check(path) is False:
+            error_event()
+
+        # 키워드 수집 마트 리스트 (csv 파일만 가져오기)
+        csv_all_list = os.listdir(path)
+        csv_saved_list = [file for file in csv_all_list if file.endswith(".csv")]
+        csv_list = []  # 데이터 리스트
+        # 크롤링, 유사사례 데이터만 리스트에 저장(csv)
+        for i in range(0, len(csv_saved_list)):
+            filename = csv_saved_list[i].split('_')
+            # print(filename)
+            if ((filename[1] == '크롤링') | (filename[1] == '유사사례정보')):
+                csv_list.append(csv_saved_list[i])
+
         # 테이블에 데이터 목록 출력
-        for i in range(len(data_list)):
-            self.tbl_keyword.insertRow(i)
-            dataname = data_list[i].split('_')
-            if dataname[1] == '유사사례정보':
-                self.tbl_keyword.setItem(i, 0, QTableWidgetItem('유사사례'))
+        # print(csv_list)
+        self.tbl_keyword.setRowCount(len(csv_list))
+        for i in range(len(csv_list)):
+            savedname = csv_list[i].replace('.csv', '').split('_')
+            # 데이터 구분
+            self.tbl_keyword.setItem(i, 0, QTableWidgetItem(savedname[1]))
+            # 분석 키워드 정보
+            temp = self.get_keyword(savedname, 2)
+            self.tbl_keyword.setItem(i, 1, QTableWidgetItem(temp))
+
+    # 분석 키워드 정보(키워드가 여러개 일 수 있어서 prefix 파일명을 제외한 모든 키워드를 보여줌, '_'로 구분)
+    def get_keyword(self, savedname, startNum):
+        temp = ""
+        for j in range(startNum, len(savedname)):
+            if temp == "":
+                temp += savedname[j].replace(" ", "")
             else:
-                self.tbl_keyword.setItem(i, 0, QTableWidgetItem(dataname[0]))
-            self.tbl_keyword.setItem(i, 1, QTableWidgetItem(dataname[2][:-4]))
-
-
-        for i in range(len(data_saved_list)):
-            if data_saved_list[i][-4:] == 'html':
-                saved_list.append(data_saved_list[i])
-        # self.tbl_lda_file.setRowCount(len(saved_list))
-        
-        # 테이블에 LDA 파일 목록 출력
-        for i in range(len(saved_list)):
-            self.tbl_lda_file.insertRow(i)
-            savedname = data_saved_list[i].split('_')
-            self.tbl_lda_file.setItem(i, 0, QTableWidgetItem(savedname[2]))
-            self.tbl_lda_file.setItem(i, 1, QTableWidgetItem(savedname[3][:-5]))
-
+                temp += "_" + savedname[j].replace(" ", "")
+        return temp
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
@@ -274,7 +338,6 @@ class Ui_Dialog(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_anal), _translate("Dialog", "분석"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_content), _translate("Dialog", "내용"))
 
-
     # LDA HTML 가져오기
     def load_lda_html(self, fileName):
         with open(fileName, 'r') as f:
@@ -287,10 +350,10 @@ def error_event(self):
 
 
 if __name__ == "__main__":
-
     def my_exception_hook(exctype, value, traceback):
         print(exctype, value, traceback)
         sys._excepthook(exctype, value, traceback)
+
 
     app = QtWidgets.QApplication(sys.argv)
     Dialog = QtWidgets.QDialog()
