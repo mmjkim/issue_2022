@@ -1,6 +1,5 @@
 import glob
 import calendar
-import time
 import pandas as pd
 from datetime import datetime
 
@@ -204,11 +203,6 @@ class Ui_Anal_Dialog(object):
         self.btn_complain = QtWidgets.QPushButton(self.group5)
         self.btn_complain.setGeometry(QtCore.QRect(350, 20, 79, 23))
         self.btn_complain.setObjectName("btn_complain")
-        # 민원 데이터 수집 라벨
-        self.lbl_info = QtWidgets.QLabel(self.group5)
-        self.lbl_info.setGeometry(QtCore.QRect(12, 22, 300, 20))
-        self.lbl_info.setObjectName("lbl_simil")
-        self.lbl_info.setText("")
         # 민원 유사사례 데이터 수집 테이블
         self.tbl_complain_simil = QtWidgets.QTableWidget(self.group5)
         self.tbl_complain_simil.setGeometry(QtCore.QRect(8, 50, 211, 301))
@@ -574,15 +568,10 @@ class Ui_Anal_Dialog(object):
 
         for i in keywords:
             # 민원_연관어분석 데이터 수집
-            if get_wd_cloud_info(i, (s_yy_start+s_mm_start+"01"), getMonthRange(s_yy_end,s_mm_end).strftime("%Y%m%d"), 'pttn,dfpt,saeol,prpl,qna_origin') is None:
-                self.lbl_info.repaint()
-                time.sleep(1)
-                self.lbl_info.setText("\'" + i + "\'에 대한 민원_연관어분석정보 데이터가 없습니다.")
+            get_wd_cloud_info(i, (s_yy_start+s_mm_start+"01"),
+                           getMonthRange(s_yy_end,s_mm_end).strftime("%Y%m%d"), 'pttn,dfpt,saeol,prpl,qna_origin')
             # 민원_유사사례정보 데이터 수집
-            if get_similarInfo(i) is None:
-                self.lbl_info.repaint()
-                time.sleep(1)
-                self.lbl_info.setText("\'" + i + "\'에 대한 민원_유사사례정보 데이터가 없습니다.")
+            get_similarInfo(i)
 
         self.show_folders('민원') # 민원 데이터 수집 리스트 출력
 
