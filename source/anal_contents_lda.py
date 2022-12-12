@@ -27,8 +27,8 @@ import common.config.apiinfo as apifp
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-# 유사사례, 크롤링 정보의 데이타 파일을 머지하여 토픽 키워드를 찾는다.
-# input value 값은 사례 구분[유사사례, 크롤링], 키워드[,]
+# 유사사례정보, 크롤링 정보의 데이타 파일을 머지하여 토픽 키워드를 찾는다.
+# input value 값은 사례 구분[유사사례정보, 크롤링], 키워드[,]
 def lda_model_proc(part, keyword):
 
     filePath = FilePathClass().get_raw_use_path()
@@ -37,68 +37,56 @@ def lda_model_proc(part, keyword):
     # print(find_files, ":", filePath + find_files)
     all_files = glob.glob(filePath + find_files)
     #분석대상 키워드
-    list_keyword = keyword.replace(' ', '').split(',')
+    list_keyword = keyword.split(',')
 
-    # print(list_keyword)
     df_anal_data = pd.DataFrame()
     for anal_keyword in list_keyword:
         for anal_file in all_files:
             list_anal_keyword = anal_file.replace(filePath, '').replace('.csv', '').split('_')
             if anal_keyword == list_anal_keyword[2]:
-               print(anal_file, ':', list_anal_keyword[2])
+                # print(anal_file, ':', list_anal_keyword[2])
 
-               #키워드가 존재하면 파일로 머지
-               df_dis_use = pd.read_csv(anal_file, encoding="utf-8-sig")
-               if part == "유사사례":
-                   df_dis_use = df_dis_use.loc[:, ['title','content']]
-               elif part == "뉴스":
-                   df_dis_use = df_dis_use.loc[:, ['제목', '본문']]
-                   df_dis_use.rename(columns={'제목': 'title', '본문': 'content'}, inplace=True)
+                # 키워드가 존재하면 파일로 머지
+                df_dis_use = pd.read_csv(anal_file, encoding="utf-8-sig")
+                if part == "유사사례정보":
+                    df_dis_use = df_dis_use.loc[:, ['title', 'content']]
+                elif part == "크롤링":
+                    df_dis_use = df_dis_use.loc[:, ['제목', '본문']]
+                    df_dis_use.rename(columns={'제목': 'title', '본문': 'content'}, inplace=True)
 
-               df_dis_use = df_dis_use.drop_duplicates()
-               df_anal_data = pd.concat([df_anal_data, df_dis_use])
+                df_dis_use = df_dis_use.drop_duplicates()
+                df_anal_data = pd.concat([df_anal_data, df_dis_use], ignore_index=True)
 
-    #문자열 데이터 치환????
-   # df_anal_data['content'] = ''
-    #data_replaced_list = []
-    #for data in tqdm(df_anal_data['content']):
-       # data_replaced = replace_word(data)  # 문자열 데이터 치환
-       # data_replaced_list.append(data_replaced)
+                anal_data_token = list(map(lambda df_anal_data: mecab.nouns(df_anal_data), df_anal_data['content']))  # 토큰화(형태소 분석)
 
-    #df_anal_data['content'] = data_replaced_list
-    #df_anal_data = df_anal_data.loc[:, ['title', 'content']]
-    #df_anal_data.head()
-
-    anal_data_token = list(map(lambda df_anal_data: mecab.nouns(df_anal_data), df_anal_data['content']))  # 토큰화(형태소 분석)
-
-    anal_data_token_removed = []
-    temp = 0
-    for i, v in enumerate(anal_data_token):
-        #     print('news_taxi_token > ', i, v)
-        line = []
-        for j, k in enumerate(v):
-            if not (len(k) == 1) :
-                #  한 단어가 아니고 분석대상 키워드가 아닌 경우
-                for anal_keyword in list_keyword:
-                    if k == anal_keyword:
-                       temp = 1
-                if temp == 0:
-                    line.append(anal_data_token[i][j])
+                anal_data_token_removed = []
                 temp = 0
+                for i, v in enumerate(anal_data_token):
+                    #     print('news_taxi_token > ', i, v)
+                    line = []
+                    for j, k in enumerate(v):
+                        if not (len(k) == 1) :
+                            #  한 단어가 아니고 분석대상 키워드가 아닌 경우
+                            for anal_keyword in list_keyword:
+                                if k == anal_keyword:
+                                   temp = 1
+                            if temp == 0:
+                                line.append(anal_data_token[i][j])
+                            temp = 0
 
-        anal_data_token_removed.append(line)
+                    anal_data_token_removed.append(line)
 
-    #print(anal_data_token_removed)
-    # 단어 인코딩 및 빈도수 계산
-    model, corpus, dictionary = lda_modeling(anal_data_token_removed)
-    NUM_WORDS = 10
-    #RATING = 'taxi_OR'
-    lda_keyword = "{0}_{1}".format(part,keyword.replace(',', '_').replace(' ', ''))
-    topics = model.print_topics(num_words=NUM_WORDS)
-    print_topic_prop(topics, lda_keyword)
-    lda_visualize(model, corpus, dictionary, lda_keyword)
-    print("The End!!!")
-    # dfAllData = pd.DataFrame()
+                #print(anal_data_token_removed)
+                # 단어 인코딩 및 빈도수 계산
+                model, corpus, dictionary = lda_modeling(anal_data_token_removed)
+                NUM_WORDS = 10
+                #RATING = 'taxi_OR'
+                lda_keyword = "{0}_{1}".format(part,keyword.replace(',', '_'))
+                topics = model.print_topics(num_words=NUM_WORDS)
+                print_topic_prop(topics, lda_keyword)
+                lda_visualize(model, corpus, dictionary, lda_keyword)
+                print("The End!!!")
+                # dfAllData = pd.DataFrame()
 
 def lda_modeling(anal_data_token):
     global NUM_TOPICS
@@ -168,4 +156,4 @@ def lda_visualize(model, corpus, dictionary, lda_keyword):
 #     return data
 
 
-# lda_model_proc("유사사례", "이태원")
+# lda_model_proc("유사사례정보", "이태원")
