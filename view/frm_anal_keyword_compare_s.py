@@ -203,6 +203,18 @@ class Ui_Anal_Dialog(object):
         self.btn_complain = QtWidgets.QPushButton(self.group5)
         self.btn_complain.setGeometry(QtCore.QRect(350, 20, 79, 23))
         self.btn_complain.setObjectName("btn_complain")
+        # 민원 유사사례 라벨
+        self.lbl_simil = QtWidgets.QLabel(self.group5)
+        self.lbl_simil.setGeometry(QtCore.QRect(10, 18, 350, 10))
+        self.lbl_simil.setObjectName("lbl_simil")
+        self.lbl_simil.setFont(QtGui.QFont("Gulim", 8))
+        self.lbl_simil.setText("")
+        # 민원 연관어분석 라벨
+        self.lbl_relate = QtWidgets.QLabel(self.group5)
+        self.lbl_relate.setGeometry(QtCore.QRect(10, 35, 350, 10))
+        self.lbl_relate.setObjectName("lbl_relate")
+        self.lbl_relate.setFont(QtGui.QFont("Gulim", 8))
+        self.lbl_relate.setText("")
         # 민원 유사사례 데이터 수집 테이블
         self.tbl_complain_simil = QtWidgets.QTableWidget(self.group5)
         self.tbl_complain_simil.setGeometry(QtCore.QRect(8, 50, 211, 301))
@@ -566,12 +578,24 @@ class Ui_Anal_Dialog(object):
         # 키워드
         keywords = self.txt_anal_word.toPlainText().split(',')
 
+        empty_relate_list = []
+        empty_simil_list = []
+
         for i in keywords:
             # 민원_연관어분석 데이터 수집
-            get_wd_cloud_info(i, (s_yy_start+s_mm_start+"01"),
-                           getMonthRange(s_yy_end,s_mm_end).strftime("%Y%m%d"), 'pttn,dfpt,saeol,prpl,qna_origin')
+            if get_wd_cloud_info(i, (s_yy_start+s_mm_start+"01"),
+                           getMonthRange(s_yy_end,s_mm_end).strftime("%Y%m%d"), 'pttn,dfpt,saeol,prpl,qna_origin') is None:
+                empty_relate_list.append(i)
             # 민원_유사사례정보 데이터 수집
-            get_similarInfo(i)
+            if get_similarInfo(i) is None:
+                empty_simil_list.append(i)
+
+        empty_relate_str = ', '.join(empty_relate_list)
+        empty_simil_str = ', '.join(empty_simil_list)
+        self.lbl_relate.repaint()
+        self.lbl_simil.repaint()
+        self.lbl_relate.setText('X 연관어: ' + empty_relate_str)
+        self.lbl_simil.setText('X 유사사례: ' + empty_simil_str)
 
         self.show_folders('민원') # 민원 데이터 수집 리스트 출력
 
