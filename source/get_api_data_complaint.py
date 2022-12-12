@@ -57,7 +57,7 @@ def get_risting_keyword(std_ymd, target):
         save_log = mdb.DbUseAnalClass()
         now = datetime.now()
         # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
-        save_log.mart_log_save(now.strftime('%Y-%m-%d %H:%M%S'),'민원', route, analysis_date, analysis_date, len(df1), 'API', '')
+        save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M:%S'),'민원', route, analysis_date, analysis_date, len(df1), 'API', ''])
 
         print('The End!!!')
 
@@ -124,8 +124,7 @@ def get_topN_keyword(std_ymd_fr, std_ymd_to, target):
         save_log = mdb.DbUseAnalClass()
         now = datetime.now()
         # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
-        save_log.mart_log_save(now.strftime('%Y-%m-%d %H:%M%S'),'민원', route, analysis_date_fr, analysis_date_to, len(df1), 'API', '')
-
+        save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M:%S'),'민원', route, analysis_date_fr, analysis_date_to, len(df1), 'API', ''])
 
         print('The End!!!')
 
@@ -172,7 +171,6 @@ def get_today_topic_keyword(std_ymd,  target):
     get_complain_data_path = file_path.get_raw_collect_path() + dataPath + "//"
 
     try:
-
         res = urlopen(url).read()  # URL 열고 읽음
         resJson = json.loads(res)  # json 문자열을 파이썬 객체로 변환
         df1 = json_normalize(resJson)  # json 데이터를 dataframe으로 변환
@@ -191,7 +189,7 @@ def get_today_topic_keyword(std_ymd,  target):
         save_log = mdb.DbUseAnalClass()
         now = datetime.now()
         # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
-        save_log.mart_log_save(now.strftime('%Y-%m-%d %H:%M%S'),'민원', route, analysis_date, analysis_date, len(df1), 'API', '')
+        save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M:%S'),'민원', route, analysis_date, analysis_date, len(df1), 'API', ''])
 
         print('The End!!!')
 
@@ -207,10 +205,10 @@ def get_today_topic_keyword(std_ymd,  target):
     except requests.exceptions.RequestException as erra:
         print("AnyException : ", erra)
 
-
     except Exception:
         import traceback
         traceback.print_exc()
+
     return df1
 
 
@@ -261,8 +259,7 @@ def get_dfTopN_keyword(std_ymd,  target):
         save_log = mdb.DbUseAnalClass()
         now = datetime.now()
         # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
-        save_log.mart_log_save(now.strftime('%Y-%m-%d %H:%M%S'),'민원', route, analysis_date, analysis_date, len(df1), 'API', '')
-
+        save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M:%S'),'민원', route, analysis_date, analysis_date, len(df1), 'API', ''])
 
         print('The End!!!')
 
@@ -282,6 +279,7 @@ def get_dfTopN_keyword(std_ymd,  target):
     except Exception:
         import traceback
         traceback.print_exc()
+
     return df1
 
 
@@ -314,23 +312,25 @@ def get_similarInfo(keyword):
         resJson = json.loads(res)  # json 문자열을 파이썬 객체로 변환
         df1 = json_normalize(resJson)  # json 데이터를 dataframe으로 변환
 
-        # 폴더 존재 여부 확인하여 없으면 폴더 생성
-        if file_path.is_path_exist_check(get_complain_data_path) == False:
-            file_path.make_path(get_complain_data_path)
+        if df1.empty == False:
+            # 폴더 존재 여부 확인하여 없으면 폴더 생성
+            if file_path.is_path_exist_check(get_complain_data_path) == False:
+                file_path.make_path(get_complain_data_path)
 
-        route = "{0}{1}_{2}.json".format(get_complain_data_path,  dataPath, unquote(keyword))
-        route_csv = "{0}{1}_{2}.csv".format(get_complain_data_path, dataPath, unquote(keyword))
-        df1.to_csv(route_csv, index=False, encoding="utf-8-sig")
-        df1.to_json(route, orient='table')
+            route = "{0}{1}_{2}.json".format(get_complain_data_path,  dataPath, unquote(keyword))
+            route_csv = "{0}{1}_{2}.csv".format(get_complain_data_path, dataPath, unquote(keyword))
+            df1.to_csv(route_csv, index=False, encoding="utf-8-sig")
+            df1.to_json(route, orient='table')
 
-        # ------------ 마트 적재 데이타 Log 저장 -------------------------
-        save_log = mdb.DbUseAnalClass()
-        now = datetime.now()
-        # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
-        save_log.mart_log_save(now.strftime('%Y-%m-%d %H:%M%S'),'민원', route, '', '', len(df1), '키워드', keyword)
+            # ------------ 마트 적재 데이타 Log 저장 -------------------------
+            save_log = mdb.DbUseAnalClass()
+            now = datetime.now()
+            # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
+            save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M%S'),'민원', route, '', '', len(df1), '키워드', keyword])
 
+            print('The End!!!')
 
-        print('The End!!!')
+            return df1
 
     except requests.exceptions.Timeout as errd:
         print("Timeout Error : ", errd)
@@ -344,11 +344,9 @@ def get_similarInfo(keyword):
     except requests.exceptions.RequestException as erra:
         print("AnyException : ", erra)
 
-
     except Exception:
         import traceback
         traceback.print_exc()
-    return df1
 
 
 #-----------------------------------------------------
@@ -365,7 +363,6 @@ def get_wd_cloud_info(keyword, std_ymd_fr, std_ymd_to, target):
     analysis_date_fr = std_ymd_fr
     analysis_date_to = std_ymd_to
 
-
     url = apifp.COMPLAIN_API_URL + apifp.COMPLAIN_API_URL_WDCLOUD +'?serviceKey=' + apifp.COMPLAIN_API_KEY + '&searchword=' + quote(keyword) + '&resultCount=' + maxResult + '&target=' + target + '&omitDuplicate=true' + '&dateFrom=' + analysis_date_fr + '&dateTo='+ analysis_date_to
 
     print('URL: ', url)
@@ -376,28 +373,31 @@ def get_wd_cloud_info(keyword, std_ymd_fr, std_ymd_to, target):
     get_complain_data_path = file_path.get_raw_use_path() + "//"
 
     try:
-
         res = urlopen(url).read()  # URL 열고 읽음
         resJson = json.loads(res)  # json 문자열을 파이썬 객체로 변환
         df1 = json_normalize(resJson)  # json 데이터를 dataframe으로 변환
 
-        # 폴더 존재 여부 확인하여 없으면 폴더 생성
-        if file_path.is_path_exist_check(get_complain_data_path) == False:
-            file_path.make_path(get_complain_data_path)
+        if df1.empty == False:
 
-        route = "{0}{1}_{2}.json".format(get_complain_data_path,  dataPath, keyword)
-        route_csv = "{0}{1}_{2}.csv".format(get_complain_data_path, dataPath, keyword)
-        df1.to_csv(route_csv, index=False, encoding="utf-8-sig")
-        df1.to_json(route, orient='table')
+            # 폴더 존재 여부 확인하여 없으면 폴더 생성
+            if file_path.is_path_exist_check(get_complain_data_path) == False:
+                file_path.make_path(get_complain_data_path)
+
+            route = "{0}{1}_{2}.json".format(get_complain_data_path,  dataPath, keyword)
+            route_csv = "{0}{1}_{2}.csv".format(get_complain_data_path, dataPath, keyword)
+            df1.to_csv(route_csv, index=False, encoding="utf-8-sig")
+            df1.to_json(route, orient='table')
 
 
-        # ------------ 마트 적재 데이타 Log 저장 -------------------------
-        save_log = mdb.DbUseAnalClass()
-        now = datetime.now()
-        # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
-        save_log.mart_log_save(now.strftime('%Y-%m-%d %H:%M%S'),'민원', route, analysis_date_fr, analysis_date_to, len(df1), '키워드', keyword)
+            # ------------ 마트 적재 데이타 Log 저장 -------------------------
+            save_log = mdb.DbUseAnalClass()
+            now = datetime.now()
+            # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
+            save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M:%S'),'민원', route, analysis_date_fr, analysis_date_to, len(df1), '키워드', keyword])
 
-        print('The End!!!')
+            print('The End!!!')
+
+            return df1
 
     except requests.exceptions.Timeout as errd:
         print("Timeout Error : ", errd)
@@ -414,8 +414,6 @@ def get_wd_cloud_info(keyword, std_ymd_fr, std_ymd_to, target):
     except Exception:
         import traceback
         traceback.print_exc()
-
-    return df1
 
 
 def get_complaint_data(part, date, target):
