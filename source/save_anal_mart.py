@@ -77,9 +77,6 @@ def anal_mart_news(part):
        traceback.print_exc()
 
 
-
-
-
 #----------------------------------------------------------------
 # 민원데이터 월별 합계 마트 생성
 #  part : 급등, 오늘, 최다, 핵심
@@ -230,6 +227,7 @@ def set_top_data(files):
        import traceback
        traceback.print_exc()
 
+
 #최다 키워드 데이터 생성
 def set_dftopkw_data(files):
 
@@ -299,7 +297,8 @@ def save_db_naver_data():
         import traceback
         traceback.print_exc()
 
-        # 오늘의 민원 키워드 데이터 생성(MDB에 저장)
+
+# 오늘의 민원 키워드 데이터 생성(MDB에 저장)
 def save_db_topic_data():
     # 파일 path
     file_path = FilePathClass()

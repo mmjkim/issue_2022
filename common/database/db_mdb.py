@@ -65,7 +65,7 @@ class DbUseAnalClass:
     # values의 값은 list type으로 전달
     # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
     def mart_log_save(self, value):
-        insertQry = " INSERT INTO ISSUE_DATA_MART_INFO (WRITE_YMD,DATA_TYPE, DATA_NAME, COLLECT_YMD_STD, COLLECT_YMD_END, DATA_TOT_CNT, MART_TYPE, KEYWORD) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}' )"
+        insertQry = " INSERT INTO ISSUE_DATA_MART_INFO (WRITE_YMD,DATA_TYPE, DATA_NAME, COLLECT_YMD_STD, COLLECT_YMD_END, DATA_TOT_CNT, MART_TYPE, KEYWORD) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}')"
         qry = insertQry.format(value[0], value[1], value[2], value[3], value[4], value[5], value[6], value[7])
         self.insert_one_qry(qry)
 
