@@ -61,7 +61,7 @@ def get_news_uuid_list(psPart):
 #  return :
 #-----------------------------------------------------
 def get_news(uddi, part, day):
-    try :
+    try:
         df_uddi = uddi
 
         get_uddi = df_uddi[(df_uddi['part'] == part) & (df_uddi['date'] == day)]
@@ -103,15 +103,13 @@ def get_news(uddi, part, day):
             save_log = mdb.DbUseAnalClass()
             now = datetime.now()
             # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
-            save_log.mart_log_save(now.strftime('%Y-%m-%d %H:%M%S'),'뉴스' ,route, row['date'], row['date'],  len(df), 'API', '')
+            save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M%S'),'뉴스' ,route, row['date'], row['date'],  len(df), 'API', ''])
 
     except:
-        print("get_news -> Error")
+        print(part + " get_news -> Error")
 
  #uuid 값 가져오기
 def get_news_data(part, day1, day2):
-
-
     if part == '전체':
         list_part = ['정치', '사회', '경제']
     else:

@@ -244,7 +244,6 @@ class Ui_frmViewNews(object):
                 ax.plot(df.columns,
                         df.head(int(self.txt_top_n.text())).values[i].astype(int),
                         label=df.index.values[i], alpha=0.5, linewidth=2)
-            ax.grid(True)
             ax.legend()
             ax.set_title('월별 키워드 빈도수 추이')
             ax.set_xticks(df.columns)
@@ -272,7 +271,6 @@ class Ui_frmViewNews(object):
                 ax.scatter(df.columns,
                        df.head(int(self.txt_top_n.text())).values[i].astype(int),
                        label=df.index.values[i], alpha=0.5)
-            ax.grid(True)
             ax.legend()
             ax.set_title('월별 키워드 빈도수 추이')
             ax.set_xticks(df.columns)

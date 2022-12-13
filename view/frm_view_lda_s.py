@@ -11,6 +11,7 @@ from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem, QAbstractItemView, QC
 
 from common.config.filepassclass import FilePathClass
 from source.anal_contents_lda import *
+import common.config.errormessage as em
 
 import fnmatch
 class Ui_Dialog(object):
@@ -180,7 +181,7 @@ class Ui_Dialog(object):
             file_name = "민원_유사사례정보_*.csv"
 
         if file_path.is_path_exist_check(path) is False:
-            error_event()
+            error_event(em.NO_PATH)
 
         # 분석 결과 파일 리스트
         all_file = os.listdir(path)
@@ -286,7 +287,7 @@ class Ui_Dialog(object):
         path = file_path.get_raw_use_path()  # 데이터 경로
 
         if file_path.is_path_exist_check(path) is False:
-            error_event()
+            error_event(em.NO_PATH)
 
         # 키워드 수집 마트 리스트 (csv 파일만 가져오기)
         csv_all_list = os.listdir(path)
@@ -354,12 +355,12 @@ class Ui_Dialog(object):
         self.m_output.setHtml(html)
 
 
-def error_event():
+def error_event(msg):
     msgbox = QMessageBox()
     msgbox.setWindowTitle("error")
-    msgbox.setText('file path not fount!!')
-
+    msgbox.setText(msg)
     msgbox.exec_()
+
 
 if __name__ == "__main__":
     def my_exception_hook(exctype, value, traceback):

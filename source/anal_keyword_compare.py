@@ -22,7 +22,6 @@ def compare_keyword(part):
     elif part == "최다":
         filename = "{0}{1}\\1차마트_{2}.csv".format(file_path.get_raw_use_path(), apifp.COMPLAIN_DATA_PATH_DFTOPKW, part)
 
-
     si_complain_data = pd.read_csv(filename, encoding="utf-8-sig")
 
     #뉴스_사회
@@ -70,18 +69,17 @@ def compare_keyword(part):
         os.makedirs(file_path.get_raw_use_path())
 
     # 저장할 파일명 생성
-    savefile = "{0}\\{1}_{2}.csv".format(file_path.get_raw_use_path(), "동시출현키워드", part)
+    savefile_o = "{0}{1}_{2}.csv".format(file_path.get_raw_use_path(), "동시출현키워드", part)
     # 파일저장
     df_overlap_keyword = df_overlap_keyword.sort_values(by=['overlap_keyword'])
-    df_overlap_keyword.to_csv(savefile, encoding="utf-8-sig", index=False)
+    df_overlap_keyword.to_csv(savefile_o, encoding="utf-8-sig", index=False)
 
     #피벗 데이터 저장
-    savefile = "{0}\\{1}_{2}.csv".format(file_path.get_raw_use_path(), "동시출현키워드_pivot", part)
-    keyword_pivot(df_overlap_keyword, savefile)
+    savefile_p = "{0}\\{1}_{2}.csv".format(file_path.get_raw_use_path(), "동시출현키워드_pivot", part)
+    keyword_pivot(df_overlap_keyword, savefile_p)
     print('The End!!!')
 
     return df_overlap_keyword
-
 
 
 # --------------------------------------------
@@ -109,7 +107,6 @@ def get_overlap_keyword(df_source_data, si_target_data, type_info):
            df_temp = df_temp.assign(type=type_info, overlap_keyword=temp_keyword)
            df_return = pd.concat([df_return, df_temp])
 
-
     return df_return
 
 
@@ -124,18 +121,15 @@ def keyword_pivot(df_data,save_file_name):
     dataJoin1 = pd.merge(dataJoin, data_e, how='outer', on=['keyword'])
 
     # 컬럼명 변경
-    dataJoin1.columns = ['keyword', 'part_p', '뉴스_정치', 'part_s', '뉴스_사회', 'part_e', '뉴스_경제']
+    dataJoin1 = dataJoin1.rename(columns={'overlap_keyword_x':'뉴스_정치', 'overlap_keyword_y':'뉴스_사회', 'overlap_keyword':'뉴스_경제'})
     # 컬럼 선택
     dataAnal = dataJoin1[['keyword', '뉴스_정치', '뉴스_사회', '뉴스_경제']]
     # 결측치 대체
     dataAnal = dataAnal.fillna(('-'))
 
-    # print(dataAnal)
-
     # 파일저장
     #dataAnal = dataAnal.sort_values(by=['keyword'])
     dataAnal.to_csv(save_file_name, encoding="utf-8-sig", index=False)
-
 
 
 #compare_keyword('급등')

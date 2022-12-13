@@ -73,10 +73,10 @@ class Ui_Anal_Dialog(object):
         self.tbl_rise.horizontalHeader().setStretchLastSection(False)
         self.tbl_rise.verticalHeader().setStretchLastSection(False)
         self.tabWidget.addTab(self.tab_rise, "")
-        # 핵심 키워드 탭
+        # 최다 키워드 탭
         self.tab_top = QtWidgets.QWidget()
         self.tab_top.setObjectName("tab_top")
-        # 핵심 키워드 & 뉴스 키워드 테이블
+        # 최다 키워드 & 뉴스 키워드 테이블
         self.tbl_top = QtWidgets.QTableWidget(self.tab_top)
         self.tbl_top.setGeometry(QtCore.QRect(0, 0, 971, 241))
         self.tbl_top.setObjectName("tbl_top")
@@ -340,14 +340,14 @@ class Ui_Anal_Dialog(object):
         item.setText(_translate("Anal_Dialog", "뉴스_사회"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_rise), _translate("Anal_Dialog", "민원_급등"))
         item = self.tbl_top.horizontalHeaderItem(0)
-        item.setText(_translate("Anal_Dialog", "민원_핵심"))
+        item.setText(_translate("Anal_Dialog", "민원_최다"))
         item = self.tbl_top.horizontalHeaderItem(1)
         item.setText(_translate("Anal_Dialog", "뉴스_정치"))
         item = self.tbl_top.horizontalHeaderItem(2)
         item.setText(_translate("Anal_Dialog", "뉴스_경제"))
         item = self.tbl_top.horizontalHeaderItem(3)
         item.setText(_translate("Anal_Dialog", "뉴스_사회"))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_top), _translate("Anal_Dialog", "민원_핵심"))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_top), _translate("Anal_Dialog", "민원_최다"))
         self.btn_anal.setText(_translate("Anal_Dialog", "분석"))
         self.group2.setTitle(_translate("Anal_Dialog", " [ 분석 ] "))
         self.label_5.setText(_translate("Anal_Dialog", "~"))
@@ -698,8 +698,11 @@ class Ui_Anal_Dialog(object):
                 self.tbl_top.setItem(i, 3, QTableWidgetItem(df_data_anal['뉴스_사회'][i]))
 
 
-def error_event(self):
-    QMessageBox.about(self, 'Error', 'file path not fount!!')
+def error_event(msg):
+    msgbox = QMessageBox()
+    msgbox.setWindowTitle("error")
+    msgbox.setText(msg)
+    msgbox.exec_()
 
 
 if __name__ == "__main__":

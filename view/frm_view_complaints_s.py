@@ -402,7 +402,6 @@ class Ui_frmViewComplaints(object):
             ax.scatter(df.columns,
                        df.head(int(topn.text())).values[i].astype(int),
                        label=df.index.values[i], alpha=0.5)
-        ax.grid(True)
         ax.legend()
         ax.set_title('월별 키워드 빈도수 추이')
         ax.set_xticks(df.columns)
@@ -431,7 +430,6 @@ class Ui_frmViewComplaints(object):
             ax.plot(df.columns,
                     df.head(int(topn.text())).values[i].astype(int),
                     label=df.index.values[i], alpha=0.5, linewidth=2)
-        ax.grid(True)
         ax.legend()
         ax.set_title('월별 키워드 빈도수 추이')
         ax.set_xticks(df.columns)

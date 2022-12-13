@@ -12,16 +12,20 @@
 import glob      # 파일들의 리스트를 뽑을 때 사용(*.*)
 import os.path
 
+from PyQt5.QtWidgets import QMessageBox
+
 from common.config.filepassclass import *
 import common.config.apiinfo as apifp
 from common.function.funcCommon import *
 from common.database import db_mdb as mdb
+import common.config.errormessage as em
+
 from datetime import datetime
 
 def anal_mart_news(part):
 
-   try:
-      #파일 path
+    try:
+        #파일 path
         file_path = FilePathClass()
 
         #분야별 데이터 저장 path
@@ -37,44 +41,46 @@ def anal_mart_news(part):
         all_files = glob.glob(temp)
         dfAllData = pd.DataFrame()
 
-        for filename in all_files:
-            temp = filename.split('_')
-            i = len(temp)-1
-            df_dis_use = pd.read_csv(filename, encoding="utf-8-sig")
-            # 컬럼명 변경
-            df_dis_use.rename(columns={'빈도수':'freq', '순위':'rank', '키워드':'keyword'}, inplace=True)
+        if len(all_files) != 0:
+            for filename in all_files:
+                temp = filename.split('_')
+                i = len(temp)-1
+                df_dis_use = pd.read_csv(filename, encoding="utf-8-sig")
+                # 컬럼명 변경
+                df_dis_use.rename(columns={'빈도수':'freq', '순위':'rank', '키워드':'keyword'}, inplace=True)
 
-            # '수집년월' 컬럼 추가
-            df_dis_use['stdym'] = os.path.basename(temp[i][:6]).replace('.csv', '')
-            dfAllData = pd.concat([dfAllData, df_dis_use])
+                # '수집년월' 컬럼 추가
+                df_dis_use['stdym'] = os.path.basename(temp[i][:6]).replace('.csv', '')
+                dfAllData = pd.concat([dfAllData, df_dis_use])
 
+            #데이터 컬럼 재정의
+            dfAllData = dfAllData[['stdym', 'keyword', 'freq', 'rank']]
 
+            #데이터 저장
+            temp = "{0}{1}".format(file_path.get_raw_use_path(), dataPath)
 
-        #데이터 컬럼 재정의
-        dfAllData = dfAllData[['stdym', 'keyword', 'freq', 'rank']]
+            #저장될 폴더가 있는지 확인
+            if not os.path.exists(temp):
+                os.makedirs(temp)
 
-        #데이터 저장
-        temp = "{0}{1}".format(file_path.get_raw_use_path(), dataPath)
+            # 저장할 파일명 생성
+            savefile = "{0}{1}\{2}_{3}.csv".format(file_path.get_raw_use_path(), dataPath, '1차마트', part)
+            # 파일저장
+            dfAllData.to_csv(savefile, encoding="utf-8-sig", index=False)
 
-        #저장될 폴더가 있는지 확인
-        if not os.path.exists(temp):
-            os.makedirs(temp)
+            print("마트 적재 데이타 Log 저장-->", part)
+            #마트 적재 데이타 Log 저장
+            save_log = mdb.DbUseAnalClass()
+            save_log.mart_log_qry(dfAllData, '뉴스',part)
 
-        # 저장할 파일명 생성
-        savefile = "{0}{1}\{2}_{3}.csv".format(file_path.get_raw_use_path(), dataPath, '1차마트', part)
-        # 파일저장
-        dfAllData.to_csv(savefile, encoding="utf-8-sig", index=False)
+            print("The End!!!")
 
-        print("마트 적재 데이타 Log 저장-->", part)
-        #마트 적재 데이타 Log 저장
-        save_log = mdb.DbUseAnalClass()
-        save_log.mart_log_qry(dfAllData, '뉴스',part)
+        else:
+            error_event(em.NO_DATA)
 
-
-        print("The End!!!")
-   except Exception:
-       import traceback
-       traceback.print_exc()
+    except Exception:
+        import traceback
+        traceback.print_exc()
 
 
 #----------------------------------------------------------------
@@ -82,8 +88,7 @@ def anal_mart_news(part):
 #  part : 급등, 오늘, 최다, 핵심
 #----------------------------------------------------------------
 def anal_mart_complaint(part):
-
-    try :
+    try:
         #파일 path
         file_path = FilePathClass()
         #분야별 데이터 저장 path
@@ -98,53 +103,55 @@ def anal_mart_complaint(part):
 
         # 데이타를 읽어서 df에 저장 (std_ymd, keyword, freq, rank=0)
         temp = "{0}{1}\*.csv".format(file_path.get_raw_collect_path(), dataPath)
-        # print(temp)
 
         all_files = glob.glob(temp)
-        # 저장할 데이터 정리
-        if part == '급등':
-            df_mart_data = set_risting_data(all_files)
-        elif part == '오늘':
-            df_mart_data = set_topic_data(all_files)
-        elif part == '최다':
-            df_mart_data = set_dftopkw_data(all_files)
-        elif part == '핵심':
-            df_mart_data = set_top_data(all_files)
 
-        #읽은 데이터를 키워드 기준 월별 빈도수 합계로 그룹
-        df_mart_data_group = df_mart_data.groupby(['stdym', 'keyword'])['freq'].agg(**{'freq': 'sum'}).reset_index()
+        if len(all_files) != 0:
+            # 저장할 데이터 정리
+            if part == '급등':
+                df_mart_data = set_rising_data(all_files)
+            elif part == '오늘':
+                df_mart_data = set_topic_data(all_files)
+            elif part == '최다':
+                df_mart_data = set_dftopkw_data(all_files)
+            elif part == '핵심':
+                df_mart_data = set_top_data(all_files)
 
-        #print(df_mart_data_group)
-        #월별빈도수 키워드 데이터 저장
-        temp = "{0}{1}".format(file_path.get_raw_use_path(), dataPath)
+            #읽은 데이터를 키워드 기준 월별 빈도수 합계로 그룹
+            df_mart_data_group = df_mart_data.groupby(['stdym', 'keyword'])['freq'].agg(**{'freq': 'sum'}).reset_index()
 
-        #저장될 폴더가 있는지 확인
-        if not os.path.exists(temp):
-            os.makedirs(temp)
+            #print(df_mart_data_group)
+            #월별빈도수 키워드 데이터 저장
+            temp = "{0}{1}".format(file_path.get_raw_use_path(), dataPath)
 
-        # 저장할 파일명 생성
-        savefile = "{0}{1}\{2}_{3}.csv".format(file_path.get_raw_use_path(), dataPath, '1차마트', part)
-        # 파일저장
-        df_mart_data_group.to_csv(savefile, encoding="utf-8-sig", index=False)
+            #저장될 폴더가 있는지 확인
+            if not os.path.exists(temp):
+                os.makedirs(temp)
 
-        print("마트 적재 데이타 Log 저장-->", part)
-        #마트 적재 데이타 Log 저장
-        save_log = mdb.DbUseAnalClass()
-        save_log.mart_log_qry(df_mart_data_group,'민원' ,part)
+            # 저장할 파일명 생성
+            savefile = "{0}{1}\{2}_{3}.csv".format(file_path.get_raw_use_path(), dataPath, '1차마트', part)
+            # 파일저장
+            df_mart_data_group.to_csv(savefile, encoding="utf-8-sig", index=False)
 
-        print("The End!!!")
+            print("마트 적재 데이타 Log 저장-->", part)
+            #마트 적재 데이타 Log 저장
+            save_log = mdb.DbUseAnalClass()
+            save_log.mart_log_qry(df_mart_data_group,'민원' ,part)
+
+            print("The End!!!")
+        else:
+            error_event(em.NO_DATA)
+
     except Exception:
         import traceback
         traceback.print_exc()
 
 
 #급등키워드 데이터 생성
-def set_risting_data(files):
-
-    try :
+def set_rising_data(files):
+    try:
         dfAllData = pd.DataFrame()
 
-        # print(all_files)
         for filename in files:
             temp = filename.split('_')
             i = len(temp) - 1
@@ -193,6 +200,7 @@ def set_topic_data(files):
         df_mart_data = df_mart_data.assign(rank=0)
 
         return df_mart_data
+
     except Exception:
         import traceback
         traceback.print_exc()
@@ -223,6 +231,7 @@ def set_top_data(files):
         df_mart_data = df_mart_data.assign(rank=0)
 
         return df_mart_data
+
     except Exception:
        import traceback
        traceback.print_exc()
@@ -252,8 +261,8 @@ def set_dftopkw_data(files):
         df_mart_data = dfAllData[['stdym', 'keyword', 'freq']]
         df_mart_data = df_mart_data.assign(rank=0)
 
-
         return df_mart_data
+
     except Exception:
         import traceback
         traceback.print_exc()
@@ -330,6 +339,12 @@ def save_db_topic_data():
 
         connect_db.insert_many_qry(list_qry)
 
+
+def error_event(msg):
+    msgbox = QMessageBox()
+    msgbox.setWindowTitle("error")
+    msgbox.setText(msg)
+    msgbox.exec_()
 
 # mdb.DbUseAnalClass.select_qry("select * from CONPLAIN_TO_DAY")
 # anal_mart_complaint('핵심')
