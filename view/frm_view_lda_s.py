@@ -151,9 +151,10 @@ class Ui_Dialog(object):
 
     # 내용 테이블 조회
     def show_content(self, row, column):
-        # 분석결과 리스트에서 선택된 내용 조회
-        self.tbl_sel_content.setText("") # 테이블 초기화
-        self.tbl_contents.scrollToTop() # 테이블 맨 위로
+        # 분석결과 리스트에서 선택한 파일 테이블 조회
+        self.tbl_contents.scrollToTop()  # 테이블 맨 위로
+        self.tbl_sel_content.setText("")  # 테이블 초기화
+        self.tbl_contents.clearSelection()  # 테이블 선택 해제
 
         data_type = self.tbl_lda_file.item(row, 0).text()
         keyword = self.tbl_lda_file.item(row, 1).text()
@@ -175,7 +176,7 @@ class Ui_Dialog(object):
 
         if dataType == '크롤링':
             file_name = "뉴스_크롤링_*.csv"
-        else:
+        elif dataType == '유사사례정보':
             file_name = "민원_유사사례정보_*.csv"
 
         if file_path.is_path_exist_check(path) is False:
