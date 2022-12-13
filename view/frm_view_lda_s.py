@@ -143,6 +143,7 @@ class Ui_Dialog(object):
         self.tbl_contents.cellClicked.connect(self.show_details)  # 상세 내용 출력
 
 
+
     # 상세 내용 출력
     def show_details(self, row, column):
         self.tbl_sel_content.setText(self.tbl_contents.item(row, column).text())
@@ -352,9 +353,12 @@ class Ui_Dialog(object):
         self.m_output.setHtml(html)
 
 
-def error_event(self):
-    QMessageBox.about(self, 'Error', 'file path not fount!!')
+def error_event():
+    msgbox = QMessageBox()
+    msgbox.setWindowTitle("error")
+    msgbox.setText('file path not fount!!')
 
+    msgbox.exec_()
 
 if __name__ == "__main__":
     def my_exception_hook(exctype, value, traceback):
