@@ -218,7 +218,7 @@ class Ui_Dialog(object):
         file_path = FilePathClass()
         path = file_path.get_raw_use_path()
         if file_path.is_path_exist_check(path) is False:
-            error_event()
+            error_event(em.NO_PATH)
         return ""
 
 
@@ -233,7 +233,7 @@ class Ui_Dialog(object):
         s_path = file_path.get_result_path() + "LDA\\"
 
         if file_path.is_path_exist_check(s_path) is False:
-            error_event()
+            error_event(em.NO_PATH)
 
         # LDA 분석
         lda_model_proc(part, anal_str)
@@ -260,26 +260,26 @@ class Ui_Dialog(object):
         s_path = file_path.get_result_path() + "LDA\\"  # LDA 파일 경로
 
         if file_path.is_path_exist_check(s_path) is False:
-            error_event()
+            error_event(em.NO_PATH)
+        else:
+            # 분석 결과 파일 리스트
+            html_all_files = os.listdir(s_path)
+            # 선택 폴더에서 특정 파일만 가져오기(html 파일만 가져오기)
+            html_saved_list = [file for file in html_all_files if file.endswith(".html")]
+            html_list = []  # LDA 파일 리스트
 
-        # 분석 결과 파일 리스트
-        html_all_files = os.listdir(s_path)
-        # 선택 폴더에서 특정 파일만 가져오기(html 파일만 가져오기)
-        html_saved_list = [file for file in html_all_files if file.endswith(".html")]
-        html_list = []  # LDA 파일 리스트
+            # 분석 결과 파일 목록 (html)
+            self.tbl_lda_file.setRowCount(len(html_saved_list))
+            for i in range(len(html_saved_list)):
+                html_list.append(html_saved_list[i])
+            self.tbl_lda_file.setRowCount(len(html_list))
+            for i in range(len(html_list)):
+                savedname = html_list[i].replace('lda_result_', '').replace('.html', '').split('_')
+                self.tbl_lda_file.setItem(i, 0, QTableWidgetItem(savedname[0]))
 
-        # 분석 결과 파일 목록 (html)
-        self.tbl_lda_file.setRowCount(len(html_saved_list))
-        for i in range(len(html_saved_list)):
-            html_list.append(html_saved_list[i])
-        self.tbl_lda_file.setRowCount(len(html_list))
-        for i in range(len(html_list)):
-            savedname = html_list[i].replace('lda_result_', '').replace('.html', '').split('_')
-            self.tbl_lda_file.setItem(i, 0, QTableWidgetItem(savedname[0]))
-
-            # 분석 키워드 정보(키워드가 여러개 일 수 있어서 prefix 파일명을 제외한 모든 키워드를 보여줌, '_'로 구분)
-            temp = self.get_keyword(savedname, 1)
-            self.tbl_lda_file.setItem(i, 1, QTableWidgetItem(temp))
+                # 분석 키워드 정보(키워드가 여러개 일 수 있어서 prefix 파일명을 제외한 모든 키워드를 보여줌, '_'로 구분)
+                temp = self.get_keyword(savedname, 1)
+                self.tbl_lda_file.setItem(i, 1, QTableWidgetItem(temp))
 
 
     def get_csv_keyword(self):
