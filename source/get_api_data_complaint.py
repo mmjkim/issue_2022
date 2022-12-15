@@ -61,6 +61,8 @@ def get_risting_keyword(std_ymd, target):
 
         print('The End!!!')
 
+        return df1
+
     except requests.exceptions.Timeout as errd:  # 요청 시간 초과
         print("Timeout Error : ", errd)
 
@@ -77,7 +79,6 @@ def get_risting_keyword(std_ymd, target):
         import traceback
         traceback.print_exc()
 
-    return df1
 
 
 #-----------------------------------------------------
@@ -127,6 +128,7 @@ def get_topN_keyword(std_ymd_fr, std_ymd_to, target):
         save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M:%S'),'민원', route, analysis_date_fr, analysis_date_to, len(df1), 'API', ''])
 
         print('The End!!!')
+        return df1
 
     except requests.exceptions.Timeout as errd:
         print("Timeout Error : ", errd)
@@ -144,7 +146,6 @@ def get_topN_keyword(std_ymd_fr, std_ymd_to, target):
         import traceback
         traceback.print_exc()
 
-    return df1
 
 
 #-----------------------------------------------------
@@ -193,6 +194,8 @@ def get_today_topic_keyword(std_ymd,  target):
 
         print('The End!!!')
 
+        return df1
+
     except requests.exceptions.Timeout as errd:
         print("Timeout Error : ", errd)
 
@@ -209,7 +212,7 @@ def get_today_topic_keyword(std_ymd,  target):
         import traceback
         traceback.print_exc()
 
-    return df1
+
 
 
 #-----------------------------------------------------
@@ -263,6 +266,8 @@ def get_dfTopN_keyword(std_ymd,  target):
 
         print('The End!!!')
 
+        return df1
+
     except requests.exceptions.Timeout as errd:
         print("Timeout Error : ", errd)
 
@@ -280,7 +285,6 @@ def get_dfTopN_keyword(std_ymd,  target):
         import traceback
         traceback.print_exc()
 
-    return df1
 
 
 #-----------------------------------------------------
@@ -349,6 +353,7 @@ def get_similarInfo(keyword):
         traceback.print_exc()
 
 
+
 #-----------------------------------------------------
 #  공공데이터 포털에서 api i/f 통한 민원 데이터 가져오기
 #  연관어 분석 정보
@@ -414,6 +419,7 @@ def get_wd_cloud_info(keyword, std_ymd_fr, std_ymd_to, target):
     except Exception:
         import traceback
         traceback.print_exc()
+
 
 
 def get_complaint_data(part, date, target):
