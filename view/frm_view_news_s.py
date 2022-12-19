@@ -9,6 +9,8 @@ from PyQt5.QtWidgets import *
 
 import matplotlib.pyplot as plt
 import matplotlib
+import re
+
 matplotlib.rcParams['font.family'] = 'Malgun Gothic'
 matplotlib.rcParams['axes.unicode_minus'] = False
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -198,12 +200,18 @@ class Ui_frmViewNews(object):
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setObjectName("gridLayout")
 
+        self.tbl_data1.setSortingEnabled(True)
         self.tbl_data1.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tbl_data1.verticalHeader().setDefaultSectionSize(25)
         self.tbl_data1.horizontalHeader().setStyleSheet("QHeaderView::section {background-color:#404040;color:#FFFFFF;}")
+
+
+        self.tbl_data2.setSortingEnabled(True)
         self.tbl_data2.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tbl_data2.verticalHeader().setDefaultSectionSize(25)
         self.tbl_data2.horizontalHeader().setStyleSheet("QHeaderView::section {background-color:#404040;color:#FFFFFF;}")
+
+        self.tbl_data3.setSortingEnabled(True)
         self.tbl_data3.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tbl_data3.verticalHeader().setDefaultSectionSize(25)
         self.tbl_data3.horizontalHeader().setStyleSheet("QHeaderView::section {background-color:#404040;color:#FFFFFF;}")
@@ -231,35 +239,61 @@ class Ui_frmViewNews(object):
 
     # 그래프 출력
     def show_graph(self):
+
         self.label.clear()
         df = self.show_chart()
         self.fig.clear(True)
         ax = self.fig.add_subplot(111)
 
+        if self.tabWidget.currentIndex() == 0:
+            table = self.tbl_data1
+        elif self.tabWidget.currentIndex() == 1:
+            table = self.tbl_data2
+        elif self.tabWidget.currentIndex() == 2:
+            table = self.tbl_data3
+
+
+        df = self.setTblToDf(table)
+        #df = df.set_index(keys=['키워드'], inplace=False, drop=True)
+        #print("df3----->\n", df)
+        #x축 라벨 데이터 - 데이트 형태로 변경
+        x_lable_value = df.columns
+       # print('x_lable_value:', x_lable_value)
         df.columns = df.columns + '01'
         df.columns = pd.to_datetime(df.columns).date
 
+
         if self.rdo_line.isChecked():
-            for i in range(int(self.txt_top_n.text())):
-                ax.plot(df.columns,
-                        df.head(int(self.txt_top_n.text())).values[i].astype(int),
-                        label=df.index.values[i], alpha=0.5, linewidth=2)
+            print("df.head->\n", df.head(int(self.txt_top_n.text())).values)
+
+            temp_topN_df = df.head(int(self.txt_top_n.text()))
+
+
+            for i in range(len(temp_topN_df)):
+               ax.plot(df.columns,
+                        temp_topN_df.values[i].astype(float),
+                        label=temp_topN_df.index.values[i], alpha=0.5, linewidth=2)
+
             ax.legend()
             ax.set_title('월별 키워드 빈도수 추이')
-            ax.set_xticks(df.columns)
-            ax.set_xticklabels(df.columns, rotation=15)
-            ax.set_ylim([0, df.values.astype(int).max() + df.values.astype(int).max()*0.07])
+            ax.set_xticks(temp_topN_df.columns)
+            #print(temp_topN_df.columns)
+            ax.set_xticklabels(temp_topN_df.columns, rotation=15)
+            ax.set_ylim([0, temp_topN_df.values.astype(float).max() + temp_topN_df.values.astype(float).max()*0.07])
             ax.get_yaxis().get_major_formatter().set_scientific(False)
 
             self.canvas.draw()
 
         elif self.rdo_bar.isChecked():
             df = df.head(int(self.txt_top_n.text()))
-            df.columns = pd.to_datetime(df.columns).date
+            #df.columns = pd.to_datetime(df.columns).date
+            print("==================================")
+            print(df.info())
+            print("==================================")
             df.T.plot.bar(figsize=(10, 5), alpha=0.5)
             plt.xticks(rotation=15)
             plt.legend(df.index)
-            plt.ylim([0, df.values.astype(int).max() + df.values.astype(int).max()*0.07])
+            plt.ylim([0, df.values.astype(float).max() + df.values.astype(float).max()*0.07])
             import matplotlib.ticker as mticker
             plt.gca().yaxis.set_major_formatter(mticker.FormatStrFormatter('%i'))
             plt.title('월별 키워드 빈도수 추이')
@@ -269,13 +303,13 @@ class Ui_frmViewNews(object):
         elif self.rdo_area.isChecked():
             for i in range(int(self.txt_top_n.text())):
                 ax.scatter(df.columns,
-                       df.head(int(self.txt_top_n.text())).values[i].astype(int),
+                       df.head(int(self.txt_top_n.text())).values[i].astype(float),
                        label=df.index.values[i], alpha=0.5)
             ax.legend()
             ax.set_title('월별 키워드 빈도수 추이')
             ax.set_xticks(df.columns)
             ax.set_xticklabels(df.columns, rotation=15)
-            ax.set_ylim([0, df.values.astype(int).max() + df.values.astype(int).max()*0.07])
+            ax.set_ylim([0, df.values.astype(float).max() + df.values.astype(float).max()*0.07])
             ax.get_yaxis().get_major_formatter().set_scientific(False)
 
             self.canvas.draw()
@@ -297,61 +331,91 @@ class Ui_frmViewNews(object):
         sort_date = self.sort_yy.currentText() + self.sort_mm.currentText()
 
         news = pd.read_csv(file_path.get_raw_use_path() + '뉴스_' + part + '\\1차마트_' + part + '.csv')
+
+
+        #조회 조건에 맞는 데이타만 가져오기
+        news = news[(news['stdym'].astype(int) >= int(anal_s_date)) & (news['stdym'].astype(int) <= int(anal_e_date))]
+
+        #중복 제거
+        news = news.drop_duplicates(['stdym', 'keyword'], keep='first', inplace=False, ignore_index=False)
+
+        #데이타 수집년월 기준으로 피벗
         news_pivot = news.pivot(index='keyword', columns='stdym', values='freq')
 
-        if news_pivot.columns[0] >= int(anal_s_date):
-            anal_s_date = news_pivot.columns[0].astype(str)
-        if news_pivot.columns[-1] <= int(anal_e_date):
-            anal_e_date = news_pivot.columns[-1].astype(str)
+        # 정렬기준 값으로 데이터 정렬하기
+        # 정렬기준 값이 데이타가 존재 하지 않으면 가장 마지막 컬럼 값으로 정렬
+        if (sort_date in news_pivot.columns) == False:
+            sort_date = news_pivot.columns[news_pivot.shape[1]-1]
 
-        news_sel = news_pivot.loc[:, anal_s_date:anal_e_date]
-        if (int(sort_date) < news_sel.columns[0]) | (int(sort_date) > news_sel.columns[-1]):
-            sort_date = news_sel.columns[-1].astype(str)
+        news_sel = news_pivot.sort_values(sort_date, ascending=False)
 
-        news_sel.columns = news_sel.columns.astype(str)
-        news_sel = news_sel.sort_values(sort_date, ascending=False)
+        for i in news_sel.columns:
+            temp = str(i)[0:4] + "-" + str(i)[4:6]
+            news_sel.rename(columns={i:temp}, inplace=True)
+
 
         if self.tabWidget.currentIndex() == 0:
-            self.tbl_data1.setRowCount(len(news_sel))
-            self.tbl_data1.setColumnCount(len(news_sel.columns)+1)
-
-            for i in range(len(news_sel)):
-                self.tbl_data1.setItem(i, 0, QTableWidgetItem(news_sel.index[i]))
-                for j in range(len(news_sel.columns)):
-                    if pd.isna(news_sel[news_sel.columns[j]][i]):
-                        self.tbl_data1.setItem(i, j+1, QTableWidgetItem('0.0'))
-                    else:
-                        self.tbl_data1.setItem(i, j+1, QTableWidgetItem(str(news_sel[news_sel.columns[j]][i])))
-                    self.tbl_data1.setHorizontalHeaderItem(j+1, QTableWidgetItem(news_sel.columns[j]))
-
+             self.set_table_data(news_sel,  self.tbl_data1)
         elif self.tabWidget.currentIndex() == 1:
-            self.tbl_data2.setRowCount(len(news_sel))
-            self.tbl_data2.setColumnCount(len(news_sel.columns) + 1)
-
-            for i in range(len(news_sel)):
-                self.tbl_data2.setItem(i, 0, QTableWidgetItem(news_sel.index[i]))
-                for j in range(len(news_sel.columns)):
-                    if pd.isna(news_sel[news_sel.columns[j]][i]):
-                        self.tbl_data2.setItem(i, j + 1, QTableWidgetItem('0.0'))
-                    else:
-                        self.tbl_data2.setItem(i, j + 1, QTableWidgetItem(str(news_sel[news_sel.columns[j]][i])))
-                    self.tbl_data2.setHorizontalHeaderItem(j + 1, QTableWidgetItem(news_sel.columns[j]))
-
+             self.set_table_data(news_sel,  self.tbl_data2)
         elif self.tabWidget.currentIndex() == 2:
-            self.tbl_data3.setRowCount(len(news_sel))
-            self.tbl_data3.setColumnCount(len(news_sel.columns) + 1)
-
-            for i in range(len(news_sel)):
-                self.tbl_data3.setItem(i, 0, QTableWidgetItem(news_sel.index[i]))
-                for j in range(len(news_sel.columns)):
-                    if pd.isna(news_sel[news_sel.columns[j]][i]):
-                        self.tbl_data3.setItem(i, j + 1, QTableWidgetItem('0.0'))
-                    else:
-                        self.tbl_data3.setItem(i, j + 1, QTableWidgetItem(str(news_sel[news_sel.columns[j]][i])))
-                    self.tbl_data3.setHorizontalHeaderItem(j + 1, QTableWidgetItem(news_sel.columns[j]))
-
+             self.set_table_data(news_sel,  self.tbl_data3)
         return news_sel
 
+    #조회한 데이타 테이블에 넣기
+    def set_table_data(self, news_sel, table):
+
+        #table.setRowCount(len(news_sel))
+        #table.setColumnCount(len(news_sel.columns) + 1)
+
+        #컬럼 생성
+        table.setColumnCount(len(news_sel.columns)+1)
+        table.setRowCount(len(news_sel))
+
+
+        table.setHorizontalHeaderItem(0, QTableWidgetItem("키워드"))
+        for j in range(0, len(news_sel.columns)):
+            #print(j , ";", news_sel.columns[j])
+            table.setHorizontalHeaderItem(j+1, QTableWidgetItem(news_sel.columns[j]))
+
+        for i in range(0, len(news_sel)):
+
+            table.setItem(i, 0, QTableWidgetItem(news_sel.index[i]))
+            for j in range(len(news_sel.columns)):
+                if pd.isna(news_sel[news_sel.columns[j]][i]):
+                    item = QTableWidgetItem('0.0')
+                else:
+                    item = QTableWidgetItem(str(news_sel[news_sel.columns[j]][i]))
+
+                item.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
+
+                table.setItem(i, j+1, item)
+
+
+    # 테이블 데이터를 dataframe으로 변경
+    def setTblToDf(self, table):
+
+        col_count = table.columnCount()
+        row_count = table.rowCount()
+
+        headers = [str(table.horizontalHeaderItem(i).text()).replace('-', '') for i in range(col_count)]
+        print("headers:" ,headers)
+
+        # df indexing is slow, so use lists
+        df_list = []
+        for row in range(row_count):
+            df_list2 = []
+            for col in range(col_count):
+                table_item = table.item(row, col)
+                df_list2.append('' if table_item is None else str(table_item.text()))
+            df_list.append(df_list2)
+
+        df = pd.DataFrame(df_list, columns=headers)
+        df = df.set_index(keys=['키워드'], inplace=False, drop=True)
+        print("==================================")
+        print(df)
+        print("==================================")
+        return df
 
     def retranslateUi(self, frmViewNews):
         _translate = QtCore.QCoreApplication.translate
