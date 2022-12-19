@@ -241,7 +241,7 @@ class Ui_frmViewNews(object):
     def show_graph(self):
 
         self.label.clear()
-        df = self.show_chart()
+        # df = self.show_chart()
         self.fig.clear(True)
         ax = self.fig.add_subplot(111)
 
@@ -254,17 +254,18 @@ class Ui_frmViewNews(object):
 
 
         df = self.setTblToDf(table)
+        # print(df)
         #df = df.set_index(keys=['키워드'], inplace=False, drop=True)
         #print("df3----->\n", df)
         #x축 라벨 데이터 - 데이트 형태로 변경
         x_lable_value = df.columns
-       # print('x_lable_value:', x_lable_value)
+        # print('x_lable_value:', x_lable_value)
         df.columns = df.columns + '01'
         df.columns = pd.to_datetime(df.columns).date
 
 
         if self.rdo_line.isChecked():
-            print("df.head->\n", df.head(int(self.txt_top_n.text())).values)
+            # print("df.head->\n", df.head(int(self.txt_top_n.text())).values)
 
             temp_topN_df = df.head(int(self.txt_top_n.text()))
 
@@ -287,9 +288,11 @@ class Ui_frmViewNews(object):
         elif self.rdo_bar.isChecked():
             df = df.head(int(self.txt_top_n.text()))
             #df.columns = pd.to_datetime(df.columns).date
-            print("==================================")
-            print(df.info())
-            print("==================================")
+            # print("==================================")
+            # print(df.info())
+            # print("==================================")
+            df = df.apply(pd.to_numeric)
+            # print(df.info())
             df.T.plot.bar(figsize=(10, 5), alpha=0.5)
             plt.xticks(rotation=15)
             plt.legend(df.index)
@@ -399,7 +402,7 @@ class Ui_frmViewNews(object):
         row_count = table.rowCount()
 
         headers = [str(table.horizontalHeaderItem(i).text()).replace('-', '') for i in range(col_count)]
-        print("headers:" ,headers)
+        # print("headers:" ,headers)
 
         # df indexing is slow, so use lists
         df_list = []
@@ -412,9 +415,9 @@ class Ui_frmViewNews(object):
 
         df = pd.DataFrame(df_list, columns=headers)
         df = df.set_index(keys=['키워드'], inplace=False, drop=True)
-        print("==================================")
-        print(df)
-        print("==================================")
+        # print("==================================")
+        # print(df)
+        # print("==================================")
         return df
 
     def retranslateUi(self, frmViewNews):
