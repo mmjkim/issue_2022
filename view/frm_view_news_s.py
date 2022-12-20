@@ -457,7 +457,7 @@ class Ui_frmViewNews(object):
         # print("==================================")
         return df
 
-    def retranslateUi(self, frmViewNews):커
+    def retranslateUi(self, frmViewNews):
         _translate = QtCore.QCoreApplication.translate
         frmViewNews.setWindowTitle(_translate("frmViewNews", "뉴스 키워드 시각화"))
         self.group1.setTitle(_translate("frmViewNews", " [ 분석 ] "))
