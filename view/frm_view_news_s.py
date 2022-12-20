@@ -422,13 +422,13 @@ class Ui_frmViewNews(object):
 
             table.setItem(i, 0, QTableWidgetItem(news_sel.index[i]))
             for j in range(len(news_sel.columns)):
+                item = QTableWidgetItem()
                 if pd.isna(news_sel[news_sel.columns[j]][i]):
-                    item = QTableWidgetItem('0.0')
+                   item.setData(Qt.DisplayRole, float(0.0))
                 else:
-                    item = QTableWidgetItem(str(news_sel[news_sel.columns[j]][i]))
-
+                   # item = QTableWidgetItem(str(news_sel[news_sel.columns[j]][i]))
+                   item.setData(Qt.DisplayRole, float(news_sel[news_sel.columns[j]][i]))
                 item.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
-
                 table.setItem(i, j+1, item)
 
 
@@ -457,7 +457,7 @@ class Ui_frmViewNews(object):
         # print("==================================")
         return df
 
-    def retranslateUi(self, frmViewNews):
+    def retranslateUi(self, frmViewNews):커
         _translate = QtCore.QCoreApplication.translate
         frmViewNews.setWindowTitle(_translate("frmViewNews", "뉴스 키워드 시각화"))
         self.group1.setTitle(_translate("frmViewNews", " [ 분석 ] "))
