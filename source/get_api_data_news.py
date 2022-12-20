@@ -94,8 +94,10 @@ def get_news(uddi, part, day):
 
             res = urlopen(url).read()
             resJson = json.loads(res)
+            #print(resJson )
             df = json_normalize(resJson.get('data'))
             # print("---")
+            df = df.drop(index=df.loc[df['키워드'] == ''].index)
             route = get_news_data_path + "{0}_{1}.csv".format(dataPath, row['date'])
             df.to_csv(route, index=False, encoding="utf-8-sig")
 
@@ -106,8 +108,7 @@ def get_news(uddi, part, day):
             save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M:%S'),'뉴스' ,route, row['date'], row['date'],  len(df), 'API', ''])
 
     except Exception as e:
-        print(part + day + " get_news -> Error")
-        print(e)
+        print(part + " get_news -> Error :", e)
 
  #uuid 값 가져오기
 def get_news_data(part, day1, day2):
@@ -132,4 +133,4 @@ def get_news_data(part, day1, day2):
 # aa = get_news_uuid_list('경제')
 # bb = get_news(aa, '경제', '20220630')
 
-#get_news_data('전체', '202209', '202212')
+get_news_data('경제', '202003', '202003')

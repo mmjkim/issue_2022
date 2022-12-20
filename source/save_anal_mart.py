@@ -43,9 +43,11 @@ def anal_mart_news(part):
 
         if len(all_files) != 0:
             for filename in all_files:
+                print(filename)
                 temp = filename.split('_')
                 i = len(temp)-1
                 df_dis_use = pd.read_csv(filename, encoding="utf-8-sig")
+                df_dis_use = df_dis_use.head(200)
                 # 컬럼명 변경
                 df_dis_use.rename(columns={'빈도수':'freq', '순위':'rank', '키워드':'keyword'}, inplace=True)
 
@@ -78,10 +80,8 @@ def anal_mart_news(part):
         else:
             error_event(em.NO_DATA)
 
-    except Exception:
-        import traceback
-        traceback.print_exc()
-
+    except Exception as e:
+        print("anal_mart_news error :", e)
 
 #----------------------------------------------------------------
 # 민원데이터 월별 합계 마트 생성
@@ -280,7 +280,7 @@ def save_db_naver_data():
         temp = "{0}\*네이버*.csv".format(file_path.get_raw_use_path())
 
         all_files = glob.glob(temp)
-        print(all_files)
+        #print(all_files)
         connect_db = mdb.DbUseAnalClass()
         connect_db.delete_qry("DELETE FROM NAVER_KEYWORD")
 
@@ -358,4 +358,4 @@ def error_event(msg):
 
 #save_db_naver_data()
 
-#anal_mart_news('정치')
+#anal_mart_news('경제')
