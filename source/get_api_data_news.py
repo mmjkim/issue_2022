@@ -103,10 +103,11 @@ def get_news(uddi, part, day):
             save_log = mdb.DbUseAnalClass()
             now = datetime.now()
             # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
-            save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M%S'),'뉴스' ,route, row['date'], row['date'],  len(df), 'API', ''])
+            save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M:%S'),'뉴스' ,route, row['date'], row['date'],  len(df), 'API', ''])
 
-    except:
-        print(part + " get_news -> Error")
+    except Exception as e:
+        print(part + day + " get_news -> Error")
+        print(e)
 
  #uuid 값 가져오기
 def get_news_data(part, day1, day2):

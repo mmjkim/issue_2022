@@ -1,7 +1,7 @@
 import os
 import sys
+import fnmatch
 import warnings
-
 warnings.filterwarnings(action='ignore')
 
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -13,7 +13,7 @@ from common.config.filepassclass import FilePathClass
 from source.anal_contents_lda import *
 import common.config.errormessage as em
 
-import fnmatch
+
 class Ui_Dialog(object):
 
     def setupUi(self, Dialog):

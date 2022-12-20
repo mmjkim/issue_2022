@@ -592,12 +592,12 @@ class Ui_Anal_Dialog(object):
 
         empty_relate_str = ', '.join(empty_relate_list)
         empty_simil_str = ', '.join(empty_simil_list)
-        self.lbl_relate.repaint()
+        self.lbl_relate.repaint()  # 라벨 초기화
         self.lbl_simil.repaint()
         self.lbl_relate.setText('X 연관어: ' + empty_relate_str)
         self.lbl_simil.setText('X 유사사례: ' + empty_simil_str)
 
-        self.show_folders('민원') # 민원 데이터 수집 리스트 출력
+        self.show_folders('민원')  # 민원 데이터 수집 리스트 출력
 
     
     # 수집 파일 리스트 출력
@@ -608,7 +608,7 @@ class Ui_Anal_Dialog(object):
         
         # 경로 존재 X > 에러 출력
         if file_path.is_path_exist_check(search_path) is False:
-           error_event()
+           error_event(em.NO_PATH)
 
         data_all_list = os.listdir(search_path)
 

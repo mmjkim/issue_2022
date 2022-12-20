@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.rcParams['font.family'] = 'Malgun Gothic'
 matplotlib.rcParams['axes.unicode_minus'] = False
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas # 그래프 출력 캔버스
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas  # 그래프 출력 캔버스
 
 from common.config.filepassclass import FilePathClass
 
@@ -313,6 +313,7 @@ class Ui_frmViewComplaints(object):
         self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(frmViewComplaints)
 
+        # 그래프 출력 공간
         self.fig = plt.Figure()
         self.canvas = FigureCanvas(self.fig)
         self.gridLayout.addWidget(self.canvas)
@@ -323,6 +324,7 @@ class Ui_frmViewComplaints(object):
         self.canvas3 = FigureCanvas(self.fig3)
         self.gridLayout_3.addWidget(self.canvas3)
 
+        # 기본값 '5'로 설정
         self.txt_top_n.setValidator(QIntValidator())
         self.txt_top_n.setText('5')
         self.txt_top_n_2.setValidator(QIntValidator())
@@ -363,6 +365,7 @@ class Ui_frmViewComplaints(object):
             df.columns = df.columns + '01'
             df.columns = pd.to_datetime(df.columns).date
 
+            # 그래프 초기화
             self.label_2.clear()
             self.fig2.clear(True)
             ax2 = self.fig2.add_subplot(111)
@@ -382,6 +385,7 @@ class Ui_frmViewComplaints(object):
             df.columns = df.columns.astype(str) + '01'
             df.columns = pd.to_datetime(df.columns).date
 
+            # 그래프 초기화
             self.label_3.clear()
             self.fig3.clear(True)
             plt.cla()
@@ -396,7 +400,7 @@ class Ui_frmViewComplaints(object):
 
             self.canvas3.draw()
 
-
+    # 산점도
     def draw_scatter(self, topn, ax, df, canvas):
         for i in range(int(topn.text())):
             ax.scatter(df.columns,
@@ -410,7 +414,7 @@ class Ui_frmViewComplaints(object):
         ax.get_yaxis().get_major_formatter().set_scientific(False)
         canvas.draw()
 
-
+    # 막대 그래프
     def draw_bar_chart(self, df, topn, label):
         df = df.head(int(topn.text()))
         df.columns = pd.to_datetime(df.columns).date
@@ -424,7 +428,7 @@ class Ui_frmViewComplaints(object):
         plt.savefig('graph_img.png', dpi=100)
         label.setPixmap(QtGui.QPixmap('graph_img.png'))
 
-
+    # 선 그래프
     def draw_line_chart(self, topn, ax, df, canvas):
         for i in range(int(topn.text())):
             ax.plot(df.columns,
@@ -456,12 +460,16 @@ class Ui_frmViewComplaints(object):
         anal_e_date = self.sel_yy_end.currentText() + self.sel_mm_end.currentText()
         sort_date = self.sort_yy.currentText() + self.sort_mm.currentText()
 
+        # 분석 시작 일자가 수집된 데이터에 없는 경우 가장 과거 일자로 변경
         if df_pivot.columns[0] >= int(anal_s_date):
             anal_s_date = df_pivot.columns[0].astype(str)
+        # 분석 종료 일자가 수집된 데이터에 없는 경우 가장 최근 일자로 변경
         if df_pivot.columns[-1] <= int(anal_e_date):
             anal_e_date = df_pivot.columns[-1].astype(str)
 
         df_sel = df_pivot.loc[:, anal_s_date:anal_e_date]
+
+        # 정렬 기준 일자가 수집된 데이터에 없는 경우 가장 최근 일자로 변경
         if (int(sort_date) < df_sel.columns[0]) | (int(sort_date) > df_sel.columns[-1]):
             sort_date = df_sel.columns[-1].astype(str)
 
@@ -489,7 +497,7 @@ class Ui_frmViewComplaints(object):
         for i in range(len(df)):
             table.setItem(i, 0, QTableWidgetItem(df.index[i]))
             for j in range(len(df.columns)):
-                if pd.isna(df[df.columns[j]][i]):
+                if pd.isna(df[df.columns[j]][i]):  # 값이 NaN이면 '0.0'으로 삽입
                     table.setItem(i, j + 1, QTableWidgetItem('0.0'))
                 else:
                     table.setItem(i, j + 1, QTableWidgetItem(str(df[df.columns[j]][i])))

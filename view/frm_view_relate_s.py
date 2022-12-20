@@ -27,6 +27,7 @@ class Ui_frmComplaintWC(object):
         self.groupBox = QtWidgets.QGroupBox(self.gridLayoutWidget)
         self.groupBox.setObjectName("groupBox")
 
+        # 키워드 선택 콤보 박스
         self.sel_keyword_1 = QtWidgets.QComboBox(self.groupBox)
         self.sel_keyword_1.setGeometry(QtCore.QRect(7, 10, 485, 30))
         self.sel_keyword_1.setObjectName("sel_keyword_1")
@@ -115,8 +116,12 @@ class Ui_frmComplaintWC(object):
         file_path = FilePathClass()
         path = file_path.get_raw_use_path()
 
+        # 키워드에 해당하는 파일 찾아서 데이터프레임으로
         df = pd.read_csv(path + '민원_연관어분석정보_' + keyword + '.csv')
+        # 데이터프레임을 {index:value}의 딕셔너리 형태로 변경
         wc = df.set_index('label').to_dict()['value']
+
+        # 워드클라우드 생성
         wordCloud = WordCloud(
             font_path="malgun",
             width=430,
@@ -124,6 +129,7 @@ class Ui_frmComplaintWC(object):
             max_font_size=80,
             background_color='white'
         ).generate_from_frequencies(wc)
+        # 워드클라우드 출력
         plt.figure(figsize=(5, 5))
         plt.imshow(wordCloud)
         plt.axis('off')

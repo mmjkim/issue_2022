@@ -9,7 +9,6 @@ from PyQt5.QtWidgets import *
 
 import matplotlib.pyplot as plt
 import matplotlib
-import re
 
 matplotlib.rcParams['font.family'] = 'Malgun Gothic'
 matplotlib.rcParams['axes.unicode_minus'] = False
@@ -83,33 +82,43 @@ class Ui_frmViewNews(object):
         self.btn_search = QtWidgets.QPushButton(self.group1)
         self.btn_search.setGeometry(QtCore.QRect(890, 23, 79, 24))
         self.btn_search.setObjectName("btn_search")
-        self.label_7 = QtWidgets.QLabel(self.group1)
-        self.label_7.setGeometry(QtCore.QRect(410, 28, 91, 16))
-        self.label_7.setObjectName("label_7")
-        self.sort_yy = QtWidgets.QComboBox(self.group1)
-        self.sort_yy.setGeometry(QtCore.QRect(512, 23, 67, 23))
-        self.sort_yy.setObjectName("sort_yy")
-        self.sort_yy.addItem("")
-        self.sort_yy.addItem("")
-        self.sort_yy.addItem("")
-        self.sort_yy.addItem("")
-        self.sort_yy.addItem("")
-        self.sort_yy.addItem("")
-        self.sort_mm = QtWidgets.QComboBox(self.group1)
-        self.sort_mm.setGeometry(QtCore.QRect(588, 23, 51, 23))
-        self.sort_mm.setObjectName("sort_mm")
-        self.sort_mm.addItem("")
-        self.sort_mm.addItem("")
-        self.sort_mm.addItem("")
-        self.sort_mm.addItem("")
-        self.sort_mm.addItem("")
-        self.sort_mm.addItem("")
-        self.sort_mm.addItem("")
-        self.sort_mm.addItem("")
-        self.sort_mm.addItem("")
-        self.sort_mm.addItem("")
-        self.sort_mm.addItem("")
-        self.sort_mm.addItem("")
+        self.rdo_line = QtWidgets.QRadioButton(self.group1)
+        self.rdo_line.setGeometry(QtCore.QRect(430, 27, 86, 16))
+        self.rdo_line.setObjectName("rdo_line")
+        self.rdo_line.setChecked(True)
+        self.rdo_bar = QtWidgets.QRadioButton(self.group1)
+        self.rdo_bar.setGeometry(QtCore.QRect(494, 27, 86, 16))
+        self.rdo_bar.setObjectName("rdo_bar")
+        self.rdo_area = QtWidgets.QRadioButton(self.group1)
+        self.rdo_area.setGeometry(QtCore.QRect(554, 27, 86, 16))
+        self.rdo_area.setObjectName("rdo_area")
+        # self.label_7 = QtWidgets.QLabel(self.group1)
+        # self.label_7.setGeometry(QtCore.QRect(410, 28, 91, 16))
+        # self.label_7.setObjectName("label_7")
+        # self.sort_yy = QtWidgets.QComboBox(self.group1)
+        # self.sort_yy.setGeometry(QtCore.QRect(512, 23, 67, 23))
+        # self.sort_yy.setObjectName("sort_yy")
+        # self.sort_yy.addItem("")
+        # self.sort_yy.addItem("")
+        # self.sort_yy.addItem("")
+        # self.sort_yy.addItem("")
+        # self.sort_yy.addItem("")
+        # self.sort_yy.addItem("")
+        # self.sort_mm = QtWidgets.QComboBox(self.group1)
+        # self.sort_mm.setGeometry(QtCore.QRect(588, 23, 51, 23))
+        # self.sort_mm.setObjectName("sort_mm")
+        # self.sort_mm.addItem("")
+        # self.sort_mm.addItem("")
+        # self.sort_mm.addItem("")
+        # self.sort_mm.addItem("")
+        # self.sort_mm.addItem("")
+        # self.sort_mm.addItem("")
+        # self.sort_mm.addItem("")
+        # self.sort_mm.addItem("")
+        # self.sort_mm.addItem("")
+        # self.sort_mm.addItem("")
+        # self.sort_mm.addItem("")
+        # self.sort_mm.addItem("")
         self.group2 = QtWidgets.QGroupBox(frmViewNews)
         self.group2.setGeometry(QtCore.QRect(10, 80, 1001, 311))
         self.group2.setObjectName("group2")
@@ -173,21 +182,11 @@ class Ui_frmViewNews(object):
         self.group3 = QtWidgets.QGroupBox(frmViewNews)
         self.group3.setGeometry(QtCore.QRect(10, 400, 1001, 560))
         self.group3.setObjectName("group3")
-        self.rdo_line = QtWidgets.QRadioButton(self.group3)
-        self.rdo_line.setGeometry(QtCore.QRect(20, 26, 86, 16))
-        self.rdo_line.setObjectName("rdo_line")
-        self.rdo_line.setChecked(True)
-        self.rdo_bar = QtWidgets.QRadioButton(self.group3)
-        self.rdo_bar.setGeometry(QtCore.QRect(80, 26, 86, 16))
-        self.rdo_bar.setObjectName("rdo_bar")
-        self.rdo_area = QtWidgets.QRadioButton(self.group3)
-        self.rdo_area.setGeometry(QtCore.QRect(138, 26, 86, 16))
-        self.rdo_area.setObjectName("rdo_area")
         self.label_8 = QtWidgets.QLabel(self.group3)
-        self.label_8.setGeometry(QtCore.QRect(220, 26, 51, 16))
+        self.label_8.setGeometry(QtCore.QRect(770, 26, 51, 16))
         self.label_8.setObjectName("label_8")
         self.txt_top_n = QtWidgets.QLineEdit(self.group3)
-        self.txt_top_n.setGeometry(QtCore.QRect(270, 20, 61, 24))
+        self.txt_top_n.setGeometry(QtCore.QRect(820, 20, 61, 24))
         self.txt_top_n.setToolTip("")
         self.txt_top_n.setObjectName("txt_top_n")
         self.btn_print = QtWidgets.QPushButton(self.group3)
@@ -205,9 +204,7 @@ class Ui_frmViewNews(object):
         self.tbl_data1.verticalHeader().setDefaultSectionSize(25)
         self.tbl_data1.horizontalHeader().setStyleSheet("QHeaderView::section {background-color:#404040;color:#FFFFFF;}")
 
-        self.tbl_data1.cellClicked.connect(self.table_select)
-
-
+        self.tbl_data1.cellClicked.connect(self.table_select)  # 셀 선택 > 그래프 출력
 
         self.tbl_data2.setSortingEnabled(True)
         self.tbl_data2.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -224,10 +221,12 @@ class Ui_frmViewNews(object):
         self.label.setObjectName("label")
         self.label.setAlignment(Qt.AlignCenter)
 
+        # 그래프 출력 공간
         self.fig = plt.Figure()
         self.canvas = FigureCanvas(self.fig)
         self.gridLayout.addWidget(self.canvas)
 
+        # 정수만 입력 가능
         self.onlyInt = QIntValidator()
         self.txt_top_n.setValidator(self.onlyInt)
         self.txt_top_n.setText('5')
@@ -236,8 +235,8 @@ class Ui_frmViewNews(object):
         self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(frmViewNews)
 
-        self.btn_search.clicked.connect(self.show_chart)
-        self.btn_print.clicked.connect(self.show_graph)
+        self.btn_search.clicked.connect(self.show_chart)  # 테이블 출력
+        self.btn_print.clicked.connect(self.show_graph)  # 그래프 출력
 
 
     def table_select(self, row, col):
@@ -257,22 +256,30 @@ class Ui_frmViewNews(object):
         df.columns = pd.to_datetime(df.columns).date
 
         ax = self.fig.add_subplot(111)
-        ax.plot(df.columns,
-                df.values[row].astype(float),
-                label=df.values[row], alpha=0.5, linewidth=2)
+
+        if self.rdo_line.isChecked():
+            ax.plot(df.columns, df.values[row].astype(float),
+                    label=df.index.values[row], alpha=0.5, linewidth=2)
+        elif self.rdo_area.isChecked():
+            ax.scatter(df.columns, df.values[row].astype(float),
+                       label=df.index.values[row], alpha=0.5)
+        elif self.rdo_bar.isChecked():
+            ax.bar(df.columns, df.values[row].astype(float),
+                   label=df.index.values[row], alpha=0.5, width=5)
 
         ax.legend()
         ax.set_title('월별 키워드 빈도수 추이')
-        ax.set_xticks(df.columns)
-        # print(temp_topN_df.columns)
-        ax.set_xticklabels(df.columns, rotation=15)
+        # ax.set_xticks(df.columns)
+        # ax.set_xticklabels(df.columns, rotation=15)
+        import math
+        from matplotlib.dates import MonthLocator
+        ax.xaxis.set_major_locator(MonthLocator(interval=math.ceil(len(df.columns)/12)))  # 주눈금
+        ax.xaxis.set_minor_locator(MonthLocator(interval=1))  # 보조 눈금
         ax.set_ylim([0, df.values[row].astype(float).max() + df.values[row].astype(float).max() * 0.07])
         ax.get_yaxis().get_major_formatter().set_scientific(False)
 
         self.canvas.draw()
 
-
-        print(table, row, col)
 
     # 그래프 출력
     def show_graph(self):
@@ -295,7 +302,7 @@ class Ui_frmViewNews(object):
         #df = df.set_index(keys=['키워드'], inplace=False, drop=True)
         #print("df3----->\n", df)
         #x축 라벨 데이터 - 데이트 형태로 변경
-        x_lable_value = df.columns
+        # x_lable_value = df.columns
         # print('x_lable_value:', x_lable_value)
         df.columns = df.columns + '01'
         df.columns = pd.to_datetime(df.columns).date
@@ -368,7 +375,7 @@ class Ui_frmViewNews(object):
 
         anal_s_date = self.sel_yy_start.currentText() + self.sel_mm_start.currentText()
         anal_e_date = self.sel_yy_end.currentText() + self.sel_mm_end.currentText()
-        sort_date = self.sort_yy.currentText() + self.sort_mm.currentText()
+        # sort_date = self.sort_yy.currentText() + self.sort_mm.currentText()
 
         news = pd.read_csv(file_path.get_raw_use_path() + '뉴스_' + part + '\\1차마트_' + part + '.csv')
 
@@ -384,8 +391,8 @@ class Ui_frmViewNews(object):
 
         # 정렬기준 값으로 데이터 정렬하기
         # 정렬기준 값이 데이타가 존재 하지 않으면 가장 마지막 컬럼 값으로 정렬
-        if (sort_date in news_pivot.columns) == False:
-            sort_date = news_pivot.columns[news_pivot.shape[1]-1]
+        # if (sort_date in news_pivot.columns) == False:
+        sort_date = news_pivot.columns[news_pivot.shape[1]-1]
 
         news_sel = news_pivot.sort_values(sort_date, ascending=False)
 
@@ -503,27 +510,27 @@ class Ui_frmViewNews(object):
         self.sel_mm_end.setCurrentText(str(datetime.today().month))
         self.sel_yy_start.setCurrentText(str(datetime.today().year))
         self.btn_search.setText(_translate("frmViewNews", "조회"))
-        self.label_7.setText(_translate("frmViewNews", "정렬기준 년월 :"))
-        self.sort_yy.setItemText(0, _translate("frmViewNews", str(datetime.today().year)))
-        self.sort_yy.setItemText(1, _translate("frmViewNews", str(datetime.today().year-1)))
-        self.sort_yy.setItemText(2, _translate("frmViewNews", str(datetime.today().year-2)))
-        self.sort_yy.setItemText(3, _translate("frmViewNews", str(datetime.today().year-3)))
-        self.sort_yy.setItemText(4, _translate("frmViewNews", str(datetime.today().year-4)))
-        self.sort_yy.setItemText(5, _translate("frmViewNews", str(datetime.today().year-5)))
-        self.sort_mm.setItemText(0, _translate("frmViewNews", "01"))
-        self.sort_mm.setItemText(1, _translate("frmViewNews", "02"))
-        self.sort_mm.setItemText(2, _translate("frmViewNews", "03"))
-        self.sort_mm.setItemText(3, _translate("frmViewNews", "04"))
-        self.sort_mm.setItemText(4, _translate("frmViewNews", "05"))
-        self.sort_mm.setItemText(5, _translate("frmViewNews", "06"))
-        self.sort_mm.setItemText(6, _translate("frmViewNews", "07"))
-        self.sort_mm.setItemText(7, _translate("frmViewNews", "08"))
-        self.sort_mm.setItemText(8, _translate("frmViewNews", "09"))
-        self.sort_mm.setItemText(9, _translate("frmViewNews", "10"))
-        self.sort_mm.setItemText(10, _translate("frmViewNews", "11"))
-        self.sort_mm.setItemText(11, _translate("frmViewNews", "12"))
-        self.sort_yy.setCurrentText(str(datetime.today().year))
-        self.sort_mm.setCurrentText(str(datetime.today().month))
+        # self.label_7.setText(_translate("frmViewNews", "정렬기준 년월 :"))
+        # self.sort_yy.setItemText(0, _translate("frmViewNews", str(datetime.today().year)))
+        # self.sort_yy.setItemText(1, _translate("frmViewNews", str(datetime.today().year-1)))
+        # self.sort_yy.setItemText(2, _translate("frmViewNews", str(datetime.today().year-2)))
+        # self.sort_yy.setItemText(3, _translate("frmViewNews", str(datetime.today().year-3)))
+        # self.sort_yy.setItemText(4, _translate("frmViewNews", str(datetime.today().year-4)))
+        # self.sort_yy.setItemText(5, _translate("frmViewNews", str(datetime.today().year-5)))
+        # self.sort_mm.setItemText(0, _translate("frmViewNews", "01"))
+        # self.sort_mm.setItemText(1, _translate("frmViewNews", "02"))
+        # self.sort_mm.setItemText(2, _translate("frmViewNews", "03"))
+        # self.sort_mm.setItemText(3, _translate("frmViewNews", "04"))
+        # self.sort_mm.setItemText(4, _translate("frmViewNews", "05"))
+        # self.sort_mm.setItemText(5, _translate("frmViewNews", "06"))
+        # self.sort_mm.setItemText(6, _translate("frmViewNews", "07"))
+        # self.sort_mm.setItemText(7, _translate("frmViewNews", "08"))
+        # self.sort_mm.setItemText(8, _translate("frmViewNews", "09"))
+        # self.sort_mm.setItemText(9, _translate("frmViewNews", "10"))
+        # self.sort_mm.setItemText(10, _translate("frmViewNews", "11"))
+        # self.sort_mm.setItemText(11, _translate("frmViewNews", "12"))
+        # self.sort_yy.setCurrentText(str(datetime.today().year))
+        # self.sort_mm.setCurrentText(str(datetime.today().month))
         self.group2.setTitle(_translate("frmViewNews", " [ 데이터 현황 ] "))
         item = self.tbl_data1.horizontalHeaderItem(0)
         item.setText(_translate("frmViewNews", "키워드"))

@@ -432,7 +432,6 @@ def get_complaint_data(part, date, target):
         get_topN_keyword(date+"01", getMonthRange(date[:4], date[-2:]).strftime('%Y%m%d'), target)
     elif part == '급등':
         for i in day_list:
-            print(i)
             get_risting_keyword(i, target)
     elif part == '오늘':
         for i in day_list:
@@ -444,7 +443,7 @@ def get_complaint_data(part, date, target):
         get_topN_keyword(date+"01", getMonthRange(date[:4], date[-2:]).strftime('%Y%m%d'), target)
 
 
-#get_complaint_data('오늘', '202203', 'pttn,dfpt,saeol,prpl,qna_origin')
+# get_risting_keyword('20190210', 'pttn,dfpt,saeol,prpl,qna,qna_origin')
 #get_similarInfo('이태원')
 #aa = get_news_uuid_list('정치')
 
