@@ -205,6 +205,9 @@ class Ui_frmViewNews(object):
         self.tbl_data1.verticalHeader().setDefaultSectionSize(25)
         self.tbl_data1.horizontalHeader().setStyleSheet("QHeaderView::section {background-color:#404040;color:#FFFFFF;}")
 
+        self.tbl_data1.cellClicked.connect(self.table_select)
+
+
 
         self.tbl_data2.setSortingEnabled(True)
         self.tbl_data2.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -236,6 +239,40 @@ class Ui_frmViewNews(object):
         self.btn_search.clicked.connect(self.show_chart)
         self.btn_print.clicked.connect(self.show_graph)
 
+
+    def table_select(self, row, col):
+
+        if self.tabWidget.currentIndex() == 0:
+            table = self.tbl_data1
+        elif self.tabWidget.currentIndex() == 1:
+            table = self.tbl_data2
+        elif self.tabWidget.currentIndex() == 2:
+            table = self.tbl_data3
+
+        self.label.clear()
+        self.fig.clear(True)
+
+        df = self.setTblToDf(table)
+        df.columns = df.columns + '01'
+        df.columns = pd.to_datetime(df.columns).date
+
+        ax = self.fig.add_subplot(111)
+        ax.plot(df.columns,
+                df.values[row].astype(float),
+                label=df.values[row], alpha=0.5, linewidth=2)
+
+        ax.legend()
+        ax.set_title('월별 키워드 빈도수 추이')
+        ax.set_xticks(df.columns)
+        # print(temp_topN_df.columns)
+        ax.set_xticklabels(df.columns, rotation=15)
+        ax.set_ylim([0, df.values[row].astype(float).max() + df.values[row].astype(float).max() * 0.07])
+        ax.get_yaxis().get_major_formatter().set_scientific(False)
+
+        self.canvas.draw()
+
+
+        print(table, row, col)
 
     # 그래프 출력
     def show_graph(self):
