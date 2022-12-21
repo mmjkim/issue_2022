@@ -172,7 +172,6 @@ class Ui_news_collect_win(object):
         self.show_folders() # 데이터 수집 리스트 출력
 
 
-
     # 데이터 적재
     def save_mart(self):
         if self.rad_type_1.isChecked():
@@ -259,7 +258,7 @@ class Ui_news_collect_win(object):
             part = '전체'
 
         # 뉴스 데이터 수집
-        print("데이터 수집 Start")
+        # print("데이터 수집 Start")
         get_news_data(part, s_yy_start+s_mm_start, s_yy_end+s_mm_end)
 
         self.show_folders()

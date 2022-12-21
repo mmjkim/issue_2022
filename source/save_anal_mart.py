@@ -43,11 +43,9 @@ def anal_mart_news(part):
 
         if len(all_files) != 0:
             for filename in all_files:
-                print(filename)
                 temp = filename.split('_')
                 i = len(temp)-1
                 df_dis_use = pd.read_csv(filename, encoding="utf-8-sig")
-                df_dis_use = df_dis_use.head(200)
                 # 컬럼명 변경
                 df_dis_use.rename(columns={'빈도수':'freq', '순위':'rank', '키워드':'keyword'}, inplace=True)
 

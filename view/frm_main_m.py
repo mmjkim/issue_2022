@@ -1,13 +1,14 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from view.frm_news_api_s import Ui_news_collect_win
-from view.frm_complaint_api_s import Ui_complaint_api_win
-from view.frm_anal_keyword_compare_s import Ui_Anal_Dialog
-from view.frm_view_news_s import Ui_frmViewNews
-from view.frm_view_lda_s import Ui_Dialog
-from view.frm_view_complaints_s import Ui_frmViewComplaints
-from view.frm_view_relate_s import Ui_frmComplaintWC
-from view.frm_view_naver_s import Ui_frmViewNaver
+from view.frm_news_api_s import Ui_news_collect_win  # 뉴스 데이터 수집
+from view.frm_complaint_api_s import Ui_complaint_api_win  # 민원 데이터 수집
+from view.frm_anal_keyword_compare_s import Ui_Anal_Dialog  # 키워드 분석
+from view.frm_view_news_s import Ui_frmViewNews  # 뉴스 시각화
+from view.frm_view_lda_s import Ui_Dialog  # LDA
+from view.frm_view_complaints_s import Ui_frmViewComplaints  # 민원 시각화
+from view.frm_view_relate_s import Ui_frmComplaintWC  # 연관어분석 워드클라우드
+from view.frm_view_naver_s import Ui_frmViewNaver  # 네이버 검색어 시각화
+
 
 class Ui_MainWindow(object):
     # 네이버 키워드 시각화 화면
@@ -112,9 +113,6 @@ class Ui_MainWindow(object):
         self.menu_visual.setObjectName("menu_visual")
 
         MainWindow.setMenuBar(self.menubar)
-        # self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        # self.statusbar.setObjectName("statusbar")
-        # MainWindow.setStatusBar(self.statusbar)
 
         # 민원 데이터 수집 메뉴바 동작 추가
         self.actionComplaint = QtWidgets.QAction(MainWindow)

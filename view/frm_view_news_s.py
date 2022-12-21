@@ -1,15 +1,15 @@
-from datetime import datetime
-
 import pandas as pd
+from datetime import datetime
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import *
 
+import math
+from matplotlib.dates import MonthLocator
 import matplotlib.pyplot as plt
 import matplotlib
-import re
 
 matplotlib.rcParams['font.family'] = 'Malgun Gothic'
 matplotlib.rcParams['axes.unicode_minus'] = False
@@ -93,7 +93,6 @@ class Ui_frmViewNews(object):
         self.rdo_area = QtWidgets.QRadioButton(self.group1)
         self.rdo_area.setGeometry(QtCore.QRect(554, 27, 86, 16))
         self.rdo_area.setObjectName("rdo_area")
-
         self.group2 = QtWidgets.QGroupBox(frmViewNews)
         self.group2.setGeometry(QtCore.QRect(10, 80, 1001, 311))
         self.group2.setObjectName("group2")
@@ -180,6 +179,8 @@ class Ui_frmViewNews(object):
         self.tbl_data1.horizontalHeader().setStyleSheet("QHeaderView::section {background-color:#404040;color:#FFFFFF;}")
 
         self.tbl_data1.cellClicked.connect(self.table_select)  # 셀 선택 > 그래프 출력
+        self.tbl_data2.cellClicked.connect(self.table_select)  # 셀 선택 > 그래프 출력
+        self.tbl_data3.cellClicked.connect(self.table_select)  # 셀 선택 > 그래프 출력
 
         self.tbl_data2.setSortingEnabled(True)
         self.tbl_data2.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -190,11 +191,6 @@ class Ui_frmViewNews(object):
         self.tbl_data3.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tbl_data3.verticalHeader().setDefaultSectionSize(25)
         self.tbl_data3.horizontalHeader().setStyleSheet("QHeaderView::section {background-color:#404040;color:#FFFFFF;}")
-
-        self.label = QtWidgets.QLabel(self.group3)
-        self.label.setGeometry(QtCore.QRect(10, 51, 981, 500))
-        self.label.setObjectName("label")
-        self.label.setAlignment(Qt.AlignCenter)
 
         # 그래프 출력 공간
         self.fig = plt.Figure()
@@ -213,7 +209,18 @@ class Ui_frmViewNews(object):
         self.btn_search.clicked.connect(self.show_chart)  # 테이블 출력
         self.btn_print.clicked.connect(self.show_graph)  # 그래프 출력
 
+        self.rdo_line.clicked.connect(self.reset)  # 라디오 버튼 변경 > 그래프 초기화
+        self.rdo_bar.clicked.connect(self.reset)  # 라디오 버튼 변경 > 그래프 초기화
+        self.rdo_area.clicked.connect(self.reset)  # 라디오 버튼 변경 > 그래프 초기화
 
+
+    # 테이블 초기화
+    def reset(self):
+        self.fig.clear(True)
+        self.canvas.draw()
+
+
+    # 선택된 키워드 그래프 출력
     def table_select(self, row, col):
 
         if self.tabWidget.currentIndex() == 0:
@@ -223,7 +230,6 @@ class Ui_frmViewNews(object):
         elif self.tabWidget.currentIndex() == 2:
             table = self.tbl_data3
 
-        self.label.clear()
         self.fig.clear(True)
 
         df = self.setTblToDf(table)
@@ -244,13 +250,10 @@ class Ui_frmViewNews(object):
 
         ax.legend()
         ax.set_title('월별 키워드 빈도수 추이')
-
-        import math
-        from matplotlib.dates import MonthLocator
         ax.xaxis.set_major_locator(MonthLocator(interval=math.ceil(len(df.columns)/12)))  # 주눈금
         ax.xaxis.set_minor_locator(MonthLocator(interval=1))  # 보조 눈금
-        ax.set_ylim([0, df.values[row].astype(float).max() + df.values[row].astype(float).max() * 0.07])
-        ax.get_yaxis().get_major_formatter().set_scientific(False)
+        ax.set_ylim([0, df.values[row].astype(float).max() + df.values[row].astype(float).max() * 0.07])  # y축 값 범위 설정
+        ax.get_yaxis().get_major_formatter().set_scientific(False)  # 숫자 지수형 변환 X
 
         self.canvas.draw()
 
@@ -258,8 +261,6 @@ class Ui_frmViewNews(object):
     # 그래프 출력
     def show_graph(self):
 
-        self.label.clear()
-        # df = self.show_chart()
         self.fig.clear(True)
         ax = self.fig.add_subplot(111)
 
@@ -270,63 +271,38 @@ class Ui_frmViewNews(object):
         elif self.tabWidget.currentIndex() == 2:
             table = self.tbl_data3
 
-
         df = self.setTblToDf(table)
-        # print(df)
-        #x축 라벨 데이터 - 데이트 형태로 변경
+        #x축 라벨 데이터 - 날짜 형태로 변경
         df.columns = df.columns + '01'
         df.columns = pd.to_datetime(df.columns).date
 
-
+        # 선 그래프
         if self.rdo_line.isChecked():
-            # print("df.head->\n", df.head(int(self.txt_top_n.text())).values)
+            for i in range(int(self.txt_top_n.text())):
+                ax.plot(df.columns, df.head(int(self.txt_top_n.text())).values[i],
+                        label=df.index.values[i], alpha=0.5, linewidth=2)
 
-            temp_topN_df = df.head(int(self.txt_top_n.text()))
-
-
-            for i in range(len(temp_topN_df)):
-               ax.plot(df.columns,
-                        temp_topN_df.values[i].astype(float),
-                        label=temp_topN_df.index.values[i], alpha=0.5, linewidth=2)
-
-            ax.legend()
-            ax.set_title('월별 키워드 빈도수 추이')
-            ax.set_xticks(temp_topN_df.columns)
-            #print(temp_topN_df.columns)
-            ax.set_xticklabels(temp_topN_df.columns, rotation=15)
-            ax.set_ylim([0, temp_topN_df.values.astype(float).max() + temp_topN_df.values.astype(float).max()*0.07])
-            ax.get_yaxis().get_major_formatter().set_scientific(False)
-
-            self.canvas.draw()
-
+        # 막대 그래프
         elif self.rdo_bar.isChecked():
             df = df.head(int(self.txt_top_n.text()))
+            df.T.plot.bar(figsize=(10, 5), ax=ax, alpha=0.5)
+            ax.xaxis.set_visible(False)
 
-            df = df.apply(pd.to_numeric)
-            # print(df.info())
-            df.T.plot.bar(figsize=(10, 5), alpha=0.5)
-            plt.xticks(rotation=15)
-            plt.legend(df.index)
-            plt.ylim([0, df.values.astype(float).max() + df.values.astype(float).max()*0.07])
-            import matplotlib.ticker as mticker
-            plt.gca().yaxis.set_major_formatter(mticker.FormatStrFormatter('%i'))
-            plt.title('월별 키워드 빈도수 추이')
-            plt.savefig('graph_img.png', dpi=100)
-            self.label.setPixmap(QtGui.QPixmap('graph_img.png'))
-
+        # 산점도
         elif self.rdo_area.isChecked():
             for i in range(int(self.txt_top_n.text())):
                 ax.scatter(df.columns,
-                       df.head(int(self.txt_top_n.text())).values[i].astype(float),
+                       df.head(int(self.txt_top_n.text())).values[i],
                        label=df.index.values[i], alpha=0.5)
-            ax.legend()
-            ax.set_title('월별 키워드 빈도수 추이')
-            ax.set_xticks(df.columns)
-            ax.set_xticklabels(df.columns, rotation=15)
-            ax.set_ylim([0, df.values.astype(float).max() + df.values.astype(float).max()*0.07])
-            ax.get_yaxis().get_major_formatter().set_scientific(False)
 
-            self.canvas.draw()
+        ax.legend(df.index)
+        ax.set_title('월별 키워드 빈도수 추이')
+        ax.xaxis.set_major_locator(MonthLocator(interval=math.ceil(len(df.columns) / 12)))  # 주눈금
+        ax.xaxis.set_minor_locator(MonthLocator(interval=1))  # 보조 눈금
+        ax.set_ylim([0, df.values.astype(float).max() + df.values.astype(float).max() * 0.07])  # y축 값 범위
+        ax.get_yaxis().get_major_formatter().set_scientific(False)  # 숫자 지수형 변환 X
+
+        self.canvas.draw()
 
 
     # 차트 출력
@@ -342,31 +318,26 @@ class Ui_frmViewNews(object):
 
         anal_s_date = self.sel_yy_start.currentText() + self.sel_mm_start.currentText()
         anal_e_date = self.sel_yy_end.currentText() + self.sel_mm_end.currentText()
-        # sort_date = self.sort_yy.currentText() + self.sort_mm.currentText()
 
         news = pd.read_csv(file_path.get_raw_use_path() + '뉴스_' + part + '\\1차마트_' + part + '.csv')
 
-
         #조회 조건에 맞는 데이타만 가져오기
         news = news[(news['stdym'].astype(int) >= int(anal_s_date)) & (news['stdym'].astype(int) <= int(anal_e_date))]
-        print("news: ",  len(news))
+
         #중복 제거
         news = news.drop_duplicates(['stdym', 'keyword'], keep='first', inplace=False, ignore_index=False)
 
         #데이타 수집년월 기준으로 피벗
         news_pivot = news.pivot(index='keyword', columns='stdym', values='freq')
-        print("news_pivot: ",  len(news_pivot))
 
-        # 정렬기준 값으로 데이터 정렬하기
-        # 정렬기준 값이 데이타가 존재 하지 않으면 가장 마지막 컬럼 값으로 정렬
+        # 가장 마지막 컬럼 값으로 정렬
         sort_date = news_pivot.columns[news_pivot.shape[1]-1]
 
         news_sel = news_pivot.sort_values(sort_date, ascending=False)
-        print("news_sel: ",  len(news_sel))
+
         for i in news_sel.columns:
             temp = str(i)[0:4] + "-" + str(i)[4:6]
             news_sel.rename(columns={i:temp}, inplace=True)
-
 
         if self.tabWidget.currentIndex() == 0:
              self.set_table_data(news_sel,  self.tbl_data1)
@@ -374,7 +345,9 @@ class Ui_frmViewNews(object):
              self.set_table_data(news_sel,  self.tbl_data2)
         elif self.tabWidget.currentIndex() == 2:
              self.set_table_data(news_sel,  self.tbl_data3)
+
         return news_sel
+
 
     #조회한 데이타 테이블에 넣기
     def set_table_data(self, news_sel, table):
@@ -383,7 +356,6 @@ class Ui_frmViewNews(object):
             #컬럼 생성
             table.setColumnCount(len(news_sel.columns)+1)
             table.setRowCount(len(news_sel))
-
 
             table.setHorizontalHeaderItem(0, QTableWidgetItem("키워드"))
             for j in range(0, len(news_sel.columns)):
@@ -413,7 +385,6 @@ class Ui_frmViewNews(object):
         row_count = table.rowCount()
 
         headers = [str(table.horizontalHeaderItem(i).text()).replace('-', '') for i in range(col_count)]
-        # print("headers:" ,headers)
 
         # df indexing is slow, so use lists
         df_list = []
@@ -426,8 +397,10 @@ class Ui_frmViewNews(object):
 
         df = pd.DataFrame(df_list, columns=headers)
         df = df.set_index(keys=['키워드'], inplace=False, drop=True)
+        df = df.astype(float)
 
         return df
+
 
     def retranslateUi(self, frmViewNews):
         _translate = QtCore.QCoreApplication.translate
@@ -491,6 +464,7 @@ class Ui_frmViewNews(object):
         self.rdo_area.setText(_translate("frmViewNews", "Scatter"))
         self.label_8.setText(_translate("frmViewNews", "Top N :"))
         self.btn_print.setText(_translate("frmViewNews", "조회"))
+
 
 if __name__ == "__main__":
     import sys

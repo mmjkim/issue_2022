@@ -94,9 +94,7 @@ def get_news(uddi, part, day):
 
             res = urlopen(url).read()
             resJson = json.loads(res)
-            #print(resJson )
             df = json_normalize(resJson.get('data'))
-            # print("---")
             df = df.drop(index=df.loc[df['키워드'] == ''].index)
             route = get_news_data_path + "{0}_{1}.csv".format(dataPath, row['date'])
             df.to_csv(route, index=False, encoding="utf-8-sig")
@@ -133,4 +131,4 @@ def get_news_data(part, day1, day2):
 # aa = get_news_uuid_list('경제')
 # bb = get_news(aa, '경제', '20220630')
 
-get_news_data('경제', '202003', '202003')
+# get_news_data('경제', '202003', '202003')
