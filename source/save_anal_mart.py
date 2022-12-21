@@ -71,7 +71,7 @@ def anal_mart_news(part):
             print("마트 적재 데이타 Log 저장-->", part)
             #마트 적재 데이타 Log 저장
             save_log = mdb.DbUseAnalClass()
-            save_log.mart_log_qry(dfAllData, '뉴스',part)
+            save_log.mart_log_qry(dfAllData, '뉴스', part)
 
             print("The End!!!")
 

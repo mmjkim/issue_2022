@@ -133,4 +133,4 @@ def get_news_data(part, day1, day2):
 # aa = get_news_uuid_list('경제')
 # bb = get_news(aa, '경제', '20220630')
 
-get_news_data('경제', '202003', '202003')
+# get_news_data('경제', '202003', '202003')

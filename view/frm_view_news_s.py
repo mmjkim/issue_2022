@@ -178,10 +178,6 @@ class Ui_frmViewNews(object):
         self.tbl_data1.verticalHeader().setDefaultSectionSize(25)
         self.tbl_data1.horizontalHeader().setStyleSheet("QHeaderView::section {background-color:#404040;color:#FFFFFF;}")
 
-        self.tbl_data1.cellClicked.connect(self.table_select)  # 셀 선택 > 그래프 출력
-        self.tbl_data2.cellClicked.connect(self.table_select)  # 셀 선택 > 그래프 출력
-        self.tbl_data3.cellClicked.connect(self.table_select)  # 셀 선택 > 그래프 출력
-
         self.tbl_data2.setSortingEnabled(True)
         self.tbl_data2.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tbl_data2.verticalHeader().setDefaultSectionSize(25)
@@ -212,6 +208,10 @@ class Ui_frmViewNews(object):
         self.rdo_line.clicked.connect(self.reset)  # 라디오 버튼 변경 > 그래프 초기화
         self.rdo_bar.clicked.connect(self.reset)  # 라디오 버튼 변경 > 그래프 초기화
         self.rdo_area.clicked.connect(self.reset)  # 라디오 버튼 변경 > 그래프 초기화
+
+        self.tbl_data1.cellClicked.connect(self.table_select)  # 셀 선택 > 그래프 출력
+        self.tbl_data2.cellClicked.connect(self.table_select)  # 셀 선택 > 그래프 출력
+        self.tbl_data3.cellClicked.connect(self.table_select)  # 셀 선택 > 그래프 출력
 
 
     # 테이블 초기화
