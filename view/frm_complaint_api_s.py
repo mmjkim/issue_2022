@@ -178,10 +178,10 @@ class Ui_complaint_api_win(object):
         self.tbl_top.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tbl_dftop.setEditTriggers(QAbstractItemView.NoEditTriggers)
 
-        self.show_folders() # 데이터 수집 리스트 출력
+        self.show_folders()  # 데이터 수집 리스트 출력
 
-        self.btn_sel.clicked.connect(self.get_complaints) # 민원 데이터 수집
-        self.btn_mart.clicked.connect(self.save_mart) # 데이터 적재
+        self.btn_sel.clicked.connect(self.get_complaints)  # 민원 데이터 수집
+        self.btn_mart.clicked.connect(self.save_mart)  # 데이터 적재
 
 
     # 데이터 적재
@@ -240,6 +240,8 @@ class Ui_complaint_api_win(object):
         # 민원 데이터 수집
         get_complaint_data(part, s_yy_start+s_mm_start, target)
 
+        self.show_folders()  # 데이터 수집 리스트 출력
+
 
     # 데이터 수집 리스트 출력
     def show_folders(self):
@@ -287,18 +289,19 @@ class Ui_complaint_api_win(object):
             if folderDftop[i][-3:] == 'csv':
                 dftop_list.append(folderDftop[i])
 
+        # 테이블 행 수 지정
+        self.tbl_rising.setRowCount(len(rising_list))
+        self.tbl_top.setRowCount(len(top_list))
+        self.tbl_today.setRowCount(len(today_list))
+        self.tbl_dftop.setRowCount(len(dftop_list))
         # 리스트 값 테이블에 추가
         for j in range(0, len(rising_list)):
-            self.tbl_rising.insertRow(j)
             self.tbl_rising.setItem(j, 0, QTableWidgetItem(rising_list[j]))
         for j in range(0, len(top_list)):
-            self.tbl_top.insertRow(j)
             self.tbl_top.setItem(j, 0, QTableWidgetItem(top_list[j]))
         for j in range(0, len(today_list)):
-            self.tbl_today.insertRow(j)
             self.tbl_today.setItem(j, 0, QTableWidgetItem(today_list[j]))
         for j in range(0, len(dftop_list)):
-            self.tbl_dftop.insertRow(j)
             self.tbl_dftop.setItem(j, 0, QTableWidgetItem(dftop_list[j]))
 
 

@@ -23,7 +23,7 @@ from common.database import db_mdb as mdb
 #      std_ymd = yyyymm (기준일자)
 #  return :
 #-----------------------------------------------------
-def get_risting_keyword(std_ymd, target):
+def get_rising_keyword(std_ymd, target):
 
     #파일 path
     file_path = FilePathClass()
@@ -120,7 +120,6 @@ def get_topN_keyword(std_ymd_fr, std_ymd_to, target):
         df1.to_csv(route_csv, index=False, encoding="utf-8-sig")
         df1.to_json(route, orient='table')
 
-
         # ------------ 마트 적재 데이타 Log 저장 -------------------------
         save_log = mdb.DbUseAnalClass()
         now = datetime.now()
@@ -184,7 +183,6 @@ def get_today_topic_keyword(std_ymd,  target):
         route_csv = "{0}{1}_{2}.csv".format(get_complain_data_path, dataPath, analysis_date)
         df1.to_csv(route_csv, index=False, encoding="utf-8-sig")
         df1.to_json(route, orient='table')
-
 
         # ------------ 마트 적재 데이타 Log 저장 -------------------------
         save_log = mdb.DbUseAnalClass()
@@ -280,7 +278,6 @@ def get_dfTopN_keyword(std_ymd,  target):
     except requests.exceptions.RequestException as erra:
         print("AnyException : ", erra)
 
-
     except Exception:
         import traceback
         traceback.print_exc()
@@ -303,7 +300,6 @@ def get_similarInfo(keyword):
     target = 'qna,qna_origin'
 
     url = apifp.COMPLAIN_API_URL + apifp.COMPLAIN_API_URL_SIMIL +'?serviceKey=' + apifp.COMPLAIN_API_KEY + '&startPos=' + start_page + '&retCount=' + maxResult + '&searchword=' + quote(keyword) + '&target=' + target
-
     print('URL: ', url)
 
     dataPath = apifp.COMPLAIN_DATA_PATH_SIMIL
@@ -369,7 +365,6 @@ def get_wd_cloud_info(keyword, std_ymd_fr, std_ymd_to, target):
     analysis_date_to = std_ymd_to
 
     url = apifp.COMPLAIN_API_URL + apifp.COMPLAIN_API_URL_WDCLOUD +'?serviceKey=' + apifp.COMPLAIN_API_KEY + '&searchword=' + quote(keyword) + '&resultCount=' + maxResult + '&target=' + target + '&omitDuplicate=true' + '&dateFrom=' + analysis_date_fr + '&dateTo='+ analysis_date_to
-
     print('URL: ', url)
 
     dataPath = apifp.COMPLAIN_DATA_PATH_WDCLOUD
@@ -392,7 +387,6 @@ def get_wd_cloud_info(keyword, std_ymd_fr, std_ymd_to, target):
             route_csv = "{0}{1}_{2}.csv".format(get_complain_data_path, dataPath, keyword)
             df1.to_csv(route_csv, index=False, encoding="utf-8-sig")
             df1.to_json(route, orient='table')
-
 
             # ------------ 마트 적재 데이타 Log 저장 -------------------------
             save_log = mdb.DbUseAnalClass()
@@ -426,13 +420,13 @@ def get_complaint_data(part, date, target):
     day_list = getDayList(date)
     if part == '전체':
         for i in day_list:
-            get_risting_keyword(i, target)
+            get_rising_keyword(i, target)
             get_today_topic_keyword(i,  target)
             get_dfTopN_keyword(i, target)
         get_topN_keyword(date+"01", getMonthRange(date[:4], date[-2:]).strftime('%Y%m%d'), target)
     elif part == '급등':
         for i in day_list:
-            get_risting_keyword(i, target)
+            get_rising_keyword(i, target)
     elif part == '오늘':
         for i in day_list:
             get_today_topic_keyword(i,  target)
@@ -443,7 +437,10 @@ def get_complaint_data(part, date, target):
         get_topN_keyword(date+"01", getMonthRange(date[:4], date[-2:]).strftime('%Y%m%d'), target)
 
 
-# get_risting_keyword('20190210', 'pttn,dfpt,saeol,prpl,qna,qna_origin')
+# get_rising_keyword('20200329', 'pttn,dfpt,saeol,prpl,qna,qna_origin')
+# get_dfTopN_keyword('20191212', 'pttn,dfpt,saeol,prpl,qna,qna_origin')
+
+# get_today_topic_keyword('20211230', 'pttn,dfpt,saeol,prpl,qna,qna_origin')
 #get_similarInfo('이태원')
 #aa = get_news_uuid_list('정치')
 
