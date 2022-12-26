@@ -1,15 +1,18 @@
 import os
 import warnings
 from datetime import datetime
+
 warnings.filterwarnings(action='ignore')
 
+from PyQt5.QtCore import Qt
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5 import QtWebEngineWidgets
-from PyQt5.QtWidgets import QTableWidgetItem, QAbstractItemView
+from PyQt5.QtWidgets import QTableWidgetItem, QAbstractItemView, QMessageBox
 
 from common.config.filepassclass import FilePathClass
 from source.get_chart_data import *
 from common.function.funcC3Chart import c3chart_html_write as c3Chart
+import common.config.errormessage as em
 
 
 class Ui_frmViewNaver(object):
@@ -143,25 +146,29 @@ class Ui_frmViewNaver(object):
 
     def show_graph(self):
         df = self.show_table()
-        multi_types = ''
-        if self.rdo_line.isChecked():
-            type = 'line'
-        elif self.rdo_bar.isChecked():
-            type = 'bar'
-        elif self.rdo_area.isChecked():
-            type = 'area'
-        else:
-            type = ''
-            for i in range(1, len(df.columns)):
-                if i == 1:
-                    multi_types += "'" + df.columns[i] + "':'bar',\n"
-                else:
-                    multi_types += "'" + df.columns[i] + "':'line',\n"
+        if df is not None:
+            multi_types = ''
+            if self.rdo_line.isChecked():
+                type = 'line'
+            elif self.rdo_bar.isChecked():
+                type = 'bar'
+            elif self.rdo_area.isChecked():
+                type = 'area'
+            else:
+                type = ''
+                for i in range(1, len(df.columns)):
+                    if i == 1:
+                        multi_types += "'" + df.columns[i] + "':'bar',\n"
+                    else:
+                        multi_types += "'" + df.columns[i] + "':'line',\n"
 
-        html = c3Chart(df, type, multi_types) # 그래프 html 가져오기
-        temp = "zoom:{enabled: false}"
-        self.webEngineView.setHtml(html.replace(temp, "zoom: {enabled: true}")) # 그래프 그리기
-        loadCSS(self.webEngineView, "c3Chart/c3.css", "script1") # 그래프 스타일 설정
+            html = c3Chart(df, type, multi_types) # 그래프 html 가져오기
+            temp = "zoom:{enabled: false}"
+            self.webEngineView.setHtml(html.replace(temp, "zoom: {enabled: true}")) # 그래프 그리기
+            loadCSS(self.webEngineView, "c3Chart/c3.css", "script1") # 그래프 스타일 설정
+        else:
+            self.webEngineView.setHtml('')
+            error_event(em.NO_DATA)
 
 
     # 수집된 네이버 데이터의 키워드 출력
@@ -189,31 +196,40 @@ class Ui_frmViewNaver(object):
             keywords.append(str(self.listWidget.selectedItems()[i].text()))
         words = ','.join(keywords)
 
-        # 데이터 가져오기
-        df = get_view_naver_keyword(words, self.sel_yy_start.currentText()+'-'+self.sel_mm_start.currentText()+'-'+'01',
-                                    self.sel_yy_end.currentText()+'-'+self.sel_mm_end.currentText()+'-'+'01')
-        df = df.sort_values(by=['ymd']) # ymd 기준으로 정렬
+        if len(words) > 1:
+            # 데이터 가져오기
+            df = get_view_naver_keyword(words, self.sel_yy_start.currentText()+'-'+self.sel_mm_start.currentText()+'-'+'01',
+                                        self.sel_yy_end.currentText()+'-'+self.sel_mm_end.currentText()+'-'+'01')
+            df = df.sort_values(by=['ymd']) # ymd 기준으로 정렬
 
-        # 테이블 행/열 길이 지정
-        self.tbl_naver.setRowCount(len(df))
-        self.tbl_naver.setColumnCount(len(df.columns))
+            # 테이블 행/열 길이 지정
+            self.tbl_naver.setRowCount(len(df))
+            self.tbl_naver.setColumnCount(len(df.columns))
 
-        df = df.rename(columns={'ymd':'기준년월'})
-        self.tbl_naver.setHorizontalHeaderLabels(df.columns)
+            df = df.rename(columns={'ymd':'기준일자'})
+            self.tbl_naver.setHorizontalHeaderLabels(df.columns)
 
-        # 테이블 값 삽입
-        for c in range(len(df.columns)):
-            for i in range(len(df)):
-                self.tbl_naver.setItem(i, c, QTableWidgetItem(str(df[df.columns[c]][i])))
-        df = df.rename(columns={'기준년월': 'ymd'})
+            # 테이블 값 삽입
+            for c in range(len(df.columns)):
+                self.tbl_naver.setItem(i, 0, QTableWidgetItem(df.index[i]))
+                for i in range(len(df)):
+                    item = QTableWidgetItem()
+                    text = str(df[df.columns[c]][i])
+                    item.setText(text)
+                    item.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
+                    self.tbl_naver.setItem(i, c, item)
+            df = df.rename(columns={'기준일자': 'ymd'})
 
-        # 데이터 프레임 컬럼이 3개 이상인 경우 멀티 라디오 버튼 선택 가능함
-        if len(self.listWidget.selectedItems()) >= 3:
-            self.rdo_multi.setEnabled(True)
-        else:
-            self.rdo_multi.setEnabled(False)
+            # 데이터 프레임 컬럼이 3개 이상인 경우 멀티 라디오 버튼 선택 가능함
+            if len(self.listWidget.selectedItems()) >= 3:
+                self.rdo_multi.setEnabled(True)
+            else:
+                self.rdo_multi.setEnabled(False)
 
-        return df
+            return df
+        else:  # 선택된 키워드 X > error
+            self.tbl_naver.setRowCount(0)
+            error_event(em.SELECT_KEYWORD)
 
 
     def retranslateUi(self, frmViewNaver):
@@ -296,6 +312,13 @@ def loadCSS(view, path, name):
     script.setRunsOnSubFrames(True)
     script.setWorldId(QtWebEngineWidgets.QWebEngineScript.ApplicationWorld)
     view.page().scripts().insert(script)
+
+
+def error_event(msg):
+    msgbox = QMessageBox()
+    msgbox.setWindowTitle("error")
+    msgbox.setText(msg)
+    msgbox.exec_()
 
 
 if __name__ == "__main__":

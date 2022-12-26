@@ -427,54 +427,61 @@ class Ui_frmViewComplaints(object):
         # 민원 핵심 그래프(트리맵)
         elif self.tabWidget.currentIndex() == 2:
             df = self.setTblToDf(self.tbl_data3)
-            df = df.sort_values(self.sort_yy_2.currentText() + self.sort_mm_2.currentText(), ascending=False)
-            df = df[[self.sort_yy_2.currentText() + self.sort_mm_2.currentText()]]
-            # 0인 값을 NaN으로 변경 후 삭제
-            import numpy as np
-            df = df.replace(0, np.NaN)
-            df = df.dropna(axis=0)
-            df.columns = df.columns.astype(str) + '01'
-            df.columns = pd.to_datetime(df.columns).date
 
-            # 그래프 초기화
-            self.label_3.clear()
-            fig.clear(True)
-            plt.cla()
+            if len(df) > 0:
+                df = df.sort_values(self.sort_yy_2.currentText() + self.sort_mm_2.currentText(), ascending=False)
+                df = df[[self.sort_yy_2.currentText() + self.sort_mm_2.currentText()]]
+                # 0인 값을 NaN으로 변경 후 삭제
+                import numpy as np
+                df = df.replace(0, np.NaN)
+                df = df.dropna(axis=0)
+                df.columns = df.columns.astype(str) + '01'
+                df.columns = pd.to_datetime(df.columns).date
 
-            import squarify
-            squarify.plot(sizes=df.head(int(self.txt_top_n_3.text())).values,
-                          label=df.head(int(self.txt_top_n_3.text())).index, alpha=.5,
-                          bar_kwargs=dict(linewidth=1.5, edgecolor="white"))
+                # 그래프 초기화
+                self.label_3.clear()
+                fig.clear(True)
+                plt.cla()
 
-            plt.savefig('graph_img.png', dpi=100)
-            self.label_3.setPixmap(QtGui.QPixmap('graph_img.png'))
+                import squarify
+                squarify.plot(sizes=df.head(int(self.txt_top_n_3.text())).values,
+                              label=df.head(int(self.txt_top_n_3.text())).index, alpha=.5,
+                              bar_kwargs=dict(linewidth=1.5, edgecolor="white"))
+
+                plt.savefig('graph_img.png', dpi=100)
+                self.label_3.setPixmap(QtGui.QPixmap('graph_img.png'))
+            else:
+                error_event(em.NO_DATA)
 
         canvas.draw()
 
 
     def draw_graph(self, topn, ax, df, canvas, part):
-        if part == 'line':
-            for i in range(int(topn.text())):
-                ax.plot(df.columns,
-                        df.head(int(topn.text())).values[i],
-                        label=df.index.values[i], alpha=0.5, linewidth=2)
-        elif part == 'bar':
-            df.head(int(topn.text())).T.plot.bar(figsize=(10, 5), ax=ax, alpha=0.5)
-            ax.xaxis.set_visible(False)
-        elif part == 'scatter':
-            for i in range(int(topn.text())):
-                ax.scatter(df.columns,
-                           df.head(int(topn.text())).values[i].astype(int),
-                           label=df.index.values[i], alpha=0.5)
+        if len(df) > 0:
+            if part == 'line':
+                for i in range(int(topn.text())):
+                    ax.plot(df.columns,
+                            df.head(int(topn.text())).values[i],
+                            label=df.index.values[i], alpha=0.5, linewidth=2)
+            elif part == 'bar':
+                df.head(int(topn.text())).T.plot.bar(figsize=(10, 5), ax=ax, alpha=0.5)
+                ax.xaxis.set_visible(False)
+            elif part == 'scatter':
+                for i in range(int(topn.text())):
+                    ax.scatter(df.columns,
+                               df.head(int(topn.text())).values[i].astype(int),
+                               label=df.index.values[i], alpha=0.5)
 
-        ax.legend(df.index)
-        ax.set_title('월별 키워드 빈도수 추이')
-        ax.xaxis.set_major_locator(MonthLocator(interval=math.ceil(len(df.columns) / 12)))  # 주눈금
-        ax.xaxis.set_minor_locator(MonthLocator(interval=1))  # 보조 눈금
-        ax.set_ylim([0, df.values.astype(float).max() + df.values.astype(float).max() * 0.07])  # y축 값 범위
-        ax.get_yaxis().get_major_formatter().set_scientific(False)  # 숫자 지수형 변환 X
+            ax.legend(df.index)
+            ax.set_title('월별 키워드 빈도수 추이')
+            ax.xaxis.set_major_locator(MonthLocator(interval=math.ceil(len(df.columns) / 12)))  # 주눈금
+            ax.xaxis.set_minor_locator(MonthLocator(interval=1))  # 보조 눈금
+            ax.set_ylim([0, df.values.astype(float).max() + df.values.astype(float).max() * 0.07])  # y축 값 범위
+            ax.get_yaxis().get_major_formatter().set_scientific(False)  # 숫자 지수형 변환 X
 
-        canvas.draw()
+            canvas.draw()
+        else:
+            error_event(em.NO_DATA)
 
 
     # 차트 출력
@@ -541,7 +548,6 @@ class Ui_frmViewComplaints(object):
                 table.setHorizontalHeaderItem(j + 1, QTableWidgetItem(df.columns[j]))
 
             for i in range(0, len(df)):
-
                 table.setItem(i, 0, QTableWidgetItem(df.index[i]))
 
                 for j in range(len(df.columns)):
@@ -550,7 +556,7 @@ class Ui_frmViewComplaints(object):
                         item.setData(Qt.DisplayRole, float(0.0))
                     else:
                         if self.tabWidget.currentIndex() == 1:
-                            item.setData(Qt.DisplayRole, float(df[df.columns[j]][i]/1000))
+                            item.setData(Qt.DisplayRole, round(float(df[df.columns[j]][i]/1000), 0))
                         else:
                             item.setData(Qt.DisplayRole, float(df[df.columns[j]][i]))
                     item.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)

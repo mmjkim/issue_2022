@@ -31,6 +31,7 @@ class Ui_frmComplaintWC(object):
         self.sel_keyword_1 = QtWidgets.QComboBox(self.groupBox)
         self.sel_keyword_1.setGeometry(QtCore.QRect(7, 10, 485, 30))
         self.sel_keyword_1.setObjectName("sel_keyword_1")
+        self.sel_keyword_1.addItem("")
 
         self.label = QtWidgets.QLabel(self.groupBox)
         self.label.setGeometry(QtCore.QRect(7, 50, 485, 400))
@@ -43,6 +44,7 @@ class Ui_frmComplaintWC(object):
         self.sel_keyword_2 = QtWidgets.QComboBox(self.groupBox_2)
         self.sel_keyword_2.setGeometry(QtCore.QRect(7, 10, 485, 30))
         self.sel_keyword_2.setObjectName("sel_keyword_2")
+        self.sel_keyword_2.addItem("")
         self.label_2 = QtWidgets.QLabel(self.groupBox_2)
         self.label_2.setGeometry(QtCore.QRect(7, 50, 485, 400))
         self.label_2.setObjectName("label_2")
@@ -53,6 +55,7 @@ class Ui_frmComplaintWC(object):
         self.sel_keyword_3 = QtWidgets.QComboBox(self.groupBox_3)
         self.sel_keyword_3.setGeometry(QtCore.QRect(7, 10, 485, 30))
         self.sel_keyword_3.setObjectName("sel_keyword_3")
+        self.sel_keyword_3.addItem("")
         self.label_3 = QtWidgets.QLabel(self.groupBox_3)
         self.label_3.setGeometry(QtCore.QRect(7, 50, 485, 400))
         self.label_3.setObjectName("label_3")
@@ -63,6 +66,7 @@ class Ui_frmComplaintWC(object):
         self.sel_keyword_4 = QtWidgets.QComboBox(self.groupBox_4)
         self.sel_keyword_4.setGeometry(QtCore.QRect(7, 10, 485, 30))
         self.sel_keyword_4.setObjectName("sel_keyword_4")
+        self.sel_keyword_4.addItem("")
         self.label_4 = QtWidgets.QLabel(self.groupBox_4)
         self.label_4.setGeometry(QtCore.QRect(7, 50, 485, 400))
         self.label_4.setObjectName("label_4")
@@ -103,6 +107,7 @@ class Ui_frmComplaintWC(object):
             filename = csv_all_list[i].split('_')
             if (filename[1] == '연관어분석정보'):
                 keyword_list.append(csv_all_list[i])
+
         # 콤보 박스에 키워드 값 삽입
         for i in range(len(keyword_list)):
             dataname = keyword_list[i].split('_')

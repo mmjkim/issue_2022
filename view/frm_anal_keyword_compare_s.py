@@ -434,115 +434,118 @@ class Ui_Anal_Dialog(object):
 
     # 뉴스 데이터 크롤링
     def get_news(self):
-        import time
-        from selenium import webdriver
-        from selenium.webdriver.common.by import By
-        from selenium.webdriver.common.keys import Keys
-        from selenium.webdriver.chrome.options import Options # 크롬 옵션 설정
-        from webdriver_manager.chrome import ChromeDriverManager # 크롬 드라이버 자동 업데이트
-        from selenium.webdriver.support.ui import WebDriverWait
-        from selenium.webdriver.support import expected_conditions as EC
-
-        # 다운로드 경로
-        down_path = FilePathClass()
-
-        chrome_options = Options()
-        chrome_options.add_experimental_option("detach", True) # 브라우저 자동 종료 방지
-        dr = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
-        dr.implicitly_wait(3) # 3초 대기
-        dr.get('https://www.bigkinds.or.kr/v2/news/index.do') # 빅카인즈 주소로 이동
-        dr.maximize_window() # 창 최대화
-
-        # 빅카인즈 로그인
-        login_element = dr.find_element(By.XPATH, '//*[@id="header"]/div[1]/div/div[2]/button[1]')
-        login_element.click()
-        id_element = dr.find_element(By.ID, 'login-user-id')
-        id_element.send_keys(apifp.BIGKINDS_ID)
-        pw_element = dr.find_element(By.ID, 'login-user-password')
-        pw_element.send_keys(apifp.BIGKINDS_PW)
-        pw_element.send_keys(Keys.ENTER)
-        # 로그인창 닫기
-        time.sleep(1)
-        modal_content = dr.find_element(By.XPATH, '//*[@id="login-modal"]/div')
-        modal_content.click()
-
         # 검색 키워드
         anal_word = self.txt_anal_word.toPlainText().replace(", ", ",")
         anal_word = anal_word.split(',')
 
-        # 데이터 수집
-        for i in anal_word:
-            # 키워드 입력
-            input_element = dr.find_element(By.XPATH, '//*[@id="total-search-key"]')
-            input_element.send_keys(Keys.CONTROL + "a")
-            input_element.send_keys(Keys.DELETE)
-            input_element.send_keys(i)
-            input_element.send_keys(Keys.TAB)
+        if len(anal_word) > 1:
+            import time
+            from selenium import webdriver
+            from selenium.webdriver.common.by import By
+            from selenium.webdriver.common.keys import Keys
+            from selenium.webdriver.chrome.options import Options # 크롬 옵션 설정
+            from webdriver_manager.chrome import ChromeDriverManager # 크롬 드라이버 자동 업데이트
+            from selenium.webdriver.support.ui import WebDriverWait
+            from selenium.webdriver.support import expected_conditions as EC
 
-            if i == self.txt_anal_word.toPlainText().split(',')[0]:
-                # 기간 설정
-                date_tab_element = dr.find_element(By.XPATH, '//*[@id="collapse-step-1-body"]/div[3]/div/div[1]/div[1]/a')
-                date_tab_element.send_keys(Keys.ENTER)
+            # 다운로드 경로
+            down_path = FilePathClass()
 
-                start_element = dr.find_element(By.ID, 'search-begin-date')
-                start_element.click()
-                start_element.send_keys(Keys.CONTROL + "a")
-                start_element.send_keys(Keys.DELETE)
-                start_date = self.sel_yy_start.currentText() + self.sel_mm_start.currentText() + "01"
-                start_element.send_keys(start_date)
-                end_element = dr.find_element(By.ID, 'search-end-date')
-                end_element.send_keys(Keys.CONTROL + "a")
-                end_element.send_keys(Keys.DELETE)
-                end_date = getMonthRange(self.sel_yy_end.currentText(), self.sel_mm_end.currentText()).strftime("%Y%m%d")
-                end_element.send_keys(end_date)
+            chrome_options = Options()
+            chrome_options.add_experimental_option("detach", True) # 브라우저 자동 종료 방지
+            dr = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+            dr.implicitly_wait(3) # 3초 대기
+            dr.get('https://www.bigkinds.or.kr/v2/news/index.do') # 빅카인즈 주소로 이동
+            dr.maximize_window() # 창 최대화
 
-            apply_element = dr.find_element(By.XPATH, '//*[@id="search-foot-div"]/div[2]/button[2]')
-            apply_element.click()
-
-            # 데이터 다운로드
+            # 빅카인즈 로그인
+            login_element = dr.find_element(By.XPATH, '//*[@id="header"]/div[1]/div/div[2]/button[1]')
+            login_element.click()
+            id_element = dr.find_element(By.ID, 'login-user-id')
+            id_element.send_keys(apifp.BIGKINDS_ID)
+            pw_element = dr.find_element(By.ID, 'login-user-password')
+            pw_element.send_keys(apifp.BIGKINDS_PW)
+            pw_element.send_keys(Keys.ENTER)
+            # 로그인창 닫기
             time.sleep(1)
-            step3_element = dr.find_element(By.ID, 'collapse-step-3')
-            step3_element.send_keys(Keys.ENTER)
+            modal_content = dr.find_element(By.XPATH, '//*[@id="login-modal"]/div')
+            modal_content.click()
 
-            import getpass
-            down_file_path = "{0}{1}_{2}-{3}.xlsx".format('C:\\Users\\' + getpass.getuser() + '\\Downloads\\', "NewsResult", start_date, end_date)
+            # 데이터 수집
+            for i in anal_word:
+                # 키워드 입력
+                input_element = dr.find_element(By.XPATH, '//*[@id="total-search-key"]')
+                input_element.send_keys(Keys.CONTROL + "a")
+                input_element.send_keys(Keys.DELETE)
+                input_element.send_keys(i)
+                input_element.send_keys(Keys.TAB)
 
-            # 파일 존재 > 삭제
-            if os.path.isfile(down_file_path):
-                os.remove(down_file_path)
+                if i == self.txt_anal_word.toPlainText().split(',')[0]:
+                    # 기간 설정
+                    date_tab_element = dr.find_element(By.XPATH, '//*[@id="collapse-step-1-body"]/div[3]/div/div[1]/div[1]/a')
+                    date_tab_element.send_keys(Keys.ENTER)
 
-            time.sleep(1)
-            down_element = dr.find_element(By.XPATH, '//*[@id="analytics-data-download"]/div[3]/button')
-            down_element.send_keys(Keys.ENTER)
+                    start_element = dr.find_element(By.ID, 'search-begin-date')
+                    start_element.click()
+                    start_element.send_keys(Keys.CONTROL + "a")
+                    start_element.send_keys(Keys.DELETE)
+                    start_date = self.sel_yy_start.currentText() + self.sel_mm_start.currentText() + "01"
+                    start_element.send_keys(start_date)
+                    end_element = dr.find_element(By.ID, 'search-end-date')
+                    end_element.send_keys(Keys.CONTROL + "a")
+                    end_element.send_keys(Keys.DELETE)
+                    end_date = getMonthRange(self.sel_yy_end.currentText(), self.sel_mm_end.currentText()).strftime("%Y%m%d")
+                    end_element.send_keys(end_date)
 
-            # alert 창 닫기
-            try:
-                WebDriverWait(dr, 3).until(EC.alert_is_present())
-                alert = dr.switch_to.alert
+                apply_element = dr.find_element(By.XPATH, '//*[@id="search-foot-div"]/div[2]/button[2]')
+                apply_element.click()
 
-                # 확인하기
-                alert.accept()
-            except:
-                print("no alert")
+                # 데이터 다운로드
+                time.sleep(1)
+                step3_element = dr.find_element(By.ID, 'collapse-step-3')
+                step3_element.send_keys(Keys.ENTER)
 
-            # 데이터 경로 이동(다운로드 폴더 > 분석데이터 폴더) 및 파일명 변경
-            time.sleep(1)
-            downloaded = False
-            while downloaded == False:
+                import getpass
+                down_file_path = "{0}{1}_{2}-{3}.xlsx".format('C:\\Users\\' + getpass.getuser() + '\\Downloads\\', "NewsResult", start_date, end_date)
+
+                # 파일 존재 > 삭제
+                if os.path.isfile(down_file_path):
+                    os.remove(down_file_path)
+
+                time.sleep(1)
+                down_element = dr.find_element(By.XPATH, '//*[@id="analytics-data-download"]/div[3]/button')
+                down_element.send_keys(Keys.ENTER)
+
+                # alert 창 닫기
                 try:
-                    down_file = pd.read_excel(down_file_path)
-                    route = "{0}\\{1}_{2}_{3}.csv".format(down_path.get_raw_use_path(), "뉴스", '크롤링', i)
-                    down_file.to_csv(route, encoding="utf-8-sig", index=False)
-                    downloaded = True
-                except FileNotFoundError:
-                    downloaded = False
-                except PermissionError:
-                    time.sleep(1)
-                    downloaded = False
+                    WebDriverWait(dr, 3).until(EC.alert_is_present())
+                    alert = dr.switch_to.alert
 
-            # 뉴스 검색으로 돌아가기
-            step1_element = dr.find_element(By.ID, 'collapse-step-1')
-            step1_element.send_keys(Keys.ENTER)
+                    # 확인하기
+                    alert.accept()
+                except:
+                    print("no alert")
+
+                # 데이터 경로 이동(다운로드 폴더 > 분석데이터 폴더) 및 파일명 변경
+                time.sleep(1)
+                downloaded = False
+                while downloaded == False:
+                    try:
+                        down_file = pd.read_excel(down_file_path)
+                        route = "{0}\\{1}_{2}_{3}.csv".format(down_path.get_raw_use_path(), "뉴스", '크롤링', i)
+                        down_file.to_csv(route, encoding="utf-8-sig", index=False)
+                        downloaded = True
+                    except FileNotFoundError:
+                        downloaded = False
+                    except PermissionError:
+                        time.sleep(1)
+                        downloaded = False
+
+                # 뉴스 검색으로 돌아가기
+                step1_element = dr.find_element(By.ID, 'collapse-step-1')
+                step1_element.send_keys(Keys.ENTER)
+        else:
+            error_event(em.ENTER_KEYWORD)
 
         self.show_folders('크롤링') # 크롤링 파일 리스트 출력
 
@@ -558,11 +561,14 @@ class Ui_Anal_Dialog(object):
         # 검색 키워드
         keywords = self.txt_anal_word.toPlainText().split(',')
 
-        for i in keywords:
-            i = ('검색,' + i).split(',')
-            # 네이버 데이터 수집
-            naver_trend_search(datetime.strptime(s_yy_start+s_mm_start+"01", '%Y%m%d'),
-                               getMonthRange(s_yy_end,s_mm_end), i)
+        if len(keywords) > 1:
+            for i in keywords:
+                i = ('검색,' + i).split(',')
+                # 네이버 데이터 수집
+                naver_trend_search(datetime.strptime(s_yy_start+s_mm_start+"01", '%Y%m%d'),
+                                   getMonthRange(s_yy_end,s_mm_end), i)
+        else:
+            error_event(em.ENTER_KEYWORD)
 
         self.show_folders('네이버') # 네이버 데이터 수집 리스트 출력
 
@@ -578,24 +584,27 @@ class Ui_Anal_Dialog(object):
         # 키워드
         keywords = self.txt_anal_word.toPlainText().split(',')
 
-        empty_relate_list = []
-        empty_simil_list = []
+        if len(keywords) > 1:
+            empty_relate_list = []
+            empty_simil_list = []
 
-        for i in keywords:
-            # 민원_연관어분석 데이터 수집
-            if get_wd_cloud_info(i, (s_yy_start+s_mm_start+"01"),
-                           getMonthRange(s_yy_end,s_mm_end).strftime("%Y%m%d"), 'pttn,dfpt,saeol,prpl,qna_origin') is None:
-                empty_relate_list.append(i)
-            # 민원_유사사례정보 데이터 수집
-            if get_similarInfo(i) is None:
-                empty_simil_list.append(i)
+            for i in keywords:
+                # 민원_연관어분석 데이터 수집
+                if get_wd_cloud_info(i, (s_yy_start+s_mm_start+"01"),
+                               getMonthRange(s_yy_end,s_mm_end).strftime("%Y%m%d"), 'pttn,dfpt,saeol,prpl,qna_origin') is None:
+                    empty_relate_list.append(i)
+                # 민원_유사사례정보 데이터 수집
+                if get_similarInfo(i) is None:
+                    empty_simil_list.append(i)
 
-        empty_relate_str = ', '.join(empty_relate_list)
-        empty_simil_str = ', '.join(empty_simil_list)
-        self.lbl_relate.repaint()  # 라벨 초기화
-        self.lbl_simil.repaint()
-        self.lbl_relate.setText('X 연관어: ' + empty_relate_str)
-        self.lbl_simil.setText('X 유사사례: ' + empty_simil_str)
+            empty_relate_str = ', '.join(empty_relate_list)
+            empty_simil_str = ', '.join(empty_simil_list)
+            self.lbl_relate.repaint()  # 라벨 초기화
+            self.lbl_simil.repaint()
+            self.lbl_relate.setText('X 연관어: ' + empty_relate_str)
+            self.lbl_simil.setText('X 유사사례: ' + empty_simil_str)
+        else:
+            error_event(em.ENTER_KEYWORD)
 
         self.show_folders('민원')  # 민원 데이터 수집 리스트 출력
 
@@ -665,37 +674,36 @@ class Ui_Anal_Dialog(object):
         elif self.tabWidget.currentIndex() == 2:
             file_name = '동시출현키워드_pivot_최다'
 
-        # csv인 모든 파일 가져오기
-        all_files = glob.glob(file_path.get_raw_use_path() + file_name + ".csv")
+        search_file_name = "{0}/{1}.csv".format(file_path.get_raw_use_path(), file_name)
 
-        if len(all_files) > 0:
-            search_file_name = "{0}/{1}.csv".format(file_path.get_raw_use_path(), file_name)
-            df_data_anal = pd.read_csv(search_file_name, encoding="utf-8-sig")
+        if not os.path.exists(search_file_name):
+            msg = "'" + search_file_name + "'\n" + em.NO_DATA
+            error_event(msg)
         else:
-            return
+            df_data_anal = pd.read_csv(search_file_name, encoding="utf-8-sig")
 
-        self.tbl_today.setRowCount(len(df_data_anal))
-        self.tbl_rise.setRowCount(len(df_data_anal))
-        self.tbl_top.setRowCount(len(df_data_anal))
+            self.tbl_today.setRowCount(len(df_data_anal))
+            self.tbl_rise.setRowCount(len(df_data_anal))
+            self.tbl_top.setRowCount(len(df_data_anal))
 
-        if self.tabWidget.currentIndex() == 0:
-            for i in range(len(df_data_anal)):
-                self.tbl_today.setItem(i, 0, QTableWidgetItem(df_data_anal['keyword'][i]))
-                self.tbl_today.setItem(i, 1, QTableWidgetItem(df_data_anal['뉴스_정치'][i]))
-                self.tbl_today.setItem(i, 2, QTableWidgetItem(df_data_anal['뉴스_경제'][i]))
-                self.tbl_today.setItem(i, 3, QTableWidgetItem(df_data_anal['뉴스_사회'][i]))
-        elif self.tabWidget.currentIndex() == 1:
-            for i in range(len(df_data_anal)):
-                self.tbl_rise.setItem(i, 0, QTableWidgetItem(df_data_anal['keyword'][i]))
-                self.tbl_rise.setItem(i, 1, QTableWidgetItem(df_data_anal['뉴스_정치'][i]))
-                self.tbl_rise.setItem(i, 2, QTableWidgetItem(df_data_anal['뉴스_경제'][i]))
-                self.tbl_rise.setItem(i, 3, QTableWidgetItem(df_data_anal['뉴스_사회'][i]))
-        elif self.tabWidget.currentIndex() == 2:
-            for i in range(len(df_data_anal)):
-                self.tbl_top.setItem(i, 0, QTableWidgetItem(df_data_anal['keyword'][i]))
-                self.tbl_top.setItem(i, 1, QTableWidgetItem(df_data_anal['뉴스_정치'][i]))
-                self.tbl_top.setItem(i, 2, QTableWidgetItem(df_data_anal['뉴스_경제'][i]))
-                self.tbl_top.setItem(i, 3, QTableWidgetItem(df_data_anal['뉴스_사회'][i]))
+            if self.tabWidget.currentIndex() == 0:
+                for i in range(len(df_data_anal)):
+                    self.tbl_today.setItem(i, 0, QTableWidgetItem(df_data_anal['keyword'][i]))
+                    self.tbl_today.setItem(i, 1, QTableWidgetItem(df_data_anal['뉴스_정치'][i]))
+                    self.tbl_today.setItem(i, 2, QTableWidgetItem(df_data_anal['뉴스_경제'][i]))
+                    self.tbl_today.setItem(i, 3, QTableWidgetItem(df_data_anal['뉴스_사회'][i]))
+            elif self.tabWidget.currentIndex() == 1:
+                for i in range(len(df_data_anal)):
+                    self.tbl_rise.setItem(i, 0, QTableWidgetItem(df_data_anal['keyword'][i]))
+                    self.tbl_rise.setItem(i, 1, QTableWidgetItem(df_data_anal['뉴스_정치'][i]))
+                    self.tbl_rise.setItem(i, 2, QTableWidgetItem(df_data_anal['뉴스_경제'][i]))
+                    self.tbl_rise.setItem(i, 3, QTableWidgetItem(df_data_anal['뉴스_사회'][i]))
+            elif self.tabWidget.currentIndex() == 2:
+                for i in range(len(df_data_anal)):
+                    self.tbl_top.setItem(i, 0, QTableWidgetItem(df_data_anal['keyword'][i]))
+                    self.tbl_top.setItem(i, 1, QTableWidgetItem(df_data_anal['뉴스_정치'][i]))
+                    self.tbl_top.setItem(i, 2, QTableWidgetItem(df_data_anal['뉴스_경제'][i]))
+                    self.tbl_top.setItem(i, 3, QTableWidgetItem(df_data_anal['뉴스_사회'][i]))
 
 
 def error_event(msg):

@@ -7,6 +7,7 @@ import common.config.apiinfo as apifp
 from common.config.filepassclass import *
 from source.get_api_data_complaint import *
 from source.save_anal_mart import *
+import common.config.errormessage as em
 
 
 class Ui_complaint_api_win(object):
@@ -236,11 +237,14 @@ class Ui_complaint_api_win(object):
             target_list.append('qna_origin')
 
         target = "%s" % ",".join(target_list)
-        
-        # 민원 데이터 수집
-        get_complaint_data(part, s_yy_start+s_mm_start, target)
 
-        self.show_folders()  # 데이터 수집 리스트 출력
+        if len(target) > 1:
+            # 민원 데이터 수집
+            get_complaint_data(part, s_yy_start+s_mm_start, target)
+
+            self.show_folders()  # 데이터 수집 리스트 출력
+        else:
+            error_event(em.SELECT_CHKBOX)
 
 
     # 데이터 수집 리스트 출력
@@ -353,6 +357,13 @@ class Ui_complaint_api_win(object):
         item.setText(_translate("complaint_api_win", "오늘의 민원 이슈"))
         item = self.tbl_top.horizontalHeaderItem(0)
         item.setText(_translate("complaint_api_win", "핵심 키워드"))
+
+
+def error_event(msg):
+    msgbox = QMessageBox()
+    msgbox.setWindowTitle("error")
+    msgbox.setText(msg)
+    msgbox.exec_()
 
 
 if __name__ == "__main__":

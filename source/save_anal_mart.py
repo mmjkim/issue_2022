@@ -76,7 +76,8 @@ def anal_mart_news(part):
             print("The End!!!")
 
         else:
-            error_event(em.NO_DATA)
+            msg = part + " " + em.NO_DATA
+            error_event(msg)
 
     except Exception as e:
         print("anal_mart_news error :", e)
@@ -138,7 +139,8 @@ def anal_mart_complaint(part):
 
             print("The End!!!")
         else:
-            error_event(em.NO_DATA)
+            msg = part + " " + em.NO_DATA
+            error_event(msg)
 
     except Exception:
         import traceback

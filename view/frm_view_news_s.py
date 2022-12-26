@@ -16,6 +16,7 @@ matplotlib.rcParams['axes.unicode_minus'] = False
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 from common.config.filepassclass import FilePathClass
+import common.config.errormessage as em
 
 
 class Ui_frmViewNews(object):
@@ -273,36 +274,39 @@ class Ui_frmViewNews(object):
 
         df = self.setTblToDf(table)
         #x축 라벨 데이터 - 날짜 형태로 변경
-        df.columns = df.columns + '01'
-        df.columns = pd.to_datetime(df.columns).date
+        if len(df) > 0:
+            df.columns = df.columns + '01'
+            df.columns = pd.to_datetime(df.columns).date
 
-        # 선 그래프
-        if self.rdo_line.isChecked():
-            for i in range(int(self.txt_top_n.text())):
-                ax.plot(df.columns, df.head(int(self.txt_top_n.text())).values[i],
-                        label=df.index.values[i], alpha=0.5, linewidth=2)
+            # 선 그래프
+            if self.rdo_line.isChecked():
+                for i in range(int(self.txt_top_n.text())):
+                    ax.plot(df.columns, df.head(int(self.txt_top_n.text())).values[i],
+                            label=df.index.values[i], alpha=0.5, linewidth=2)
 
-        # 막대 그래프
-        elif self.rdo_bar.isChecked():
-            df = df.head(int(self.txt_top_n.text()))
-            df.T.plot.bar(figsize=(10, 5), ax=ax, alpha=0.5)
-            ax.xaxis.set_visible(False)
+            # 막대 그래프
+            elif self.rdo_bar.isChecked():
+                df = df.head(int(self.txt_top_n.text()))
+                df.T.plot.bar(figsize=(10, 5), ax=ax, alpha=0.5)
+                ax.xaxis.set_visible(False)
 
-        # 산점도
-        elif self.rdo_area.isChecked():
-            for i in range(int(self.txt_top_n.text())):
-                ax.scatter(df.columns,
-                       df.head(int(self.txt_top_n.text())).values[i],
-                       label=df.index.values[i], alpha=0.5)
+            # 산점도
+            elif self.rdo_area.isChecked():
+                for i in range(int(self.txt_top_n.text())):
+                    ax.scatter(df.columns,
+                           df.head(int(self.txt_top_n.text())).values[i],
+                           label=df.index.values[i], alpha=0.5)
 
-        ax.legend(df.index)
-        ax.set_title('월별 키워드 빈도수 추이')
-        ax.xaxis.set_major_locator(MonthLocator(interval=math.ceil(len(df.columns) / 12)))  # 주눈금
-        ax.xaxis.set_minor_locator(MonthLocator(interval=1))  # 보조 눈금
-        ax.set_ylim([0, df.values.astype(float).max() + df.values.astype(float).max() * 0.07])  # y축 값 범위
-        ax.get_yaxis().get_major_formatter().set_scientific(False)  # 숫자 지수형 변환 X
+            ax.legend(df.index)
+            ax.set_title('월별 키워드 빈도수 추이')
+            ax.xaxis.set_major_locator(MonthLocator(interval=math.ceil(len(df.columns) / 12)))  # 주눈금
+            ax.xaxis.set_minor_locator(MonthLocator(interval=1))  # 보조 눈금
+            ax.set_ylim([0, df.values.astype(float).max() + df.values.astype(float).max() * 0.07])  # y축 값 범위
+            ax.get_yaxis().get_major_formatter().set_scientific(False)  # 숫자 지수형 변환 X
 
-        self.canvas.draw()
+            self.canvas.draw()
+        else:
+            error_event(em.NO_DATA)
 
 
     # 차트 출력
@@ -464,6 +468,13 @@ class Ui_frmViewNews(object):
         self.rdo_area.setText(_translate("frmViewNews", "Scatter"))
         self.label_8.setText(_translate("frmViewNews", "Top N :"))
         self.btn_print.setText(_translate("frmViewNews", "조회"))
+
+
+def error_event(msg):
+    msgbox = QMessageBox()
+    msgbox.setWindowTitle("error")
+    msgbox.setText(msg)
+    msgbox.exec_()
 
 
 if __name__ == "__main__":

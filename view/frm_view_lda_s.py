@@ -102,6 +102,7 @@ class Ui_Dialog(object):
         self.tbl_sel_content = QtWidgets.QTextEdit(self.group3)
         self.tbl_sel_content.setGeometry(QtCore.QRect(652, 19, 623, 121))
         self.tbl_sel_content.setObjectName("tbl_sel_content")
+        self.tbl_sel_content.setReadOnly(True)
 
         self.group4 = QtWidgets.QGroupBox(Dialog)
         self.group4.setGeometry(QtCore.QRect(10, 210, 1306, 651))
@@ -144,7 +145,6 @@ class Ui_Dialog(object):
         self.tbl_contents.cellClicked.connect(self.show_details)  # 상세 내용 출력
 
 
-
     # 상세 내용 출력
     def show_details(self, row, column):
         self.tbl_sel_content.setText(self.tbl_contents.item(row, column).text())
@@ -180,9 +180,6 @@ class Ui_Dialog(object):
         elif dataType == '유사사례정보':
             file_name = "민원_유사사례정보_*.csv"
 
-        if file_path.is_path_exist_check(path) is False:
-            error_event(em.NO_PATH)
-
         # 분석 결과 파일 리스트
         all_file = os.listdir(path)
         csv_all_list = [file for file in all_file if fnmatch.fnmatch(file, file_name)]  # os.listdir(path_file)
@@ -192,7 +189,6 @@ class Ui_Dialog(object):
 
         # 분석 키워드 정보(키워드가 여러개 일 수 있어서 prefix 파일명을 제외한 모든 키워드를 보여줌, '_'로 구분)
         for i in range(len(keyword_list)):
-
             temp_list = [file for file in csv_all_list if fnmatch.fnmatch(file, file_name.replace('*', keyword_list[i]))]
 
             for j in range(len(temp_list)):
@@ -213,13 +209,14 @@ class Ui_Dialog(object):
         return df_data
 
 
-    # 민원 내용 조회
-    def get_content_complaint(self, dataType, keyword):
-        file_path = FilePathClass()
-        path = file_path.get_raw_use_path()
-        if file_path.is_path_exist_check(path) is False:
-            error_event(em.NO_PATH)
-        return ""
+    # # 민원 내용 조회
+    # def get_content_complaint(self, dataType, keyword):
+    #     file_path = FilePathClass()
+    #     path = file_path.get_raw_use_path()
+    #     if file_path.is_path_exist_check(path) is False:
+    #         msg = "'" + path + "'\n" + em.NO_PATH
+    #         error_event(msg)
+    #     return ""
 
 
     # LDA 분석
@@ -229,20 +226,20 @@ class Ui_Dialog(object):
             anal_list.append(str(list.selectedItems()[i].text().replace(part+'_', '')))
         anal_str = ','.join(anal_list)
 
-        file_path = FilePathClass()
-        s_path = file_path.get_result_path() + "LDA\\"
+        if len(anal_str) > 1:
+            file_path = FilePathClass()
+            s_path = file_path.get_result_path() + "LDA\\"
 
-        if file_path.is_path_exist_check(s_path) is False:
-            error_event(em.NO_PATH)
+            # LDA 분석
+            lda_model_proc(part, anal_str)
 
-        # LDA 분석
-        lda_model_proc(part, anal_str)
+            # 테이블 출력
+            self.get_html_lda()
 
-        # 테이블 출력
-        self.show_files()
-
-        # LDA html 파일 가져오기
-        self.load_lda_html(s_path + 'lda_result_{0}_{1}.html'.format(part, anal_str.replace(',', '_')))
+            # LDA html 파일 가져오기
+            self.load_lda_html(s_path + 'lda_result_{0}_{1}.html'.format(part, anal_str.replace(',', '_')))
+        else:
+            error_event(em.SELECT_KEYWORD)
 
 
     # 데이터 테이블, LDA 파일 테이블 출력
@@ -260,7 +257,7 @@ class Ui_Dialog(object):
         s_path = file_path.get_result_path() + "LDA\\"  # LDA 파일 경로
 
         if file_path.is_path_exist_check(s_path) is False:
-            error_event(em.NO_PATH)
+            os.makedirs(s_path)
         else:
             # 분석 결과 파일 리스트
             html_all_files = os.listdir(s_path)
@@ -287,32 +284,32 @@ class Ui_Dialog(object):
         path = file_path.get_raw_use_path()  # 데이터 경로
 
         if file_path.is_path_exist_check(path) is False:
-            error_event(em.NO_PATH)
+            os.makedirs(path)
+        else:
+            # 키워드 수집 마트 리스트 (csv 파일만 가져오기)
+            csv_all_list = os.listdir(path)
+            csv_saved_list = [file for file in csv_all_list if file.endswith(".csv")]
 
-        # 키워드 수집 마트 리스트 (csv 파일만 가져오기)
-        csv_all_list = os.listdir(path)
-        csv_saved_list = [file for file in csv_all_list if file.endswith(".csv")]
+            crawl_list = []  # 크롤링 데이터 리스트
+            simil_list = []  # 유사사례 데이터 리스트
 
-        crawl_list = []  # 크롤링 데이터 리스트
-        simil_list = []  # 유사사례 데이터 리스트
+            # 크롤링, 유사사례 데이터만 리스트에 저장(csv)
+            for i in range(0, len(csv_saved_list)):
+                filename = csv_saved_list[i].split('_')
+                if filename[1] == '크롤링':
+                    crawl_list.append(csv_saved_list[i])
+                elif filename[1] == '유사사례정보':
+                    simil_list.append(csv_saved_list[i])
 
-        # 크롤링, 유사사례 데이터만 리스트에 저장(csv)
-        for i in range(0, len(csv_saved_list)):
-            filename = csv_saved_list[i].split('_')
-            if filename[1] == '크롤링':
-                crawl_list.append(csv_saved_list[i])
-            elif filename[1] == '유사사례정보':
-                simil_list.append(csv_saved_list[i])
-
-        # 테이블에 데이터 목록 출력
-        for i in range(len(crawl_list)):
-            savedname = crawl_list[i].replace('.csv', '').split('_')
-            temp = self.get_keyword(savedname, 2)  # 분석 키워드
-            self.tbl_keyword_crawl.addItem(savedname[1] + "_" + temp)
-        for i in range(len(simil_list)):
-            savedname = simil_list[i].replace('.csv', '').split('_')
-            temp = self.get_keyword(savedname, 2)  # 분석 키워드
-            self.tbl_keyword_simil.addItem(savedname[1] + "_" + temp)
+            # 테이블에 데이터 목록 출력
+            for i in range(len(crawl_list)):
+                savedname = crawl_list[i].replace('.csv', '').split('_')
+                temp = self.get_keyword(savedname, 2)  # 분석 키워드
+                self.tbl_keyword_crawl.addItem(savedname[1] + "_" + temp)
+            for i in range(len(simil_list)):
+                savedname = simil_list[i].replace('.csv', '').split('_')
+                temp = self.get_keyword(savedname, 2)  # 분석 키워드
+                self.tbl_keyword_simil.addItem(savedname[1] + "_" + temp)
 
 
     # 분석 키워드 정보(키워드가 여러개 일 수 있어서 prefix 파일명을 제외한 모든 키워드를 보여줌, '_'로 구분)

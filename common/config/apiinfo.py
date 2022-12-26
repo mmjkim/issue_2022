@@ -21,7 +21,8 @@ NEWS_DATA_PATH_SOCIETY = '뉴스_사회'
 
 #------------- 민원 API I/F 정보 ---------------------
 # COMPLAIN_API_KEY = '8PvVYRda2ocf1OZTdsTwNczETCQL%2FiOshpEAWGzqVLdWXJrNmIzl7OzC2FCrD80SbCdDbd39a4Rz6azpxpMFmg%3D%3D'
-COMPLAIN_API_KEY = 'NAiIcJsR2pyzyHlYnLqu9gnPC7D1kVAhhfg6cEq6Y9p6GXiTrbFBbf5ivs%2FmMlAAFuemeNPFbwp2yyJ1G07o9A%3D%3D'
+# COMPLAIN_API_KEY = 'NAiIcJsR2pyzyHlYnLqu9gnPC7D1kVAhhfg6cEq6Y9p6GXiTrbFBbf5ivs%2FmMlAAFuemeNPFbwp2yyJ1G07o9A%3D%3D'
+COMPLAIN_API_KEY = 'xNJMhXNHY%2FrJJaBI6J1J8drvZmORtS%2FvpA%2BQtO8UGVw2uqnXPDUqXt00yWxPuIE%2BCkhMTR5K5D06HeB3KuNqng%3D%3D'
 COMPLAIN_API_URL = 'https://apis.data.go.kr/1140100/minAnalsInfoView5/'
 #급등키워드
 COMPLAIN_API_URL_RISE = 'minRisingKeyword5'

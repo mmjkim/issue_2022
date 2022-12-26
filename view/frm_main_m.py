@@ -6,7 +6,7 @@ from view.frm_anal_keyword_compare_s import Ui_Anal_Dialog  # 키워드 분석
 from view.frm_view_news_s import Ui_frmViewNews  # 뉴스 시각화
 from view.frm_view_lda_s import Ui_Dialog  # LDA
 from view.frm_view_complaints_s import Ui_frmViewComplaints  # 민원 시각화
-from view.frm_view_relate_s import Ui_frmComplaintWC  # 연관어분석 워드클라우드
+from view.frm_view_relate_s import Ui_frmComplaintWC  # 연관어 분석 워드 클라우드
 from view.frm_view_naver_s import Ui_frmViewNaver  # 네이버 검색어 시각화
 
 

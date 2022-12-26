@@ -3,9 +3,14 @@
 # 오늘의 민원이슈 vs 뉴스_정치, 뉴스_사회, 뉴스_사회
 #
 #-------------------------------------------------------
+import os.path
+
+from PyQt5.QtWidgets import QMessageBox
+
 from common.config.filepassclass import *
 import common.config.apiinfo as apifp
 #from common.function.funcCommon import *
+import common.config.errormessage as em
 
 import pandas as pd
 import numpy as np
@@ -22,64 +27,75 @@ def compare_keyword(part):
     elif part == "최다":
         filename = "{0}{1}\\1차마트_{2}.csv".format(file_path.get_raw_use_path(), apifp.COMPLAIN_DATA_PATH_DFTOPKW, part)
 
-    si_complain_data = pd.read_csv(filename, encoding="utf-8-sig")
+    if not os.path.exists(filename):
+        msg = "'" + filename + "'\n" + em.NO_DATA
+        error_event(msg)
+    else:
+        si_complain_data = pd.read_csv(filename, encoding="utf-8-sig")
 
-    #뉴스_사회
-    filename = "{0}{1}\\1차마트_{2}.csv".format(file_path.get_raw_use_path(), apifp.NEWS_DATA_PATH_SOCIETY, '사회')
-    si_news_society_data = pd.read_csv(filename, encoding="utf-8-sig")
+        #뉴스_사회
+        filename_society = "{0}{1}\\1차마트_{2}.csv".format(file_path.get_raw_use_path(), apifp.NEWS_DATA_PATH_SOCIETY, '사회')
+        # 뉴스_정치
+        filename_politics = "{0}{1}\\1차마트_{2}.csv".format(file_path.get_raw_use_path(), apifp.NEWS_DATA_PATH_POLITICS, '정치')
+        # 뉴스_정치
+        filename_economy = "{0}{1}\\1차마트_{2}.csv".format(file_path.get_raw_use_path(), apifp.NEWS_DATA_PATH_ECONOMY, '경제')
 
-    #뉴스_정치
-    filename = "{0}{1}\\1차마트_{2}.csv".format(file_path.get_raw_use_path(), apifp.NEWS_DATA_PATH_POLITICS, '정치')
-    si_news_politics_data = pd.read_csv(filename, encoding="utf-8-sig")
+        if not os.path.exists(filename_society):
+            msg = "'" + filename_society + "'\n" + em.NO_DATA
+            error_event(msg)
+        elif not os.path.exists(filename_politics):
+            msg = "'" + filename_politics + "'\n" + em.NO_DATA
+            error_event(msg)
+        elif not os.path.exists(filename_economy):
+            msg = "'" + filename_economy + "'\n" + em.NO_DATA
+            error_event(msg)
+        else:
+            si_news_society_data = pd.read_csv(filename_society, encoding="utf-8-sig")
+            si_news_politics_data = pd.read_csv(filename_politics, encoding="utf-8-sig")
+            si_news_economy_data = pd.read_csv(filename_economy, encoding="utf-8-sig")
 
-    #뉴스_정치
-    filename = "{0}{1}\\1차마트_{2}.csv".format(file_path.get_raw_use_path(), apifp.NEWS_DATA_PATH_ECONOMY, '경제')
-    si_news_economy_data = pd.read_csv(filename, encoding="utf-8-sig")
+            #시리즈형 데이타를 프레임임형으로 변한
+            df_complain_data = si_complain_data['keyword'].to_frame()
 
+            #중복되는 데이터 저장 데이타 프레임 정의
+            df_overlap_keyword = pd.DataFrame()
+            column_names = ['keyword','type', 'overlap_keyword']
+            df_overlap_keyword = df_overlap_keyword.reindex(columns = column_names)
 
-    #시리즈형 데이타를 프레임임형으로 변한
-    df_complain_data = si_complain_data['keyword'].to_frame()
+            #뉴스_사회
+            df_result = get_overlap_keyword(df_complain_data, si_news_society_data, '뉴스_사회')
+            df_overlap_keyword = pd.concat([df_overlap_keyword, df_result])
 
-    #중복되는 데이터 저장 데이타 프레임 정의
-    df_overlap_keyword = pd.DataFrame()
-    column_names = ['keyword','type', 'overlap_keyword']
-    df_overlap_keyword = df_overlap_keyword.reindex(columns = column_names)
+            #뉴스_정치
+            df_result = get_overlap_keyword(df_complain_data, si_news_politics_data, '뉴스_정치')
+            df_overlap_keyword = pd.concat([df_overlap_keyword, df_result])
 
-    #뉴스_사회
-    df_result = get_overlap_keyword(df_complain_data, si_news_society_data, '뉴스_사회')
-    df_overlap_keyword = pd.concat([df_overlap_keyword, df_result])
+            #뉴스_경제
+            df_result = get_overlap_keyword(df_complain_data, si_news_economy_data, '뉴스_경제')
+            df_overlap_keyword = pd.concat([df_overlap_keyword, df_result])
+            #중복제거
+            df_overlap_keyword = df_overlap_keyword.drop_duplicates(['keyword','type', 'overlap_keyword'])
 
+            #print('---------------------------')
+            #print(df_overlap_keyword.sort_values(by=['overlap_keyword']))
 
-    #뉴스_정치
-    df_result = get_overlap_keyword(df_complain_data, si_news_politics_data, '뉴스_정치')
-    df_overlap_keyword = pd.concat([df_overlap_keyword, df_result])
+            #결과값 저장
+            # 저장될 폴더가 있는지 확인
+            if not os.path.exists(file_path.get_raw_use_path()):
+                os.makedirs(file_path.get_raw_use_path())
 
-    #뉴스_경제
-    df_result = get_overlap_keyword(df_complain_data, si_news_economy_data, '뉴스_경제')
-    df_overlap_keyword = pd.concat([df_overlap_keyword, df_result])
-    #중복제거
-    df_overlap_keyword = df_overlap_keyword.drop_duplicates(['keyword','type', 'overlap_keyword'])
+            # 저장할 파일명 생성
+            savefile_o = "{0}{1}_{2}.csv".format(file_path.get_raw_use_path(), "동시출현키워드", part)
+            # 파일저장
+            df_overlap_keyword = df_overlap_keyword.sort_values(by=['overlap_keyword'])
+            df_overlap_keyword.to_csv(savefile_o, encoding="utf-8-sig", index=False)
 
-    #print('---------------------------')
-    #print(df_overlap_keyword.sort_values(by=['overlap_keyword']))
+            #피벗 데이터 저장
+            savefile_p = "{0}\\{1}_{2}.csv".format(file_path.get_raw_use_path(), "동시출현키워드_pivot", part)
+            keyword_pivot(df_overlap_keyword, savefile_p)
+            print('The End!!!')
 
-    #결과값 저장
-    # 저장될 폴더가 있는지 확인
-    if not os.path.exists(file_path.get_raw_use_path()):
-        os.makedirs(file_path.get_raw_use_path())
-
-    # 저장할 파일명 생성
-    savefile_o = "{0}{1}_{2}.csv".format(file_path.get_raw_use_path(), "동시출현키워드", part)
-    # 파일저장
-    df_overlap_keyword = df_overlap_keyword.sort_values(by=['overlap_keyword'])
-    df_overlap_keyword.to_csv(savefile_o, encoding="utf-8-sig", index=False)
-
-    #피벗 데이터 저장
-    savefile_p = "{0}\\{1}_{2}.csv".format(file_path.get_raw_use_path(), "동시출현키워드_pivot", part)
-    keyword_pivot(df_overlap_keyword, savefile_p)
-    print('The End!!!')
-
-    return df_overlap_keyword
+            return df_overlap_keyword
 
 
 # --------------------------------------------
@@ -132,4 +148,8 @@ def keyword_pivot(df_data,save_file_name):
     dataAnal.to_csv(save_file_name, encoding="utf-8-sig", index=False)
 
 
-#compare_keyword('급등')
+def error_event(msg):
+    msgbox = QMessageBox()
+    msgbox.setWindowTitle("error")
+    msgbox.setText(msg)
+    msgbox.exec_()
