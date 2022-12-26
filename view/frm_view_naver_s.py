@@ -115,6 +115,10 @@ class Ui_frmViewNaver(object):
         self.rdo_area = QtWidgets.QRadioButton(self.group2)
         self.rdo_area.setGeometry(QtCore.QRect(138, 26, 86, 16))
         self.rdo_area.setObjectName("rdo_area")
+        self.rdo_multi = QtWidgets.QRadioButton(self.group2)
+        self.rdo_multi.setGeometry(QtCore.QRect(200, 26, 86, 16))
+        self.rdo_multi.setObjectName("rdo_multi")
+        self.rdo_multi.setEnabled(False)
 
         self.btn_print = QtWidgets.QPushButton(self.group2)
         self.btn_print.setGeometry(QtCore.QRect(890, 23, 79, 24))
@@ -147,7 +151,6 @@ class Ui_frmViewNaver(object):
         elif self.rdo_area.isChecked():
             type = 'area'
         else:
-
             for i in range(1, len(df)):
                 print(df.columns[i])
                 #print(types[i])
@@ -155,6 +158,7 @@ class Ui_frmViewNaver(object):
                     multi_types += "'" + df.columns[i] + "':'bar',\n"
                 else:
                     multi_types += "'" + df.columns[i] + "':'line',\n"
+        print(multi_types)
 
 
         html = c3Chart(df, type, multi_types) # 그래프 html 가져오기
@@ -205,8 +209,13 @@ class Ui_frmViewNaver(object):
             for i in range(len(df)):
                 self.tbl_naver.setItem(i, c, QTableWidgetItem(str(df[df.columns[c]][i])))
         df = df.rename(columns={'기준일자': 'ymd'})
-       #combo chart  radio 버튼 활성화 여부
-       # 데이터 프레임 컬럼이 3개 이상인 경우 선택 가능함
+
+        # 데이터 프레임 컬럼이 3개 이상인 경우 콤보 박스 선택 가능함
+        if len(self.listWidget.selectedItems()) >= 3:
+            self.rdo_multi.setEnabled(True)
+        else:
+            self.rdo_multi.setEnabled(False)
+
         return df
 
 
@@ -262,6 +271,7 @@ class Ui_frmViewNaver(object):
         self.rdo_line.setText(_translate("frmViewNaver", "Line"))
         self.rdo_bar.setText(_translate("frmViewNaver", "Bar"))
         self.rdo_area.setText(_translate("frmViewNaver", "Area"))
+        self.rdo_multi.setText(_translate("frmViewNaver", "Multi"))
         self.btn_print.setText(_translate("frmViewNaver", "조회"))
 
 
