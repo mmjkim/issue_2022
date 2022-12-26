@@ -143,7 +143,7 @@ class Ui_frmViewNaver(object):
 
     def show_graph(self):
         df = self.show_table()
-        multi_types = ""
+        multi_types = ''
         if self.rdo_line.isChecked():
             type = 'line'
         elif self.rdo_bar.isChecked():
@@ -151,15 +151,12 @@ class Ui_frmViewNaver(object):
         elif self.rdo_area.isChecked():
             type = 'area'
         else:
-            for i in range(1, len(df)):
-                print(df.columns[i])
-                #print(types[i])
-                if i == 1 :
+            type = ''
+            for i in range(1, len(df.columns)):
+                if i == 1:
                     multi_types += "'" + df.columns[i] + "':'bar',\n"
                 else:
                     multi_types += "'" + df.columns[i] + "':'line',\n"
-        print(multi_types)
-
 
         html = c3Chart(df, type, multi_types) # 그래프 html 가져오기
         temp = "zoom:{enabled: false}"
