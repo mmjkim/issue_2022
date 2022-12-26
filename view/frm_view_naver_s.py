@@ -198,14 +198,14 @@ class Ui_frmViewNaver(object):
         self.tbl_naver.setRowCount(len(df))
         self.tbl_naver.setColumnCount(len(df.columns))
 
-        df = df.rename(columns={'ymd':'기준일자'})
+        df = df.rename(columns={'ymd':'기준년월'})
         self.tbl_naver.setHorizontalHeaderLabels(df.columns)
 
         # 테이블 값 삽입
         for c in range(len(df.columns)):
             for i in range(len(df)):
                 self.tbl_naver.setItem(i, c, QTableWidgetItem(str(df[df.columns[c]][i])))
-        df = df.rename(columns={'기준일자': 'ymd'})
+        df = df.rename(columns={'기준년월': 'ymd'})
 
         # 데이터 프레임 컬럼이 3개 이상인 경우 멀티 라디오 버튼 선택 가능함
         if len(self.listWidget.selectedItems()) >= 3:

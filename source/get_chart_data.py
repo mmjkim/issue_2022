@@ -17,7 +17,7 @@ def get_view_naver_keyword(keyword, std_ymd, end_ymd ):
     for word in keywords:
         temp = word.replace(' ', '')
         #키워드가 컬럼값이 되도록 쿼리
-        sql = " SELECT YMD, VAL AS {0} FROM NAVER_KEYWORD WHERE YMD BETWEEN '{1}' AND '{2}' AND KEYWORD = '{3}'"
+        sql = " SELECT LEFT(YMD,7) AS YM, VAL AS {0} FROM NAVER_KEYWORD WHERE YMD BETWEEN '{1}' AND '{2}' AND KEYWORD = '{3}'"
         sql = sql.format(temp, std_ymd, end_ymd, temp)
         df_rs = db_conn.select_qry(sql)
 
@@ -26,9 +26,9 @@ def get_view_naver_keyword(keyword, std_ymd, end_ymd ):
            df_marge = df_rs
            i = 1
         else:
-           df_marge = pd.merge(df_marge, df_rs, how='outer', on='YMD')
+           df_marge = pd.merge(df_marge, df_rs, how='outer', on='YM')
 
-    df_marge = df_marge.rename(columns={'YMD':'ymd'})
+    df_marge = df_marge.rename(columns={'YM':'ymd'})
     # print(df_marge)
 
     # html = c3Chart(df_marge, 'line')
