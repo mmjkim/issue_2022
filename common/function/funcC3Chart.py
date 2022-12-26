@@ -98,7 +98,7 @@ def test(row_data):
     return html
 
 
-def c3chart_html_write(df_data, type):
+def c3chart_html_write(df_data, type, types):
 
 
     json_temp = df_data.to_json(orient="records")
@@ -114,6 +114,9 @@ def c3chart_html_write(df_data, type):
     # print(keys_data)
     keys_data = keys_data.replace("'ymd',", '')
     # print("keys_data:", keys_data)
+
+    #chart_types = str(types).split(",", "")
+    multi_types = types
 
     chart_type = type
     blable = 'false'
@@ -140,6 +143,8 @@ def c3chart_html_write(df_data, type):
     html += "                     keys: { value: ["+ keys_data +"] },  \n"
     html += "					  type:'" + chart_type + "',  \n"
     html += "					  labels: "+ blable+",        \n"
+    html += "			          types: { " + multi_types + "}, \n"
+
     html += "               },  \n"
     html += "				axis: {                                                                       \n"
     html += "					     x: {                                                                     \n"
@@ -156,6 +161,10 @@ def c3chart_html_write(df_data, type):
     html += "                                                                                       \n"
     html += "                },	\n"
     html += "			    },   \n"
+    #s -- > color
+    html += "			    color: { \n"
+    html += "			        pattern: ['#c4e0a6','#ff5f00', '#ffe082', '#80deeb',  '#bdaba3']\n"
+    html += "			    }, \n"
     #s -- > zoom
     html += "			    zoom:{enabled: "+ bzoom+"} \n"
     #e -- > zoom

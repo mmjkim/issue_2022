@@ -139,15 +139,25 @@ class Ui_frmViewNaver(object):
 
     def show_graph(self):
         df = self.show_table()
-        
+        multi_types = ""
         if self.rdo_line.isChecked():
             type = 'line'
         elif self.rdo_bar.isChecked():
             type = 'bar'
         elif self.rdo_area.isChecked():
             type = 'area'
+        else:
 
-        html = c3Chart(df, type) # 그래프 html 가져오기
+            for i in range(1, len(df)):
+                print(df.columns[i])
+                #print(types[i])
+                if i == 1 :
+                    multi_types += "'" + df.columns[i] + "':'bar',\n"
+                else:
+                    multi_types += "'" + df.columns[i] + "':'line',\n"
+
+
+        html = c3Chart(df, type, multi_types) # 그래프 html 가져오기
         temp = "zoom:{enabled: false}"
         self.webEngineView.setHtml(html.replace(temp, "zoom: {enabled: true}")) # 그래프 그리기
         loadCSS(self.webEngineView, "c3Chart/c3.css", "script1") # 그래프 스타일 설정
@@ -195,7 +205,8 @@ class Ui_frmViewNaver(object):
             for i in range(len(df)):
                 self.tbl_naver.setItem(i, c, QTableWidgetItem(str(df[df.columns[c]][i])))
         df = df.rename(columns={'기준일자': 'ymd'})
-
+       #combo chart  radio 버튼 활성화 여부
+       # 데이터 프레임 컬럼이 3개 이상인 경우 선택 가능함
         return df
 
 
