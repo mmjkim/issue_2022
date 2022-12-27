@@ -1,3 +1,5 @@
+import os.path
+
 import pandas as pd
 from datetime import datetime
 
@@ -323,34 +325,40 @@ class Ui_frmViewNews(object):
         anal_s_date = self.sel_yy_start.currentText() + self.sel_mm_start.currentText()
         anal_e_date = self.sel_yy_end.currentText() + self.sel_mm_end.currentText()
 
-        news = pd.read_csv(file_path.get_raw_use_path() + '뉴스_' + part + '\\1차마트_' + part + '.csv')
+        path = file_path.get_raw_use_path() + '뉴스_' + part + '\\1차마트_' + part + '.csv'
 
-        #조회 조건에 맞는 데이타만 가져오기
-        news = news[(news['stdym'].astype(int) >= int(anal_s_date)) & (news['stdym'].astype(int) <= int(anal_e_date))]
+        if os.path.exists(path):
+            news = pd.read_csv(path)
 
-        #중복 제거
-        news = news.drop_duplicates(['stdym', 'keyword'], keep='first', inplace=False, ignore_index=False)
+            #조회 조건에 맞는 데이타만 가져오기
+            news = news[(news['stdym'].astype(int) >= int(anal_s_date)) & (news['stdym'].astype(int) <= int(anal_e_date))]
 
-        #데이타 수집년월 기준으로 피벗
-        news_pivot = news.pivot(index='keyword', columns='stdym', values='freq')
+            #중복 제거
+            news = news.drop_duplicates(['stdym', 'keyword'], keep='first', inplace=False, ignore_index=False)
 
-        # 가장 마지막 컬럼 값으로 정렬
-        sort_date = news_pivot.columns[news_pivot.shape[1]-1]
+            #데이타 수집년월 기준으로 피벗
+            news_pivot = news.pivot(index='keyword', columns='stdym', values='freq')
 
-        news_sel = news_pivot.sort_values(sort_date, ascending=False)
+            # 가장 마지막 컬럼 값으로 정렬
+            sort_date = news_pivot.columns[news_pivot.shape[1]-1]
 
-        for i in news_sel.columns:
-            temp = str(i)[0:4] + "-" + str(i)[4:6]
-            news_sel.rename(columns={i:temp}, inplace=True)
+            news_sel = news_pivot.sort_values(sort_date, ascending=False)
 
-        if self.tabWidget.currentIndex() == 0:
-             self.set_table_data(news_sel,  self.tbl_data1)
-        elif self.tabWidget.currentIndex() == 1:
-             self.set_table_data(news_sel,  self.tbl_data2)
-        elif self.tabWidget.currentIndex() == 2:
-             self.set_table_data(news_sel,  self.tbl_data3)
+            for i in news_sel.columns:
+                temp = str(i)[0:4] + "-" + str(i)[4:6]
+                news_sel.rename(columns={i:temp}, inplace=True)
 
-        return news_sel
+            if self.tabWidget.currentIndex() == 0:
+                 self.set_table_data(news_sel,  self.tbl_data1)
+            elif self.tabWidget.currentIndex() == 1:
+                 self.set_table_data(news_sel,  self.tbl_data2)
+            elif self.tabWidget.currentIndex() == 2:
+                 self.set_table_data(news_sel,  self.tbl_data3)
+
+            return news_sel
+        else:
+            msg = "'" + path + "'\n" + em.NO_DATA
+            error_event(msg)
 
 
     #조회한 데이타 테이블에 넣기

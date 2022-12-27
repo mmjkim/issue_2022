@@ -1,12 +1,14 @@
 import os
 import fnmatch
 import pandas as pd
+from PyQt5.QtWidgets import QMessageBox
 from matplotlib import pyplot as plt
 from wordcloud import WordCloud
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from common.config.filepassclass import FilePathClass
+import common.config.errormessage as em
 
 
 class Ui_frmComplaintWC(object):
@@ -121,25 +123,28 @@ class Ui_frmComplaintWC(object):
         file_path = FilePathClass()
         path = file_path.get_raw_use_path()
 
-        # 키워드에 해당하는 파일 찾아서 데이터프레임으로
-        df = pd.read_csv(path + '민원_연관어분석정보_' + keyword + '.csv')
-        # 데이터프레임을 {index:value}의 딕셔너리 형태로 변경
-        wc = df.set_index('label').to_dict()['value']
+        if keyword != "":
+            # 키워드에 해당하는 파일 찾아서 데이터프레임으로
+            df = pd.read_csv(path + '민원_연관어분석정보_' + keyword + '.csv')
+            # 데이터프레임을 {index:value}의 딕셔너리 형태로 변경
+            wc = df.set_index('label').to_dict()['value']
 
-        # 워드클라우드 생성
-        wordCloud = WordCloud(
-            font_path="malgun",
-            width=430,
-            height=430,
-            max_font_size=80,
-            background_color='white'
-        ).generate_from_frequencies(wc)
-        # 워드클라우드 출력
-        plt.figure(figsize=(5, 5))
-        plt.imshow(wordCloud)
-        plt.axis('off')
-        plt.savefig(keyword + '_wc.png', dpi=100)
-        canvas.setPixmap(QtGui.QPixmap(keyword + '_wc.png'))
+            # 워드클라우드 생성
+            wordCloud = WordCloud(
+                font_path="malgun",
+                width=430,
+                height=430,
+                max_font_size=80,
+                background_color='white'
+            ).generate_from_frequencies(wc)
+            # 워드클라우드 출력
+            plt.figure(figsize=(5, 5))
+            plt.imshow(wordCloud)
+            plt.axis('off')
+            plt.savefig(keyword + '_wc.png', dpi=100)
+            canvas.setPixmap(QtGui.QPixmap(keyword + '_wc.png'))
+        else:
+            error_event(em.NO_DATA)
 
 
     def retranslateUi(self, frmComplaintWC):
@@ -154,6 +159,13 @@ class Ui_frmComplaintWC(object):
         self.groupBox_4.setTitle(_translate("frmComplaintWC", ""))
         self.label_4.setText(_translate("frmComplaintWC", ""))
         self.label_5.setText(_translate("frmComplaintWC", "[ 민원 연관어분석 정보 ]"))
+
+
+def error_event(msg):
+    msgbox = QMessageBox()
+    msgbox.setWindowTitle("error")
+    msgbox.setText(msg)
+    msgbox.exec_()
 
 
 if __name__ == "__main__":

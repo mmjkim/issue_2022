@@ -468,8 +468,8 @@ class Ui_Anal_Dialog(object):
             pw_element.send_keys(Keys.ENTER)
             # 로그인창 닫기
             time.sleep(1)
-            modal_content = dr.find_element(By.XPATH, '//*[@id="login-modal"]/div')
-            modal_content.click()
+            # modal_content = dr.find_element(By.XPATH, '//*[@id="login-modal"]/div')
+            # modal_content.click()
 
             # 데이터 수집
             for i in anal_word:

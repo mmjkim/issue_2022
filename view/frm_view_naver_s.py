@@ -211,12 +211,12 @@ class Ui_frmViewNaver(object):
 
             # 테이블 값 삽입
             for c in range(len(df.columns)):
-                self.tbl_naver.setItem(i, 0, QTableWidgetItem(df.index[i]))
                 for i in range(len(df)):
                     item = QTableWidgetItem()
                     text = str(df[df.columns[c]][i])
                     item.setText(text)
-                    item.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
+                    if c != 0:  # 첫 번째 열이면 오른쪽 정렬 X
+                        item.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
                     self.tbl_naver.setItem(i, c, item)
             df = df.rename(columns={'기준일자': 'ymd'})
 
