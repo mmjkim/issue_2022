@@ -104,7 +104,7 @@ class Ui_Anal_Dialog(object):
 
         # 라벨 - 분석 기간
         self.label_5 = QtWidgets.QLabel(self.group2)
-        self.label_5.setGeometry(QtCore.QRect(234, 28, 16, 17))
+        self.label_5.setGeometry(QtCore.QRect(234, 28, 20, 17))
         self.label_5.setObjectName("label_5")
         self.label_6 = QtWidgets.QLabel(self.group2)
         self.label_6.setGeometry(QtCore.QRect(28, 27, 54, 15))
@@ -168,12 +168,12 @@ class Ui_Anal_Dialog(object):
 
         # 라벨 - 분석 키워드
         self.label_7 = QtWidgets.QLabel(self.group2)
-        self.label_7.setGeometry(QtCore.QRect(400, 28, 71, 16))
+        self.label_7.setGeometry(QtCore.QRect(400, 28, 75, 16))
         self.label_7.setObjectName("label_7")
 
         # 분석 키워드 입력
         self.txt_anal_word = QtWidgets.QTextEdit(self.group2)
-        self.txt_anal_word.setGeometry(QtCore.QRect(472, 21, 521, 24))
+        self.txt_anal_word.setGeometry(QtCore.QRect(480, 21, 500, 24))
         self.txt_anal_word.setToolTip("")
         self.txt_anal_word.setObjectName("txt_anal_word")
 
@@ -192,7 +192,7 @@ class Ui_Anal_Dialog(object):
         self.tbl_naver.horizontalHeader().setStretchLastSection(True)
         # 네이버 데이터 수집 버튼
         self.btn_naver = QtWidgets.QPushButton(self.group3)
-        self.btn_naver.setGeometry(QtCore.QRect(185, 22, 79, 23))
+        self.btn_naver.setGeometry(QtCore.QRect(185, 22, 85, 23))
         self.btn_naver.setObjectName("btn_naver")
 
         self.group5 = QtWidgets.QGroupBox(Anal_Dialog)
@@ -201,7 +201,7 @@ class Ui_Anal_Dialog(object):
 
         # 민원 데이터 수집 버튼
         self.btn_complain = QtWidgets.QPushButton(self.group5)
-        self.btn_complain.setGeometry(QtCore.QRect(350, 20, 79, 23))
+        self.btn_complain.setGeometry(QtCore.QRect(350, 20, 85, 23))
         self.btn_complain.setObjectName("btn_complain")
         # 민원 유사사례 라벨
         self.lbl_simil = QtWidgets.QLabel(self.group5)
@@ -249,7 +249,7 @@ class Ui_Anal_Dialog(object):
         self.tbl_news.horizontalHeader().setStretchLastSection(True)
         # 뉴스 데이터 크롤링 버튼
         self.btn_news = QtWidgets.QPushButton(self.group4)
-        self.btn_news.setGeometry(QtCore.QRect(185, 22, 79, 23))
+        self.btn_news.setGeometry(QtCore.QRect(185, 22, 85, 23))
         self.btn_news.setObjectName("btn_news")
 
         self.retranslateUi(Anal_Dialog)

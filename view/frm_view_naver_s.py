@@ -27,11 +27,11 @@ class Ui_frmViewNaver(object):
         self.group1.setObjectName("group1")
 
         self.label2 = QtWidgets.QLabel(self.group1)
-        self.label2.setGeometry(QtCore.QRect(372, 30, 16, 17))
+        self.label2.setGeometry(QtCore.QRect(372, 30, 20, 17))
         self.label2.setObjectName("label2")
 
         self.label = QtWidgets.QLabel(self.group1)
-        self.label.setGeometry(QtCore.QRect(170, 29, 54, 15))
+        self.label.setGeometry(QtCore.QRect(170, 29, 60, 15))
         self.label.setObjectName("label")
 
         self.sel_yy_start = QtWidgets.QComboBox(self.group1)
@@ -109,17 +109,17 @@ class Ui_frmViewNaver(object):
         self.group2.setObjectName("group2")
 
         self.rdo_line = QtWidgets.QRadioButton(self.group2)
-        self.rdo_line.setGeometry(QtCore.QRect(20, 26, 86, 16))
+        self.rdo_line.setGeometry(QtCore.QRect(20, 26, 86, 20))
         self.rdo_line.setObjectName("rdo_line")
         self.rdo_line.setChecked(True)
         self.rdo_bar = QtWidgets.QRadioButton(self.group2)
-        self.rdo_bar.setGeometry(QtCore.QRect(80, 26, 86, 16))
+        self.rdo_bar.setGeometry(QtCore.QRect(80, 26, 86, 20))
         self.rdo_bar.setObjectName("rdo_bar")
         self.rdo_area = QtWidgets.QRadioButton(self.group2)
-        self.rdo_area.setGeometry(QtCore.QRect(138, 26, 86, 16))
+        self.rdo_area.setGeometry(QtCore.QRect(138, 26, 86, 20))
         self.rdo_area.setObjectName("rdo_area")
         self.rdo_multi = QtWidgets.QRadioButton(self.group2)
-        self.rdo_multi.setGeometry(QtCore.QRect(200, 26, 86, 16))
+        self.rdo_multi.setGeometry(QtCore.QRect(200, 26, 86, 20))
         self.rdo_multi.setObjectName("rdo_multi")
         self.rdo_multi.setEnabled(False)
 

@@ -120,18 +120,18 @@ class Ui_frmViewComplaints(object):
         self.group3.setObjectName("group3")
 
         self.rdo_line = QtWidgets.QRadioButton(self.group1)
-        self.rdo_line.setGeometry(QtCore.QRect(410, 28, 86, 16))
+        self.rdo_line.setGeometry(QtCore.QRect(410, 28, 86, 20))
         self.rdo_line.setObjectName("rdo_line")
         self.rdo_line.setChecked(True)
         self.rdo_bar = QtWidgets.QRadioButton(self.group1)
-        self.rdo_bar.setGeometry(QtCore.QRect(470, 28, 86, 16))
+        self.rdo_bar.setGeometry(QtCore.QRect(470, 28, 86, 20))
         self.rdo_bar.setObjectName("rdo_bar")
         self.rdo_area = QtWidgets.QRadioButton(self.group1)
-        self.rdo_area.setGeometry(QtCore.QRect(530, 28, 86, 16))
+        self.rdo_area.setGeometry(QtCore.QRect(530, 28, 86, 20))
         self.rdo_area.setObjectName("rdo_area")
 
         self.label_8 = QtWidgets.QLabel(self.group3)
-        self.label_8.setGeometry(QtCore.QRect(750, 26, 51, 16))
+        self.label_8.setGeometry(QtCore.QRect(750, 26, 55, 16))
         self.label_8.setObjectName("label_8")
 
         self.txt_top_n = QtWidgets.QLineEdit(self.group3)
