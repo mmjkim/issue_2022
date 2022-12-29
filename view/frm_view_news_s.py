@@ -26,6 +26,7 @@ class Ui_frmViewNews(object):
         frmViewNews.setObjectName("frmViewNews")
         frmViewNews.resize(1024, 968)
         frmViewNews.setMaximumSize(1024, 968)
+        frmViewNews.setMinimumSize(1024, 968)
         self.group1 = QtWidgets.QGroupBox(frmViewNews)
         self.group1.setGeometry(QtCore.QRect(10, 10, 1001, 61))
         self.group1.setObjectName("group1")
@@ -325,40 +326,43 @@ class Ui_frmViewNews(object):
         anal_s_date = self.sel_yy_start.currentText() + self.sel_mm_start.currentText()
         anal_e_date = self.sel_yy_end.currentText() + self.sel_mm_end.currentText()
 
-        path = file_path.get_raw_use_path() + '뉴스_' + part + '\\1차마트_' + part + '.csv'
-
-        if os.path.exists(path):
-            news = pd.read_csv(path)
-
-            #조회 조건에 맞는 데이타만 가져오기
-            news = news[(news['stdym'].astype(int) >= int(anal_s_date)) & (news['stdym'].astype(int) <= int(anal_e_date))]
-
-            #중복 제거
-            news = news.drop_duplicates(['stdym', 'keyword'], keep='first', inplace=False, ignore_index=False)
-
-            #데이타 수집년월 기준으로 피벗
-            news_pivot = news.pivot(index='keyword', columns='stdym', values='freq')
-
-            # 가장 마지막 컬럼 값으로 정렬
-            sort_date = news_pivot.columns[news_pivot.shape[1]-1]
-
-            news_sel = news_pivot.sort_values(sort_date, ascending=False)
-
-            for i in news_sel.columns:
-                temp = str(i)[0:4] + "-" + str(i)[4:6]
-                news_sel.rename(columns={i:temp}, inplace=True)
-
-            if self.tabWidget.currentIndex() == 0:
-                 self.set_table_data(news_sel,  self.tbl_data1)
-            elif self.tabWidget.currentIndex() == 1:
-                 self.set_table_data(news_sel,  self.tbl_data2)
-            elif self.tabWidget.currentIndex() == 2:
-                 self.set_table_data(news_sel,  self.tbl_data3)
-
-            return news_sel
+        # 종료 일자가 시작 일자보다 과거인 경우
+        if int(anal_e_date) - int(anal_s_date) < 0:
+            error_event(em.CHK_DATE)
         else:
-            msg = "'" + path + "'\n" + em.NO_DATA
-            error_event(msg)
+            path = file_path.get_raw_use_path() + '뉴스_' + part + '\\1차마트_' + part + '.csv'
+
+            if os.path.exists(path):
+                news = pd.read_csv(path)
+
+                #조회 조건에 맞는 데이타만 가져오기
+                news = news[(news['stdym'].astype(int) >= int(anal_s_date)) & (news['stdym'].astype(int) <= int(anal_e_date))]
+
+                #중복 제거
+                news = news.drop_duplicates(['stdym', 'keyword'], keep='first', inplace=False, ignore_index=False)
+
+                #데이타 수집년월 기준으로 피벗
+                news_pivot = news.pivot(index='keyword', columns='stdym', values='freq')
+
+                # 가장 마지막 컬럼 값으로 정렬
+                sort_date = news_pivot.columns[news_pivot.shape[1]-1]
+                news_sel = news_pivot.sort_values(sort_date, ascending=False)
+
+                for i in news_sel.columns:
+                    temp = str(i)[0:4] + "-" + str(i)[4:6]
+                    news_sel.rename(columns={i:temp}, inplace=True)
+
+                if self.tabWidget.currentIndex() == 0:
+                     self.set_table_data(news_sel,  self.tbl_data1)
+                elif self.tabWidget.currentIndex() == 1:
+                     self.set_table_data(news_sel,  self.tbl_data2)
+                elif self.tabWidget.currentIndex() == 2:
+                     self.set_table_data(news_sel,  self.tbl_data3)
+
+                return news_sel
+            else:
+                msg = "'" + path + "'\n" + em.NO_DATA
+                error_event(msg)
 
 
     #조회한 데이타 테이블에 넣기
@@ -371,7 +375,6 @@ class Ui_frmViewNews(object):
 
             table.setHorizontalHeaderItem(0, QTableWidgetItem("키워드"))
             for j in range(0, len(news_sel.columns)):
-                #print(j , ";", news_sel.columns[j])
                 table.setHorizontalHeaderItem(j+1, QTableWidgetItem(news_sel.columns[j]))
 
             for i in range(0, len(news_sel)):
@@ -380,11 +383,10 @@ class Ui_frmViewNews(object):
                 for j in range(len(news_sel.columns)):
                     item = QTableWidgetItem()
                     if pd.isna(news_sel[news_sel.columns[j]][i]):
-                       item.setData(Qt.DisplayRole, float(0.0))
+                       item.setData(Qt.DisplayRole, float(0.0))  # 실수형으로 데이터 설정
                     else:
-                       # item = QTableWidgetItem(str(news_sel[news_sel.columns[j]][i]))
                        item.setData(Qt.DisplayRole, float(news_sel[news_sel.columns[j]][i]))
-                    item.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
+                    item.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)  # 텍스트 오른쪽 정렬
                     table.setItem(i, j+1, item)
         except Exception as e:
             print("set_table_data Error : ", e)

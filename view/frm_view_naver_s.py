@@ -196,40 +196,50 @@ class Ui_frmViewNaver(object):
             keywords.append(str(self.listWidget.selectedItems()[i].text()))
         words = ','.join(keywords)
 
-        if len(words) > 1:
-            # 데이터 가져오기
-            df = get_view_naver_keyword(words, self.sel_yy_start.currentText()+'-'+self.sel_mm_start.currentText()+'-'+'01',
-                                        self.sel_yy_end.currentText()+'-'+self.sel_mm_end.currentText()+'-'+'01')
-            df = df.sort_values(by=['ymd']) # ymd 기준으로 정렬
+        # 종료 일자가 시작 일자보다 과거인 경우
+        if int(self.sel_yy_end.currentText()+self.sel_mm_end.currentText()) - int(self.sel_yy_start.currentText()+self.sel_mm_start.currentText()) < 0:
+            error_event(em.CHK_DATE)
+        else:
+            if len(words) > 1:
+                # 데이터 가져오기
+                df = get_view_naver_keyword(words, self.sel_yy_start.currentText()+'-'+self.sel_mm_start.currentText()+'-'+'01',
+                                            self.sel_yy_end.currentText()+'-'+self.sel_mm_end.currentText()+'-'+'01')
+                df = df.sort_values(by=['ymd'])  # ymd 기준으로 정렬
+                df = df.fillna('0')
 
-            # 테이블 행/열 길이 지정
-            self.tbl_naver.setRowCount(len(df))
-            self.tbl_naver.setColumnCount(len(df.columns))
+                # 테이블 행/열 길이 지정
+                self.tbl_naver.setRowCount(len(df))
+                self.tbl_naver.setColumnCount(len(df.columns))
 
-            df = df.rename(columns={'ymd':'기준일자'})
-            self.tbl_naver.setHorizontalHeaderLabels(df.columns)
+                df = df.rename(columns={'ymd':'기준일자'})
+                self.tbl_naver.setHorizontalHeaderLabels(df.columns)
 
-            # 테이블 값 삽입
-            for c in range(len(df.columns)):
-                for i in range(len(df)):
-                    item = QTableWidgetItem()
-                    text = str(df[df.columns[c]][i])
-                    item.setText(text)
-                    if c != 0:  # 첫 번째 열이면 오른쪽 정렬 X
-                        item.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
-                    self.tbl_naver.setItem(i, c, item)
-            df = df.rename(columns={'기준일자': 'ymd'})
+                # 테이블 값 삽입
+                for c in range(len(df.columns)):
+                    for i in range(len(df)):
+                        item = QTableWidgetItem()
+                        text = df[df.columns[c]][i]
+                        if c != 0:  # 첫 번째 열(기준일자)이면 오른쪽 정렬 X
+                            item.setData(Qt.DisplayRole, float(text))
+                            item.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
+                        else:
+                            item.setText(str(text))
+                        self.tbl_naver.setItem(i, c, item)
 
-            # 데이터 프레임 컬럼이 3개 이상인 경우 멀티 라디오 버튼 선택 가능함
-            if len(self.listWidget.selectedItems()) >= 3:
-                self.rdo_multi.setEnabled(True)
-            else:
-                self.rdo_multi.setEnabled(False)
+                self.tbl_naver.sortItems(0, QtCore.Qt.AscendingOrder)  # 기준일자 기준으로 정렬
 
-            return df
-        else:  # 선택된 키워드 X > error
-            self.tbl_naver.setRowCount(0)
-            error_event(em.SELECT_KEYWORD)
+                df = df.rename(columns={'기준일자': 'ymd'})
+
+                # 데이터 프레임 컬럼이 3개 이상인 경우 멀티 라디오 버튼 선택 가능함
+                if len(self.listWidget.selectedItems()) >= 3:
+                    self.rdo_multi.setEnabled(True)
+                else:
+                    self.rdo_multi.setEnabled(False)
+
+                return df
+            else:  # 선택된 키워드 X > error
+                self.tbl_naver.setRowCount(0)
+                error_event(em.SELECT_KEYWORD)
 
 
     def retranslateUi(self, frmViewNaver):

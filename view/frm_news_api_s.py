@@ -9,6 +9,7 @@ from source.get_api_data_news import *
 import common.config.apiinfo as apifp
 from common.config.filepassclass import *
 from source.save_anal_mart import anal_mart_news
+import common.config.errormessage as em
 
 
 class Ui_news_collect_win(object):
@@ -248,20 +249,23 @@ class Ui_news_collect_win(object):
         s_yy_end = self.sel_yy_end.currentText()
         s_mm_end = self.sel_mm_end.currentText()
 
-        if self.rad_type_1.isChecked():
-            part = '정치'
-        elif self.rad_type_2.isChecked():
-            part = '사회'
-        elif self.rad_type_3.isChecked():
-            part = '경제'
-        elif self.rad_type_4.isChecked():
-            part = '전체'
+        # 종료 일자가 시작 일자보다 과거인 경우
+        if int(s_yy_end+s_mm_end) - int(s_yy_start+s_mm_start):
+            error_event(em.CHK_DATE)
+        else:
+            if self.rad_type_1.isChecked():
+                part = '정치'
+            elif self.rad_type_2.isChecked():
+                part = '사회'
+            elif self.rad_type_3.isChecked():
+                part = '경제'
+            elif self.rad_type_4.isChecked():
+                part = '전체'
 
-        # 뉴스 데이터 수집
-        print("데이터 수집 Start")
-        get_news_data(part, s_yy_start+s_mm_start, s_yy_end+s_mm_end)
+            # 뉴스 데이터 수집
+            get_news_data(part, s_yy_start+s_mm_start, s_yy_end+s_mm_end)
 
-        self.show_folders()
+            self.show_folders()
 
 
     def retranslateUi(self, news_collect_win):
@@ -322,6 +326,13 @@ class Ui_news_collect_win(object):
         self.sel_mm_end.setItemText(10, _translate("news_collect_win", "11"))
         self.sel_mm_end.setItemText(11, _translate("news_collect_win", "12"))
         self.sel_mm_end.setCurrentText(str(datetime.today().month))
+
+
+def error_event(msg):
+    msgbox = QMessageBox()
+    msgbox.setWindowTitle("error")
+    msgbox.setText(msg)
+    msgbox.exec_()
 
 
 if __name__ == "__main__":

@@ -501,37 +501,39 @@ class Ui_frmViewComplaints(object):
             anal_s_date = self.sel_yy_start.currentText() + self.sel_mm_start.currentText()
             anal_e_date = self.sel_yy_end.currentText() + self.sel_mm_end.currentText()
 
-            # 분석 시작 일자가 수집된 데이터에 없는 경우 가장 과거 일자로 변경
-            if df_pivot.columns[0] >= int(anal_s_date):
-                anal_s_date = df_pivot.columns[0].astype(str)
-            # 분석 종료 일자가 수집된 데이터에 없는 경우 가장 최근 일자로 변경
-            if df_pivot.columns[-1] <= int(anal_e_date):
-                anal_e_date = df_pivot.columns[-1].astype(str)
+            # 종료 일자가 시작 일자보다 과거인 경우
+            if int(anal_e_date) - int(anal_s_date) < 0:
+                error_event(em.CHK_DATE)
+            else:
+                # 분석 시작 일자가 수집된 데이터에 없는 경우 가장 과거 일자로 변경
+                if df_pivot.columns[0] >= int(anal_s_date):
+                    anal_s_date = df_pivot.columns[0].astype(str)
+                # 분석 종료 일자가 수집된 데이터에 없는 경우 가장 최근 일자로 변경
+                if df_pivot.columns[-1] <= int(anal_e_date):
+                    anal_e_date = df_pivot.columns[-1].astype(str)
 
-            df_sel = df_pivot.loc[:, anal_s_date:anal_e_date]
+                df_sel = df_pivot.loc[:, anal_s_date:anal_e_date]
 
-            # 가장 최근 일자 기준으로 정렬
-            sort_date = df_sel.columns[-1].astype(str)
+                # 가장 최근 일자 기준으로 정렬
+                sort_date = df_sel.columns[-1].astype(str)
+                df_sel.columns = df_sel.columns.astype(str)
+                df_sel = df_sel.sort_values(sort_date, ascending=False)
 
-            df_sel.columns = df_sel.columns.astype(str)
+                for i in df_sel.columns:
+                    temp = str(i)[0:4] + "-" + str(i)[4:6]
+                    df_sel.rename(columns={i: temp}, inplace=True)
 
-            df_sel = df_sel.sort_values(sort_date, ascending=False)
+                # 민원 급등 테이블
+                if self.tabWidget.currentIndex() == 0:
+                    self.set_table(df_sel, self.tbl_data1)
+                # 민원 최다 테이블
+                elif self.tabWidget.currentIndex() == 1:
+                    self.set_table(df_sel, self.tbl_data2)
+                # 민원 핵심 테이블
+                elif self.tabWidget.currentIndex() == 2:
+                    self.set_table(df_sel, self.tbl_data3)
 
-            for i in df_sel.columns:
-                temp = str(i)[0:4] + "-" + str(i)[4:6]
-                df_sel.rename(columns={i: temp}, inplace=True)
-
-            # 민원 급등 테이블
-            if self.tabWidget.currentIndex() == 0:
-                self.set_table(df_sel, self.tbl_data1)
-            # 민원 최다 테이블
-            elif self.tabWidget.currentIndex() == 1:
-                self.set_table(df_sel, self.tbl_data2)
-            # 민원 핵심 테이블
-            elif self.tabWidget.currentIndex() == 2:
-                self.set_table(df_sel, self.tbl_data3)
-
-            return df_sel
+                return df_sel
 
         except FileNotFoundError:
             error_event(em.NO_DATA)
@@ -553,13 +555,13 @@ class Ui_frmViewComplaints(object):
                 for j in range(len(df.columns)):
                     item = QTableWidgetItem()
                     if pd.isna(df[df.columns[j]][i]):
-                        item.setData(Qt.DisplayRole, float(0.0))
+                        item.setData(Qt.DisplayRole, float(0.0))  # 테이블 데이터 실수형으로 설정
                     else:
                         if self.tabWidget.currentIndex() == 1:
                             item.setData(Qt.DisplayRole, round(float(df[df.columns[j]][i]/1000), 0))
                         else:
                             item.setData(Qt.DisplayRole, float(df[df.columns[j]][i]))
-                    item.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)
+                    item.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)  # 테이블 텍스트 오른쪽 정렬
                     table.setItem(i, j + 1, item)
 
         except Exception as e:
