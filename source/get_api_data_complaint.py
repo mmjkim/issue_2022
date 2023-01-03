@@ -1,17 +1,16 @@
 import pandas as pd
 import numpy as np
+from datetime import datetime
 import json
 import requests
 from urllib.request import urlopen
 from pandas import json_normalize
 
-from common.config.filepassclass import *
-from common.function.funcDataControl import *
-import common.config.apiinfo as apifp
-from datetime import datetime
-from urllib.parse import quote # 문자열을 URL encoding
+from urllib.parse import quote  # 문자열을 URL encoding
 from urllib.parse import unquote
 
+from common.config.filepassclass import *
+import common.config.apiinfo as apifp
 from common.function.funcCommon import *
 from common.database import db_mdb as mdb
 
@@ -27,18 +26,17 @@ def get_rising_keyword(std_ymd, target):
 
     #파일 path
     file_path = FilePathClass()
-    # nowtime = str(datetime.now().time().strftime('%H'))
-    analysis_date = std_ymd #.strftime("%Y%m%d") #+ nowtime
-    maxResult = apifp.COMPLAIN_MAX_ROW
-    url = apifp.COMPLAIN_API_URL + apifp.COMPLAIN_API_URL_RISE + '?serviceKey=' + apifp.COMPLAIN_API_KEY + '&analysisTime=' + analysis_date + '&maxResult=' + maxResult + '&target=' + target
-    print('URL: ', url)
-
+    # 분야별 데이터 저장 경로 설정
     dataPath = apifp.COMPLAIN_DATA_PATH_RISE
-    # 분야별 데이터 저장 full path
     get_complain_data_path = file_path.get_raw_collect_path() + dataPath + "//"
 
-    try:
+    analysis_date = std_ymd
+    maxResult = apifp.COMPLAIN_MAX_ROW
+    url = apifp.COMPLAIN_API_URL + apifp.COMPLAIN_API_URL_RISE + '?serviceKey=' + apifp.COMPLAIN_API_KEY \
+          + '&analysisTime=' + analysis_date + '&maxResult=' + maxResult + '&target=' + target
+    print('URL: ', url)
 
+    try:
         res = urlopen(url).read()  # URL 열고 읽음
         resJson = json.loads(res)  # json 문자열을 파이썬 객체로 변환
         df1 = json_normalize(resJson.get('returnObject'))  # json 데이터를 dataframe으로 변환
@@ -53,11 +51,13 @@ def get_rising_keyword(std_ymd, target):
         df1.to_csv(route_csv, index=False, encoding="utf-8-sig")
         df1.to_json(route, orient='table')
 
-        # ------------ 마트 적재 데이타 Log 저장 -------------------------
+        # ------------------------- 마트 적재 데이타 Log 저장 -------------------------
         save_log = mdb.DbUseAnalClass()
         now = datetime.now()
-        # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
-        save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M:%S'),'민원', route, analysis_date, analysis_date, len(df1), 'API', ''])
+        # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료',
+        # '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
+        save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M:%S'),'민원', route,
+                                analysis_date, analysis_date, len(df1), 'API', ''])
 
         print('The End!!!')
 
