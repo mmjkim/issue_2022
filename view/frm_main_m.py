@@ -208,7 +208,7 @@ class Ui_MainWindow(object):
         self.menu_visual.setTitle(_translate("MainWindow", "데이터 현황"))
         self.actionComplaint.setText(_translate("MainWindow", "민원(키워드)"))
         self.actionNews.setText(_translate("MainWindow", "뉴스(키워드)"))
-        self.actionAnal.setText(_translate("MainWindow", "키워드 수집"))
+        self.actionAnal.setText(_translate("MainWindow", "키워드 데이터 수집"))
         self.actionAnal2.setText(_translate("MainWindow", "토픽 키워드 수집"))
         self.actionVisual.setText(_translate("MainWindow", "뉴스 데이터 현황"))
         self.actionVisual2.setText(_translate("MainWindow", "민원 데이터 현황"))
