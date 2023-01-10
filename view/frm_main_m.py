@@ -210,8 +210,8 @@ class Ui_MainWindow(object):
         self.actionNews.setText(_translate("MainWindow", "뉴스(키워드)"))
         self.actionAnal.setText(_translate("MainWindow", "키워드 데이터 "))
         self.actionAnal2.setText(_translate("MainWindow", "토픽 키워드 "))
-        self.actionVisual.setText(_translate("MainWindow", "뉴스 데이터 현황"))
-        self.actionVisual2.setText(_translate("MainWindow", "민원 데이터))
+        self.actionVisual.setText(_translate("MainWindow", "뉴스 데이터"))
+        self.actionVisual2.setText(_translate("MainWindow", "민원 데이터"))
         self.actionVisual3.setText(_translate("MainWindow", "민원 연관어 데이터"))
         self.actionVisual5.setText(_translate("MainWindow", "네이버 검색 데이터"))
 

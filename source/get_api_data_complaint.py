@@ -344,9 +344,8 @@ def get_similarInfo(keyword):
     except requests.exceptions.RequestException as erra:
         print("AnyException : ", erra)
 
-    except Exception:
-        import traceback
-        traceback.print_exc()
+    except Exception as e:
+        print("get_similarInfo error :", e)
 
 
 

@@ -190,6 +190,8 @@ class Ui_frmViewNaver(object):
 
 
     def show_table(self):
+        self.webEngineView.setHtml('')
+
         keywords = []
         # 선택된 키워드 리스트 저장
         for i in range(len(self.listWidget.selectedItems())):
@@ -235,6 +237,7 @@ class Ui_frmViewNaver(object):
                     self.rdo_multi.setEnabled(True)
                 else:
                     self.rdo_multi.setEnabled(False)
+                    self.rdo_line.setChecked(True)
 
                 return df
             else:  # 선택된 키워드 X > error

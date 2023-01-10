@@ -338,28 +338,31 @@ class Ui_frmViewNews(object):
                 #조회 조건에 맞는 데이타만 가져오기
                 news = news[(news['stdym'].astype(int) >= int(anal_s_date)) & (news['stdym'].astype(int) <= int(anal_e_date))]
 
-                #중복 제거
-                news = news.drop_duplicates(['stdym', 'keyword'], keep='first', inplace=False, ignore_index=False)
+                if news.empty == False:
+                    #중복 제거
+                    news = news.drop_duplicates(['stdym', 'keyword'], keep='first', inplace=False, ignore_index=False)
 
-                #데이타 수집년월 기준으로 피벗
-                news_pivot = news.pivot(index='keyword', columns='stdym', values='freq')
+                    #데이타 수집년월 기준으로 피벗
+                    news_pivot = news.pivot(index='keyword', columns='stdym', values='freq')
 
-                # 가장 마지막 컬럼 값으로 정렬
-                sort_date = news_pivot.columns[news_pivot.shape[1]-1]
-                news_sel = news_pivot.sort_values(sort_date, ascending=False)
+                    # 가장 마지막 컬럼 값으로 정렬
+                    sort_date = news_pivot.columns[news_pivot.shape[1]-1]
+                    news_sel = news_pivot.sort_values(sort_date, ascending=False)
 
-                for i in news_sel.columns:
-                    temp = str(i)[0:4] + "-" + str(i)[4:6]
-                    news_sel.rename(columns={i:temp}, inplace=True)
+                    for i in news_sel.columns:
+                        temp = str(i)[0:4] + "-" + str(i)[4:6]
+                        news_sel.rename(columns={i:temp}, inplace=True)
 
-                if self.tabWidget.currentIndex() == 0:
-                     self.set_table_data(news_sel,  self.tbl_data1)
-                elif self.tabWidget.currentIndex() == 1:
-                     self.set_table_data(news_sel,  self.tbl_data2)
-                elif self.tabWidget.currentIndex() == 2:
-                     self.set_table_data(news_sel,  self.tbl_data3)
+                    if self.tabWidget.currentIndex() == 0:
+                         self.set_table_data(news_sel,  self.tbl_data1)
+                    elif self.tabWidget.currentIndex() == 1:
+                         self.set_table_data(news_sel,  self.tbl_data2)
+                    elif self.tabWidget.currentIndex() == 2:
+                         self.set_table_data(news_sel,  self.tbl_data3)
 
-                return news_sel
+                    return news_sel
+                else:
+                    error_event(em.NO_DATA)
             else:
                 msg = "'" + path + "'\n" + em.NO_DATA
                 error_event(msg)

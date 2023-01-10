@@ -418,17 +418,17 @@ class Ui_frmViewComplaints(object):
             ax2 = fig.add_subplot(111)
 
             if self.rdo_line.isChecked():
-                self.draw_graph(self.txt_top_n, ax2, df, self.canvas, 'line')
+                self.draw_graph(self.txt_top_n_2, ax2, df, self.canvas, 'line')
             elif self.rdo_bar.isChecked():
-                self.draw_graph(self.txt_top_n, ax2, df, self.canvas, 'bar')
+                self.draw_graph(self.txt_top_n_2, ax2, df, self.canvas, 'bar')
             elif self.rdo_area.isChecked():
-                self.draw_graph(self.txt_top_n, ax2, df, self.canvas, 'scatter')
+                self.draw_graph(self.txt_top_n_2, ax2, df, self.canvas, 'scatter')
 
         # 민원 핵심 그래프(트리맵)
         elif self.tabWidget.currentIndex() == 2:
             df = self.setTblToDf(self.tbl_data3)
 
-            if len(df) > 0:
+            if (self.sort_yy_2.currentText() + self.sort_mm_2.currentText()) in df.columns:
                 df = df.sort_values(self.sort_yy_2.currentText() + self.sort_mm_2.currentText(), ascending=False)
                 df = df[[self.sort_yy_2.currentText() + self.sort_mm_2.currentText()]]
                 # 0인 값을 NaN으로 변경 후 삭제
@@ -496,6 +496,7 @@ class Ui_frmViewComplaints(object):
             elif self.tabWidget.currentIndex() == 2:
                 df = pd.read_csv(file_path.get_raw_use_path() + '민원_핵심키워드\\1차마트_핵심.csv')
 
+
             df_pivot = df.pivot(index='keyword', columns='stdym', values='freq')
 
             anal_s_date = self.sel_yy_start.currentText() + self.sel_mm_start.currentText()
@@ -514,27 +515,29 @@ class Ui_frmViewComplaints(object):
 
                 df_sel = df_pivot.loc[:, anal_s_date:anal_e_date]
 
-                # 가장 최근 일자 기준으로 정렬
-                sort_date = df_sel.columns[-1].astype(str)
-                df_sel.columns = df_sel.columns.astype(str)
-                df_sel = df_sel.sort_values(sort_date, ascending=False)
+                if df_sel.empty == False:
+                    # 가장 최근 일자 기준으로 정렬
+                    sort_date = df_sel.columns[-1].astype(str)
+                    df_sel.columns = df_sel.columns.astype(str)
+                    df_sel = df_sel.sort_values(sort_date, ascending=False)
 
-                for i in df_sel.columns:
-                    temp = str(i)[0:4] + "-" + str(i)[4:6]
-                    df_sel.rename(columns={i: temp}, inplace=True)
+                    for i in df_sel.columns:
+                        temp = str(i)[0:4] + "-" + str(i)[4:6]
+                        df_sel.rename(columns={i: temp}, inplace=True)
 
-                # 민원 급등 테이블
-                if self.tabWidget.currentIndex() == 0:
-                    self.set_table(df_sel, self.tbl_data1)
-                # 민원 최다 테이블
-                elif self.tabWidget.currentIndex() == 1:
-                    self.set_table(df_sel, self.tbl_data2)
-                # 민원 핵심 테이블
-                elif self.tabWidget.currentIndex() == 2:
-                    self.set_table(df_sel, self.tbl_data3)
+                    # 민원 급등 테이블
+                    if self.tabWidget.currentIndex() == 0:
+                        self.set_table(df_sel, self.tbl_data1)
+                    # 민원 최다 테이블
+                    elif self.tabWidget.currentIndex() == 1:
+                        self.set_table(df_sel, self.tbl_data2)
+                    # 민원 핵심 테이블
+                    elif self.tabWidget.currentIndex() == 2:
+                        self.set_table(df_sel, self.tbl_data3)
 
-                return df_sel
-
+                    return df_sel
+                else:
+                    error_event(em.NO_DATA)
         except FileNotFoundError:
             error_event(em.NO_DATA)
 

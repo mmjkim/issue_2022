@@ -1,10 +1,10 @@
-#------------- 분석에 사용될 1차 마트 생성 ---------------------
+#----------------- 분석에 사용될 1차 마트 생성 -----------------
 # 수집된 데이타를 하나의 파일로 저장
 #-----------------------------------------------------------
 
 
 #
-# 디렉토리안에 있는 파일들의 데이타를 하나로 합치기
+# 디렉토리 안에 있는 파일들의 데이타를 하나로 합치기
 # parameter : filePath = 파일 Path, colList = 컬럼 리스트
 # return : dataframe(colList + 파일식별 Key)
 #
@@ -20,7 +20,6 @@ from common.function.funcCommon import *
 from common.database import db_mdb as mdb
 import common.config.errormessage as em
 
-from datetime import datetime
 
 def anal_mart_news(part):
 
@@ -65,7 +64,7 @@ def anal_mart_news(part):
 
             # 저장할 파일명 생성
             savefile = "{0}{1}\{2}_{3}.csv".format(file_path.get_raw_use_path(), dataPath, '1차마트', part)
-            # 파일저장
+            # 파일 저장
             dfAllData.to_csv(savefile, encoding="utf-8-sig", index=False)
 
             print("마트 적재 데이타 Log 저장-->", part)
@@ -119,7 +118,6 @@ def anal_mart_complaint(part):
             #읽은 데이터를 키워드 기준 월별 빈도수 합계로 그룹
             df_mart_data_group = df_mart_data.groupby(['stdym', 'keyword'])['freq'].agg(**{'freq': 'sum'}).reset_index()
 
-            #print(df_mart_data_group)
             #월별빈도수 키워드 데이터 저장
             temp = "{0}{1}".format(file_path.get_raw_use_path(), dataPath)
 
@@ -181,7 +179,6 @@ def set_topic_data(files):
     try:
         dfAllData = pd.DataFrame()
 
-        # print(all_files)
         for filename in files:
             temp = filename.split('_')
             i = len(temp) - 1
@@ -212,7 +209,6 @@ def set_top_data(files):
     try:
         dfAllData = pd.DataFrame()
 
-        # print(all_files)
         for filename in files:
             temp = filename.split('_')
             i = len(temp) - 1
@@ -243,7 +239,6 @@ def set_dftopkw_data(files):
     try:
         dfAllData = pd.DataFrame()
 
-        # print(all_files)
         for filename in files:
             temp = filename.split('_')
             i = len(temp) - 1
@@ -274,32 +269,28 @@ def save_db_naver_data():
     try:
         #파일 path
         file_path = FilePathClass()
-        dataPath = apifp.COMPLAIN_DATA_PATH_TOPIC
 
         # 데이타를 읽어서 df에 저장 (std_ymd, keyword, freq, rank=0)
         temp = "{0}\*네이버*.csv".format(file_path.get_raw_use_path())
 
         all_files = glob.glob(temp)
-        #print(all_files)
+
         connect_db = mdb.DbUseAnalClass()
         connect_db.delete_qry("DELETE FROM NAVER_KEYWORD")
 
         insert_qry = "insert into NAVER_KEYWORD (KEYWORD, YMD, VAL) VALUES ("
         for i in range(0, len(all_files)):
-            filename = all_files[i] #.split('_')
+            filename = all_files[i]
             list_qry = []
             #네이버 데이터 파일 읽기
             df_temp = pd.read_csv(filename, encoding='euc-kr')
-            df_dis_use = df_temp[['keyword','Time','Value']]
-
+            df_dis_use = df_temp[['keyword', 'Time', 'Value']]
 
             for row in df_dis_use.values.tolist():
-                #print(type(row))
                 value_qry = "'"
                 value_qry += "', '".join(str(e) for e in row) + "'"
                 value_qry += ");\n"
                 list_qry.append(insert_qry + value_qry)
-               # print (insert_qry + value_qry)
 
             connect_db.insert_many_qry(list_qry)
     except Exception:
@@ -318,9 +309,9 @@ def save_db_topic_data():
 
     all_files = glob.glob(temp)
 
-    # print(all_files)
     connect_db = mdb.DbUseAnalClass()
     connect_db.delete_qry("DELETE FROM CONPLAIN_TO_DAY")
+
     for filename in all_files:
         temp = filename.split('_')
         i = len(temp) - 1
@@ -331,7 +322,6 @@ def save_db_topic_data():
         insert_qry = "insert into CONPLAIN_TO_DAY (YMD, TOPIC, RANK, COUNT) VALUES ("
         list_qry = []
         for row in df_dis_use.values.tolist():
-            # print(type(row))
             value_qry = "'" + str(ymd) + "', '"
             value_qry += "', '".join(str(e) for e in row) + "'"
             value_qry += ");"
