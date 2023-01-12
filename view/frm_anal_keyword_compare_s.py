@@ -452,6 +452,7 @@ class Ui_Anal_Dialog(object):
                 from webdriver_manager.chrome import ChromeDriverManager # 크롬 드라이버 자동 업데이트
                 from selenium.webdriver.support.ui import WebDriverWait
                 from selenium.webdriver.support import expected_conditions as EC
+                from selenium.common.exceptions import ElementNotInteractableException
 
                 # 다운로드 경로
                 down_path = FilePathClass()
@@ -476,7 +477,10 @@ class Ui_Anal_Dialog(object):
                 modal_content = dr.find_element(By.XPATH, '//*[@id="login-modal"]/div')
                 # 모달창 열려있는 경우 닫기
                 if modal_content:
-                    modal_content.click()
+                    try:
+                        modal_content.click()
+                    except ElementNotInteractableException:
+                        pass
                 else:
                     pass
 

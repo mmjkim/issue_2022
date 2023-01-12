@@ -1,10 +1,10 @@
 import pandas as pd
 
 from common.database import db_mdb
-from common.function.funcC3Chart import c3chart_html_write as c3Chart
+
 #네이버 키워드 그래프 시각화
-# keyword(,)시작일자, 종료일자,
-def get_view_naver_keyword(keyword, std_ymd, end_ymd ):
+# keyword(,), 시작일자, 종료일자
+def get_view_naver_keyword(keyword, std_ymd, end_ymd):
 
     #db 연결
     db_conn = db_mdb.DbUseAnalClass()
@@ -22,17 +22,13 @@ def get_view_naver_keyword(keyword, std_ymd, end_ymd ):
         df_rs = db_conn.select_qry(sql)
 
         #키워드별 컬럼을 날짜에 Merge 한다. -> 쿼리도 가능함.
-        if i == 0 :
-           df_marge = df_rs
-           i = 1
+        if i == 0:
+            df_marge = df_rs
+            i = 1
         else:
-           df_marge = pd.merge(df_marge, df_rs, how='outer', on='YM')
+            df_marge = pd.merge(df_marge, df_rs, how='outer', on='YM')
 
     df_marge = df_marge.rename(columns={'YM':'ymd'})
-    # print(df_marge)
-
-    # html = c3Chart(df_marge, 'line')
-    # print(html)
 
     return df_marge
 
