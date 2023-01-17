@@ -8,7 +8,7 @@ class DbUseAnalClass:
 
     MDB_FILE_NAME = "issue_db.accdb;"
     file_path = FilePathClass()
-    db_name_path = file_path.get_data_path() + MDB_FILE_NAME  # "D:\issue_2022\data\issue_db.accdb;"
+    db_name_path = file_path.get_root_path() + '\\' + MDB_FILE_NAME  # "D:\issue_2022\issue_db.accdb;"
 
     def __init__(self):
 

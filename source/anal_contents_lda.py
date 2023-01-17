@@ -1,27 +1,31 @@
-import glob
+import numpy as np
 import pandas as pd
 import warnings # 경고 메시지 무시
 warnings.filterwarnings(action='ignore')
-warnings.filterwarnings("ignore", category=DeprecationWarning)
-
 from konlpy.tag import Mecab # 형태소 분석기
 #경로 픽스
 mecab = Mecab(dicpath=r"C:\\mecab\\mecab-ko-dic")
+# 작업 프로세스 시각화
+from tqdm import tqdm
+# 문자열 처리를 위한 정규표현식 패키지
+import re
 # 단어 빈도수 계산 패키지
 from gensim import corpora
 # LDA 모델 활용 목적
 import gensim
 # LDA 시각화용 패키지
 import pyLDAvis.gensim_models
-
-from common.config.filepassclass import *
-
-# 문자열 처리를 위한 정규표현식 패키지
-import re
 # 단어 등장 횟수 카운트
 from collections import Counter
-# 작업 프로세스 시각화
-from tqdm import tqdm
+
+import glob
+
+from common.config.filepassclass import *
+import common.config.apiinfo as apifp
+
+
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
 # 유사사례정보, 크롤링 정보의 데이타 파일을 머지하여 토픽 키워드를 찾는다.
@@ -122,17 +126,21 @@ def print_topic_prop(topics, lda_keyword):
 
 # LDA 분석 시각화 결과 저장
 def lda_visualize(model, corpus, dictionary, lda_keyword):
+    try:
+        # 파일 경로 지정
+        file_path = FilePathClass()
+        file_save_path = "{0}LDA\\".format(file_path.get_result_path())
+        file_name = "{0}lda_result_".format(file_save_path)
 
-    result_visualized = pyLDAvis.gensim_models.prepare(model, corpus, dictionary)
-    pyLDAvis.display(result_visualized)
+        if file_path.is_path_exist_check(file_save_path) == False:
+            file_path.make_path(file_save_path)
 
-    # 파일 경로 지정
-    file_path = FilePathClass()
-    file_save_path = "{0}LDA\\".format(file_path.get_result_path())
-    file_name = "{0}lda_result_".format(file_save_path)
+        RESULT_FILE = file_name + lda_keyword + '.html'
 
-    if file_path.is_path_exist_check(file_save_path) == False:
-       file_path.make_path(file_save_path)
+        result_visualized = pyLDAvis.gensim_models.prepare(model, corpus, dictionary)
+        print(result_visualized)
+        pyLDAvis.display(result_visualized)
 
-    RESULT_FILE = file_name + lda_keyword + '.html'
-    pyLDAvis.save_html(result_visualized, RESULT_FILE)
+        pyLDAvis.save_html(result_visualized, RESULT_FILE)
+    except Exception as e:
+        print("LDA error :", e)
