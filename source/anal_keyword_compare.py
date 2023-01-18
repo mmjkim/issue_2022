@@ -95,6 +95,7 @@ def compare_keyword(part):
 
 
 # --------------------------------------------
+# 동시 출현 데이터 추출
 # si_source_data = 민원 데이터
 # si_target_data = 뉴스 데이터
 # --------------------------------------------
@@ -121,7 +122,7 @@ def get_overlap_keyword(df_source_data, si_target_data, type_info):
     return df_return
 
 
-# 동시 출현 키워드 테이블 출력
+# 동시 출현 키워드 피벗 형태로 테이블 출력
 def keyword_pivot(df_data, save_file_name):
     data_p = df_data[df_data['type'] == '뉴스_정치']
     data_s = df_data[df_data['type'] == '뉴스_사회']

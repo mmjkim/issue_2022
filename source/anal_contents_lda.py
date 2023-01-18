@@ -83,7 +83,10 @@ def lda_model_proc(part, keyword):
                 #RATING = 'taxi_OR'
                 lda_keyword = "{0}_{1}".format(part, keyword.replace(',', '_'))
                 topics = model.print_topics(num_words=NUM_WORDS)
+                # 토픽에 따른 단어와 값 엑셀로 저장
                 print_topic_prop(topics, lda_keyword)
+
+                # LDA 분석 시각화 결과 저장
                 lda_visualize(model, corpus, dictionary, lda_keyword)
                 print("The End!!!")
 
