@@ -122,6 +122,11 @@ class Ui_frmComplaintWC(object):
     def draw_wordcloud(self, keyword, canvas):
         file_path = FilePathClass()
         path = file_path.get_raw_use_path()
+        # 워드 클라우드 이미지 저장
+        savepath = file_path.get_result_path() + 'graph\\'
+
+        if file_path.is_path_exist_check(savepath) == False:
+            file_path.make_path(savepath)
 
         if keyword != "":
             # 키워드에 해당하는 파일 찾아서 데이터프레임으로
@@ -141,8 +146,8 @@ class Ui_frmComplaintWC(object):
             plt.figure(figsize=(5, 5))
             plt.imshow(wordCloud)
             plt.axis('off')
-            plt.savefig(keyword + '_wc.png', dpi=100)
-            canvas.setPixmap(QtGui.QPixmap(keyword + '_wc.png'))
+            plt.savefig(savepath + keyword + '_wc.png', dpi=100)
+            canvas.setPixmap(QtGui.QPixmap(savepath + keyword + '_wc.png'))
         else:
             error_event(em.NO_DATA)
 

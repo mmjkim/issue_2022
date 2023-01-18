@@ -388,6 +388,12 @@ class Ui_frmViewComplaints(object):
 
     # 그래프 출력
     def show_graph(self, fig, canvas):
+        file_path = FilePathClass()
+        # 그래프 이미지 저장
+        savepath = file_path.get_result_path() + 'graph\\'
+
+        if file_path.is_path_exist_check(savepath) == False:
+            file_path.make_path(savepath)
 
         # 민원 급등 그래프(선, 막대, 산점도)
         if self.tabWidget.currentIndex() == 0:
@@ -448,8 +454,8 @@ class Ui_frmViewComplaints(object):
                               label=df.head(int(self.txt_top_n_3.text())).index, alpha=.5,
                               bar_kwargs=dict(linewidth=1.5, edgecolor="white"))
 
-                plt.savefig('graph_img.png', dpi=100)
-                self.label_3.setPixmap(QtGui.QPixmap('graph_img.png'))
+                plt.savefig(savepath + 'graph_img.png', dpi=100)
+                self.label_3.setPixmap(QtGui.QPixmap(savepath + 'graph_img.png'))
             else:
                 error_event(em.NO_DATA)
 
