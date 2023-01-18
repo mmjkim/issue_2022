@@ -63,6 +63,7 @@ def naver_trend_search(std_ymd_fr, std_ymd_to, keys):
         savefile = "{0}/{1}_{2}.csv".format(get_complain_data_path, dataPath, keys[1])
         df_save_data.to_csv(savefile, encoding='euc-kr')
 
+        #데이터를 db에 저장
         save_db_naver_data()
 
         print("The End!!!")

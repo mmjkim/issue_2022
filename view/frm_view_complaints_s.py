@@ -443,6 +443,7 @@ class Ui_frmViewComplaints(object):
                 fig.clear(True)
                 plt.cla()
 
+                #트리맵
                 import squarify
                 squarify.plot(sizes=df.head(int(self.txt_top_n_3.text())).values,
                               label=df.head(int(self.txt_top_n_3.text())).index, alpha=.5,

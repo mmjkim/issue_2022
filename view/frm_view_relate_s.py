@@ -141,6 +141,7 @@ class Ui_frmComplaintWC(object):
             plt.figure(figsize=(5, 5))
             plt.imshow(wordCloud)
             plt.axis('off')
+            #폴더위치 변경
             plt.savefig(keyword + '_wc.png', dpi=100)
             canvas.setPixmap(QtGui.QPixmap(keyword + '_wc.png'))
         else:

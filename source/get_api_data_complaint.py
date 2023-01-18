@@ -153,7 +153,6 @@ def get_topN_keyword(std_ymd_fr, std_ymd_to, target):
 #  param :
 #      target = 'pttn:일반민원, dfpt:고충민원, saeol:수집민원, prpl:제안, qna:정책Q&A, qna_origin:공개민원'
 #      std_ymd = yyyymm (기준 일자)
-
 #  return :
 #-----------------------------------------------------
 def get_today_topic_keyword(std_ymd,  target):
@@ -353,6 +352,8 @@ def get_similarInfo(keyword):
 #  공공데이터 포털에서 api i/f 통한 민원 데이터 가져오기
 #  연관어 분석 정보
 #  param :
+#      keyword : 키워드
+#      std_ymd_fr, std_ymd_to : 수집시작일자, 수집종료일자
 #      target = 'pttn:일반민원, dfpt:고충민원, saeol:수집민원, prpl:제안, qna_origin:공개민원'
 #  return :
 #-----------------------------------------------------
@@ -415,6 +416,15 @@ def get_wd_cloud_info(keyword, std_ymd_fr, std_ymd_to, target):
 
 
 
+#-----------------------------------------------------
+#  공공데이터 포털에서 api i/f 통한 민원 데이터 가져오기
+#  민원데이터 수집 구분에 따른 API 호출
+#  param :
+#      date : 날짜
+#      part : 전체, 급등, 오늘, 최다, 핵심
+#      target = 'pttn:일반민원, dfpt:고충민원, saeol:수집민원, prpl:제안, qna_origin:공개민원'
+#  return :
+#-----------------------------------------------------
 def get_complaint_data(part, date, target):
     day_list = getDayList(date)
     if part == '전체':

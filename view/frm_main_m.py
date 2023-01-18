@@ -171,6 +171,7 @@ class Ui_MainWindow(object):
         self.menu_visual.addAction(self.actionVisual2)
         self.menu_visual.addAction(self.actionVisual3)
         self.menu_visual.addAction(self.actionVisual5)
+
         self.menubar.addAction(self.menu_complaint.menuAction())
         self.menubar.addAction(self.menu_news.menuAction())
         self.menubar.addAction(self.menu_anal.menuAction())
