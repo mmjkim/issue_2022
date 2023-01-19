@@ -75,7 +75,8 @@ class Ui_Dialog(object):
         self.tbl_data.setObjectName("tbl_data")
         self.tbl_data.setColumnCount(11)
         self.tbl_data.setRowCount(0)
-        # 테이블 스타일 지정
+
+        #### 테이블 스타일 지정
         self.tbl_data.horizontalHeader().setStyleSheet(
             "QHeaderView::section {background-color:#404040;color:#FFFFFF;}")
 
@@ -106,17 +107,22 @@ class Ui_Dialog(object):
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
+        ### 이벤트 연결
         self.btn_collect.clicked.connect(self.get_data)  # 데이터 수집
-        self.set_data()  # 데이터프레임 생성
-        self.get_table()  # 테이블 출력
         self.btn_print.clicked.connect(self.get_graph)  # 그래프 출력
 
 
     # 데이터프레임 생성
     def set_data(self):
+        #파일 패스 호출
         file_path = FilePathClass()
 
-        df = pd.read_csv(file_path.get_data_path() + "test\\" + 'test__20230119.csv')
+        #저장된 파일 읽기
+        now = datetime.now()
+        now.strftime('%Y%m%d')
+        readfile = "{0}{1}{2}_{3}.csv".format(file_path.get_data_path(),  "test\\" ,"test_", now.strftime('%Y%m%d'))
+
+        df = pd.read_csv(readfile)
         df = df.drop(columns='callCenter')
         df.columns = ['시작연월일', '적용금리1', '가산금리2', '적용금리2', '기준금리1', '부분보증비율2',
                       '가산금리1', '기준금리2', '부분보증비율1', '종료연월일', '은행명']
@@ -157,10 +163,15 @@ class Ui_Dialog(object):
 
     # 그래프 출력
     def get_graph(self):
+
         self.fig.clear(True)  # 그래프 초기화
         ax = self.fig.add_subplot(111)
 
+        #그래프 적용 데이타 조회(저장된 파일에서 읽기)
         data = self.set_data()
+        #그래프 적용 데이타 조회(조회된 테이블에서 읽기)
+        #data = self.setTblToDf(self.tbl_data)
+
         data = data.sort_values('적용금리1', ascending=False)
         data = data.head(int(self.txt_top_n.text()))
         data = data.reset_index(drop=True)
@@ -173,6 +184,31 @@ class Ui_Dialog(object):
                     horizontalalignment='center', verticalalignment='bottom')
 
         self.canvas.draw()
+
+
+    # 테이블 데이터를 dataframe으로 변경
+    def setTblToDf(self, table):
+
+        col_count = table.columnCount()
+        row_count = table.rowCount()
+
+        headers = [str(table.horizontalHeaderItem(i).text()).replace('-', '') for i in range(col_count)]
+
+        df_list = []
+
+        # 테이블의 데이타를 읽어서 데이터프레임에 적용
+        for row in range(row_count):
+            df_list2 = []
+            for col in range(col_count):
+                table_item = table.item(row, col)
+                df_list2.append('' if table_item is None else str(table_item.text()))
+            df_list.append(df_list2)
+
+        df = pd.DataFrame(df_list, columns=headers)
+
+        # 그래프 값으로 활용될 컬럼의 데이터 형 변환
+        df = df.astype({'적용금리1':'float'})
+        return df
 
 
     def retranslateUi(self, Dialog):
