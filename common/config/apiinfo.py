@@ -106,3 +106,8 @@ NAVER_TIME_UNIT = 'month'
 #----------------- 빅카인즈 로그인 정보 -----------------
 BIGKINDS_ID = '20191497@daejin.ac.kr'
 BIGKINDS_PW = 'wqw1301wqw**'
+
+
+#-----------------User 정보-----------------
+import getpass
+USER = getpass.getuser()

@@ -521,8 +521,7 @@ class Ui_Anal_Dialog(object):
                         step3_element.send_keys(Keys.ENTER)
 
                         # 데이터 다운로드 경로 설정
-                        import getpass
-                        down_file_path = "{0}{1}_{2}-{3}.xlsx".format('C:\\Users\\' + getpass.getuser() + '\\Downloads\\', "NewsResult",
+                        down_file_path = "{0}{1}_{2}-{3}.xlsx".format('C:\\Users\\' + apifp.USER + '\\Downloads\\', "NewsResult",
                                                                       self.sel_yy_start.currentText() + self.sel_mm_start.currentText() + "01",
                                                                       getMonthRange(self.sel_yy_end.currentText(), self.sel_mm_end.currentText()).strftime("%Y%m%d"))
 
