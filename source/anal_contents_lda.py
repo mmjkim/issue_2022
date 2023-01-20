@@ -141,9 +141,7 @@ def lda_visualize(model, corpus, dictionary, lda_keyword):
         RESULT_FILE = file_name + lda_keyword + '.html'
 
         result_visualized = pyLDAvis.gensim_models.prepare(model, corpus, dictionary)
-        print(result_visualized)
         pyLDAvis.display(result_visualized)
-
         pyLDAvis.save_html(result_visualized, RESULT_FILE)
     except Exception as e:
         print("LDA error :", e)
