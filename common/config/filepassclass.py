@@ -1,6 +1,6 @@
 import os
 import common.config.folderpath as fp
-# from fileconfig import *
+
 
 class FilePathClass:
 
