@@ -237,7 +237,6 @@ class Ui_frmViewNaver(object):
                     self.rdo_multi.setEnabled(True)
                 else:
                     self.rdo_multi.setEnabled(False)
-                    self.rdo_line.setChecked(True)
 
                 return df
             else:  # 선택된 키워드 X > error
