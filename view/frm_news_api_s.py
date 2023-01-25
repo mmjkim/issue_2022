@@ -101,6 +101,7 @@ class Ui_news_collect_win(object):
         self.sel_yy_start.addItem("")
         self.sel_yy_start.addItem("")
         self.sel_yy_start.addItem("")
+        # self.sel_yy_start.addItem("") # 2017
         self.sel_yy_end = QtWidgets.QComboBox(self.groupBox)
         self.sel_yy_end.setGeometry(QtCore.QRect(549, 41, 71, 23))
         self.sel_yy_end.setObjectName("sel_yy_end")
@@ -110,6 +111,7 @@ class Ui_news_collect_win(object):
         self.sel_yy_end.addItem("")
         self.sel_yy_end.addItem("")
         self.sel_yy_end.addItem("")
+        # self.sel_yy_end.addItem("") # 2017
         self.sel_mm_start = QtWidgets.QComboBox(self.groupBox)
         self.sel_mm_start.setGeometry(QtCore.QRect(453, 41, 71, 23))
         self.sel_mm_start.setObjectName("sel_mm_start")
@@ -291,6 +293,7 @@ class Ui_news_collect_win(object):
         self.sel_yy_end.setItemText(3, _translate("news_collect_win", str(datetime.today().year-3)))
         self.sel_yy_end.setItemText(4, _translate("news_collect_win", str(datetime.today().year-4)))
         self.sel_yy_end.setItemText(5, _translate("news_collect_win", str(datetime.today().year-5)))
+        # self.sel_yy_end.setItemText(6, _translate("news_collect_win", str(datetime.today().year-6))) # 2017
         self.sel_yy_end.setCurrentText(str(datetime.today().year)) # 현재 연도로 기본값 설정
         self.sel_mm_start.setItemText(0, _translate("news_collect_win", "01"))
         self.sel_mm_start.setItemText(1, _translate("news_collect_win", "02"))
@@ -312,6 +315,7 @@ class Ui_news_collect_win(object):
         self.sel_yy_start.setItemText(3, _translate("news_collect_win", str(datetime.today().year-3)))
         self.sel_yy_start.setItemText(4, _translate("news_collect_win", str(datetime.today().year-4)))
         self.sel_yy_start.setItemText(5, _translate("news_collect_win", str(datetime.today().year-5)))
+        # self.sel_yy_start.setItemText(6, _translate("news_collect_win", str(datetime.today().year-6))) # 2017
         self.sel_yy_start.setCurrentText(str(datetime.today().year))
         self.sel_mm_end.setItemText(0, _translate("news_collect_win", "01"))
         self.sel_mm_end.setItemText(1, _translate("news_collect_win", "02"))
