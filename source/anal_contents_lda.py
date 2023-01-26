@@ -80,15 +80,16 @@ def lda_model_proc(part, keyword):
                 # 단어 인코딩 및 빈도수 계산
                 model, corpus, dictionary = lda_modeling(anal_data_token_removed)
                 NUM_WORDS = 10
-                #RATING = 'taxi_OR'
                 lda_keyword = "{0}_{1}".format(part, keyword.replace(',', '_'))
                 topics = model.print_topics(num_words=NUM_WORDS)
+
                 # 토픽에 따른 단어와 값 엑셀로 저장
                 print_topic_prop(topics, lda_keyword)
 
                 # LDA 분석 시각화 결과 저장
                 lda_visualize(model, corpus, dictionary, lda_keyword)
-                print("The End!!!")
+
+    print("The End!!!")
 
 
 def lda_modeling(anal_data_token):
@@ -140,8 +141,9 @@ def lda_visualize(model, corpus, dictionary, lda_keyword):
 
         RESULT_FILE = file_name + lda_keyword + '.html'
 
-        result_visualized = pyLDAvis.gensim_models.prepare(model, corpus, dictionary)
+        result_visualized = pyLDAvis.gensim_models.prepare(model, corpus, dictionary, n_jobs=1)
         pyLDAvis.display(result_visualized)
         pyLDAvis.save_html(result_visualized, RESULT_FILE)
+
     except Exception as e:
         print("LDA error :", e)

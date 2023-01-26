@@ -488,7 +488,9 @@ class Ui_Anal_Dialog(object):
                 for i in anal_word:
                     if i != '':
                         # 키워드 입력
-                        input_element = dr.find_element(By.XPATH, '//*[@id="total-search-key"]')
+                        wait = WebDriverWait(dr, 10)
+                        input_element = wait.until(EC.element_to_be_clickable((By.ID, 'total-search-key')))
+                        # input_element = dr.find_element(By.XPATH, '//*[@id="total-search-key"]')
                         input_element.send_keys(Keys.CONTROL + "a")
                         input_element.send_keys(Keys.DELETE)
                         input_element.send_keys(i)
@@ -545,16 +547,24 @@ class Ui_Anal_Dialog(object):
                         time.sleep(1)
                         downloaded = False
                         while downloaded == False:
-                            try:
+                            time.sleep(1)
+                            if os.path.isfile(down_file_path):
+                                downloaded = True
                                 down_file = pd.read_excel(down_file_path)
                                 route = "{0}\\{1}_{2}_{3}.csv".format(down_path.get_raw_use_path(), "뉴스", '크롤링', i)
                                 down_file.to_csv(route, encoding="utf-8-sig", index=False)
-                                downloaded = True
-                            except FileNotFoundError:
+                            else:
                                 downloaded = False
-                            except PermissionError:
-                                time.sleep(1)
-                                downloaded = False
+                            # try:
+                            #     down_file = pd.read_excel(down_file_path)
+                            #     route = "{0}\\{1}_{2}_{3}.csv".format(down_path.get_raw_use_path(), "뉴스", '크롤링', i)
+                            #     down_file.to_csv(route, encoding="utf-8-sig", index=False)
+                            #     downloaded = True
+                            # except FileNotFoundError:
+                            #     downloaded = False
+                            # except PermissionError:
+                            #     time.sleep(1)
+                            #     downloaded = False
 
                         # 뉴스 검색으로 돌아가기
                         step1_element = dr.find_element(By.ID, 'collapse-step-1')
