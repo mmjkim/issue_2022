@@ -494,18 +494,6 @@ class Ui_frmViewComplaints(object):
     # 차트 출력
     def show_chart(self):
         try:
-            file_path = FilePathClass()
-
-            if self.tabWidget.currentIndex() == 0:
-                df = pd.read_csv(file_path.get_raw_use_path() + '민원_급등키워드\\1차마트_급등.csv')
-            elif self.tabWidget.currentIndex() == 1:
-                df = pd.read_csv(file_path.get_raw_use_path() + '민원_최다민원키워드정보\\1차마트_최다.csv')
-            elif self.tabWidget.currentIndex() == 2:
-                df = pd.read_csv(file_path.get_raw_use_path() + '민원_핵심키워드\\1차마트_핵심.csv')
-
-
-            df_pivot = df.pivot(index='keyword', columns='stdym', values='freq')
-
             anal_s_date = self.sel_yy_start.currentText() + self.sel_mm_start.currentText()
             anal_e_date = self.sel_yy_end.currentText() + self.sel_mm_end.currentText()
 
@@ -513,6 +501,19 @@ class Ui_frmViewComplaints(object):
             if int(anal_e_date) - int(anal_s_date) < 0:
                 error_event(em.CHK_DATE)
             else:
+                file_path = FilePathClass()
+
+                if self.tabWidget.currentIndex() == 0:
+                    df = pd.read_csv(file_path.get_raw_use_path() + '민원_급등키워드\\1차마트_급등.csv')
+                elif self.tabWidget.currentIndex() == 1:
+                    df = pd.read_csv(file_path.get_raw_use_path() + '민원_최다민원키워드정보\\1차마트_최다.csv')
+                elif self.tabWidget.currentIndex() == 2:
+                    df = pd.read_csv(file_path.get_raw_use_path() + '민원_핵심키워드\\1차마트_핵심.csv')
+
+                df = df[(df['stdym'] >= int(anal_s_date)) & (df['stdym'] <= int(anal_e_date))]
+
+                df_pivot = df.pivot(index='keyword', columns='stdym', values='freq')
+
                 # 분석 시작 일자가 수집된 데이터에 없는 경우 가장 과거 일자로 변경
                 if df_pivot.columns[0] >= int(anal_s_date):
                     anal_s_date = df_pivot.columns[0].astype(str)
