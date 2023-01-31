@@ -9,32 +9,34 @@ from source.get_api_data_complaint import *
 from source.save_anal_mart import *
 import common.config.errormessage as em
 
-
+#Thread Class
 class Worker(QThread):
     loadingP = pyqtSignal(bool)
 
     def __init__(self):
         QThread.__init__(self)
-        self.label = None
-        self.movie = None
         self.working = False
         self.part = None
         self.date = None
         self.target = None
 
-    def setLabel(self, label, movie, part, date, target):
-        self.label = label
-        self.movie = movie
+    #Thread에 적용할 파라메터 값 정의
+    def setLabel(self, part, date, target):
         self.part = part
         self.date = date
         self.target = target
 
+    #Thread 실행
     def run(self):
+        #thread 실행
         self.working = True
 
         if self.working:
+            # 로딩바 실행 (로딩바 hidden = False)
             self.loadingP.emit(False)
+            #민원 데이터 수집 기능 실행
             get_complaint_data(self.part, self.date, self.target)
+            #로딩바 멈춤 (로딩바 hidden = True)
             self.loadingP.emit(True)
 
 
@@ -149,6 +151,11 @@ class Ui_complaint_api_win(object):
         self.frame_2.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_2.setObjectName("frame_2")
 
+        self.progressBar = QtWidgets.QProgressBar(self.frame_2)
+        self.progressBar.setGeometry(QtCore.QRect(0, 8, 1000, 15))
+        self.progressBar.setProperty("value", 24)
+        self.progressBar.setObjectName("progressBar")
+
         # 최다 민원 키워드 테이블
         self.tbl_dftop = QtWidgets.QTableWidget(self.frame_2)
         self.tbl_dftop.setGeometry(QtCore.QRect(756, 25, 234, 596))
@@ -190,6 +197,7 @@ class Ui_complaint_api_win(object):
         self.tbl_top.verticalHeader().setDefaultSectionSize(35)
         self.tbl_top.setSortingEnabled(True)
 
+        # progress bar
         self.label = QtWidgets.QLabel(self.frame_2)
         self.label.setGeometry(QtCore.QRect(400, 150, 300, 300))
         self.label.setText("")
@@ -199,6 +207,9 @@ class Ui_complaint_api_win(object):
         self.label.setMovie(self.movie)
         self.movie.start()
         self.label.setHidden(True)
+
+
+
 
         complaint_api_win.setCentralWidget(self.centralwidget)
 
