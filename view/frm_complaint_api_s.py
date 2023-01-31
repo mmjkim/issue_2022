@@ -10,7 +10,39 @@ from source.save_anal_mart import *
 import common.config.errormessage as em
 
 
+class Worker(QThread):
+    loadingP = pyqtSignal(bool)
+
+    def __init__(self):
+        QThread.__init__(self)
+        self.label = None
+        self.movie = None
+        self.working = False
+        self.part = None
+        self.date = None
+        self.target = None
+
+    def setLabel(self, label, movie, part, date, target):
+        self.label = label
+        self.movie = movie
+        self.part = part
+        self.date = date
+        self.target = target
+
+    def run(self):
+        self.working = True
+
+        if self.working:
+            self.loadingP.emit(False)
+            get_complaint_data(self.part, self.date, self.target)
+            self.loadingP.emit(True)
+
+
 class Ui_complaint_api_win(object):
+    def __init__(self):
+        self.th_load = Worker()
+
+
     def setupUi(self, complaint_api_win):
         # 화면 크기 설정 및 고정
         complaint_api_win.setObjectName("complaint_api_win")
@@ -158,6 +190,16 @@ class Ui_complaint_api_win(object):
         self.tbl_top.verticalHeader().setDefaultSectionSize(35)
         self.tbl_top.setSortingEnabled(True)
 
+        self.label = QtWidgets.QLabel(self.frame_2)
+        self.label.setGeometry(QtCore.QRect(400, 150, 300, 300))
+        self.label.setText("")
+        self.label.setObjectName("label")
+
+        self.movie = QMovie('./loading.gif')
+        self.label.setMovie(self.movie)
+        self.movie.start()
+        self.label.setHidden(True)
+
         complaint_api_win.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(complaint_api_win)
@@ -239,8 +281,9 @@ class Ui_complaint_api_win(object):
         target = "%s" % ",".join(target_list)
 
         if len(target) > 1:
-            # 민원 데이터 수집
-            get_complaint_data(part, s_yy_start+s_mm_start, target)
+            self.th_load.setLabel(self.label, self.movie, part, s_yy_start + s_mm_start, target)
+            self.th_load.loadingP.connect(self.label.setHidden)
+            self.th_load.start()
 
             self.show_folders()  # 데이터 수집 리스트 출력
         else:
