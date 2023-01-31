@@ -287,8 +287,7 @@ class Ui_complaint_api_win(object):
             self.th_load.setLabel(part, s_yy_start + s_mm_start, target)
             self.th_load.loadingP.connect(self.label.setHidden)
             self.th_load.start()
-
-            self.show_folders()  # 데이터 수집 리스트 출력
+            self.th_load.finished.connect(self.show_folders)  # 스레드 종료되면 파일 목록 출력
         else:
             error_event(em.SELECT_CHKBOX)
 
