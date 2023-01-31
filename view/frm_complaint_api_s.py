@@ -151,11 +151,6 @@ class Ui_complaint_api_win(object):
         self.frame_2.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_2.setObjectName("frame_2")
 
-        self.progressBar = QtWidgets.QProgressBar(self.frame_2)
-        self.progressBar.setGeometry(QtCore.QRect(0, 8, 1000, 15))
-        self.progressBar.setProperty("value", 24)
-        self.progressBar.setObjectName("progressBar")
-
         # 최다 민원 키워드 테이블
         self.tbl_dftop = QtWidgets.QTableWidget(self.frame_2)
         self.tbl_dftop.setGeometry(QtCore.QRect(756, 25, 234, 596))
@@ -207,9 +202,6 @@ class Ui_complaint_api_win(object):
         self.label.setMovie(self.movie)
         self.movie.start()
         self.label.setHidden(True)
-
-
-
 
         complaint_api_win.setCentralWidget(self.centralwidget)
 
@@ -292,7 +284,7 @@ class Ui_complaint_api_win(object):
         target = "%s" % ",".join(target_list)
 
         if len(target) > 1:
-            self.th_load.setLabel(self.label, self.movie, part, s_yy_start + s_mm_start, target)
+            self.th_load.setLabel(part, s_yy_start + s_mm_start, target)
             self.th_load.loadingP.connect(self.label.setHidden)
             self.th_load.start()
 
