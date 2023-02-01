@@ -31,10 +31,3 @@ def get_view_naver_keyword(keyword, std_ymd, end_ymd):
     df_marge = df_marge.rename(columns={'YM':'ymd'})
 
     return df_marge
-
-
-# get_view_naver_keyword("이태원,어린이집,할로윈", '2021-01-01', '2022-11-30')
-# chart 스크립트 호출
-# html = c3Chart(df_marge, 'line')
-# # c3chart_html_write(df_marge, 'line'):
-# print(html)

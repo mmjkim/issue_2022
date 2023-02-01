@@ -335,17 +335,3 @@ def error_event(msg):
     msgbox.setWindowTitle("error")
     msgbox.setText(msg)
     msgbox.exec_()
-
-# mdb.DbUseAnalClass.select_qry("select * from CONPLAIN_TO_DAY")
-# anal_mart_complaint('핵심')
-# anal_mart_news('경제')
-#save_db_topic_data()
-#connect_db = mdb.DbUseAnalClass()
-#df = connect_db.select_qry("select * from NAVER_KEYWORD ")
-
-#print(df)
-
-
-#save_db_naver_data()
-
-#anal_mart_news('경제')

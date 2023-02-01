@@ -444,13 +444,3 @@ def get_complaint_data(part, date, target):
             get_dfTopN_keyword(i, target)
     elif part == '핵심':
         get_topN_keyword(date+"01", getMonthRange(date[:4], date[-2:]).strftime('%Y%m%d'), target)
-
-
-# get_rising_keyword('20200329', 'pttn,dfpt,saeol,prpl,qna,qna_origin')
-# get_dfTopN_keyword('20191212', 'pttn,dfpt,saeol,prpl,qna,qna_origin')
-
-# get_today_topic_keyword('20211230', 'pttn,dfpt,saeol,prpl,qna,qna_origin')
-#get_similarInfo('이태원')
-#aa = get_news_uuid_list('정치')
-
-#bb = get_news(aa, '정치', '20220430')

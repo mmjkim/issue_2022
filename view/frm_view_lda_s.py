@@ -209,16 +209,6 @@ class Ui_Dialog(object):
         return df_data
 
 
-    # # 민원 내용 조회
-    # def get_content_complaint(self, dataType, keyword):
-    #     file_path = FilePathClass()
-    #     path = file_path.get_raw_use_path()
-    #     if file_path.is_path_exist_check(path) is False:
-    #         msg = "'" + path + "'\n" + em.NO_PATH
-    #         error_event(msg)
-    #     return ""
-
-
     # LDA 분석
     def get_lda(self, part, list):
         anal_list = []

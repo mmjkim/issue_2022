@@ -459,6 +459,7 @@ class Ui_Anal_Dialog(object):
 
                 chrome_options = Options()
                 chrome_options.add_experimental_option("detach", True) # 브라우저 자동 종료 방지
+                # chrome_options.binary_location = "D:/Program Files/Chrome/Application/chrome.exe"  # 크롬 경로 지정
                 dr = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
                 dr.implicitly_wait(3) # 3초 대기
                 dr.get('https://www.bigkinds.or.kr/v2/news/index.do') # 빅카인즈 주소로 이동
@@ -555,16 +556,6 @@ class Ui_Anal_Dialog(object):
                                 down_file.to_csv(route, encoding="utf-8-sig", index=False)
                             else:
                                 downloaded = False
-                            # try:
-                            #     down_file = pd.read_excel(down_file_path)
-                            #     route = "{0}\\{1}_{2}_{3}.csv".format(down_path.get_raw_use_path(), "뉴스", '크롤링', i)
-                            #     down_file.to_csv(route, encoding="utf-8-sig", index=False)
-                            #     downloaded = True
-                            # except FileNotFoundError:
-                            #     downloaded = False
-                            # except PermissionError:
-                            #     time.sleep(1)
-                            #     downloaded = False
 
                         # 뉴스 검색으로 돌아가기
                         step1_element = dr.find_element(By.ID, 'collapse-step-1')

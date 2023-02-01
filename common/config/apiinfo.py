@@ -2,7 +2,7 @@
 # 인증키, url, 저장 폴더 정의
 
 #------------- 뉴스 API I/F 정보 ---------------------
-NEWS_API_KEY = 'NAiIcJsR2pyzyHlYnLqu9gnPC7D1kVAhhfg6cEq6Y9p6GXiTrbFBbf5ivs%2FmMlAAFuemeNPFbwp2yyJ1G07o9A%3D%3D'
+NEWS_API_KEY = ''
 
 NEWS_API_URL = 'https://api.odcloud.kr/api'
 
@@ -20,9 +20,7 @@ NEWS_DATA_PATH_ECONOMY = '뉴스_경제'
 NEWS_DATA_PATH_SOCIETY = '뉴스_사회'
 
 #------------- 민원 API I/F 정보 ---------------------
-# COMPLAIN_API_KEY = '8PvVYRda2ocf1OZTdsTwNczETCQL%2FiOshpEAWGzqVLdWXJrNmIzl7OzC2FCrD80SbCdDbd39a4Rz6azpxpMFmg%3D%3D'
-# COMPLAIN_API_KEY = 'NAiIcJsR2pyzyHlYnLqu9gnPC7D1kVAhhfg6cEq6Y9p6GXiTrbFBbf5ivs%2FmMlAAFuemeNPFbwp2yyJ1G07o9A%3D%3D'
-COMPLAIN_API_KEY = 'xNJMhXNHY%2FrJJaBI6J1J8drvZmORtS%2FvpA%2BQtO8UGVw2uqnXPDUqXt00yWxPuIE%2BCkhMTR5K5D06HeB3KuNqng%3D%3D'
+COMPLAIN_API_KEY = ''
 COMPLAIN_API_URL = 'http://apis.data.go.kr/1140100/minAnalsInfoView5/'
 #급등키워드
 COMPLAIN_API_URL_RISE = 'minRisingKeyword5'
@@ -97,15 +95,15 @@ COMPLAIN_TOPN_MAX_ROW = '100'
 
 #------------- 네이버 API I/F 정보 ---------------------
 NAVER_API_URL = 'https://openapi.naver.com/v1/datalab/search'
-NAVER_API_ID = 'ofFM6m12_MDK11rfyoct'
-NAVER_API_PW = 'jYvpWgXSZg'
+NAVER_API_ID = ''
+NAVER_API_PW = ''
 NAVER_DATA_PATH_KEYWORD = '네이버_검색어'
 NAVER_TIME_UNIT = 'month'
 
 
 #----------------- 빅카인즈 로그인 정보 -----------------
-BIGKINDS_ID = '20191497@daejin.ac.kr'
-BIGKINDS_PW = 'wqw1301wqw**'
+BIGKINDS_ID = ''
+BIGKINDS_PW = ''
 
 
 #-----------------User 정보-----------------
