@@ -7,6 +7,7 @@ warnings.filterwarnings(action='ignore')
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5 import QtWebEngineWidgets
 from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import QMessageBox, QTableWidgetItem, QAbstractItemView, QCheckBox, QWidget, QHBoxLayout
 
 from common.config.filepassclass import FilePathClass
@@ -34,34 +35,39 @@ class Ui_Dialog(object):
         self.tab_content = QtWidgets.QWidget()
         self.tab_content.setObjectName("tab_content")
         self.tabWidget.addTab(self.tab_content, "")
-
         self.tabWidget.setCurrentIndex(0)
 
-        # 크롤링 데이터 그룹
-        self.group_crawl = QtWidgets.QGroupBox(self.tab_anal)
-        self.group_crawl.setGeometry(QtCore.QRect(10, 10, 251, 148))
-        self.group_crawl.setObjectName("group_crawl")
+        # LDA 분석 그룹
+        self.groupBox = QtWidgets.QGroupBox(self.tab_anal)
+        self.groupBox.setGeometry(QtCore.QRect(10, 10, 531, 148))
+        self.groupBox.setObjectName("groupBox")
+
+        # LDA 토픽 수
+        self.lineEdit = QtWidgets.QLineEdit(self.groupBox)
+        self.lineEdit.setGeometry(QtCore.QRect(80, 16, 41, 21))
+        self.lineEdit.setObjectName("lineEdit")
+        self.lineEdit.setValidator(QIntValidator())  # 숫자만 입력 가능
+        self.label = QtWidgets.QLabel(self.groupBox)
+        self.label.setGeometry(QtCore.QRect(21, 18, 77, 18))
+        self.label.setObjectName("label")
+
         # 크롤링 데이터 분석 버튼
-        self.btn_search_crawl = QtWidgets.QPushButton(self.group_crawl)
-        self.btn_search_crawl.setGeometry(QtCore.QRect(162, 15, 77, 21))
+        self.btn_search_crawl = QtWidgets.QPushButton(self.groupBox)
+        self.btn_search_crawl.setGeometry(QtCore.QRect(146, 18, 111, 21))
         self.btn_search_crawl.setObjectName("btn_search")
         # 크롤링 데이터 테이블
-        self.tbl_keyword_crawl = QtWidgets.QListWidget(self.group_crawl)
-        self.tbl_keyword_crawl.setGeometry(QtCore.QRect(5, 40, 241, 101))
+        self.tbl_keyword_crawl = QtWidgets.QListWidget(self.groupBox)
+        self.tbl_keyword_crawl.setGeometry(QtCore.QRect(17, 40, 241, 101))
         self.tbl_keyword_crawl.setObjectName("tbl_keyword")
         self.tbl_keyword_crawl.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
 
-        # 유사사례 데이터 테이블
-        self.group_simil = QtWidgets.QGroupBox(self.tab_anal)
-        self.group_simil.setGeometry(QtCore.QRect(280, 10, 251, 148))
-        self.group_simil.setObjectName("group_simil")
         # 유사사례 데이터 분석 버튼
-        self.btn_search_simil = QtWidgets.QPushButton(self.group_simil)
-        self.btn_search_simil.setGeometry(QtCore.QRect(162, 15, 77, 21))
+        self.btn_search_simil = QtWidgets.QPushButton(self.groupBox)
+        self.btn_search_simil.setGeometry(QtCore.QRect(403, 18, 111, 21))
         self.btn_search_simil.setObjectName("btn_search_simil")
         # 유사사례 데이터 테이블
-        self.tbl_keyword_simil = QtWidgets.QListWidget(self.group_simil)
-        self.tbl_keyword_simil.setGeometry(QtCore.QRect(5, 40, 241, 101))
+        self.tbl_keyword_simil = QtWidgets.QListWidget(self.groupBox)
+        self.tbl_keyword_simil.setGeometry(QtCore.QRect(273, 40, 241, 101))
         self.tbl_keyword_simil.setObjectName("tbl_keyword_simil")
         self.tbl_keyword_simil.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
 
@@ -84,7 +90,7 @@ class Ui_Dialog(object):
         self.tbl_lda_file.verticalHeader().setStretchLastSection(False)
 
         self.group3 = QtWidgets.QGroupBox(self.tab_content)
-        self.group3.setGeometry(QtCore.QRect(8, 10, 1284, 151))
+        self.group3.setGeometry(QtCore.QRect(8, 10, 1287, 151))
         self.group3.setObjectName("group3")
 
         # 분석 내용 테이블
@@ -211,6 +217,8 @@ class Ui_Dialog(object):
 
     # LDA 분석
     def get_lda(self, part, list):
+        num = int(self.lineEdit.text())  # LDA 토픽 수
+
         anal_list = []
         for i in range(len(list.selectedItems())):
             anal_list.append(str(list.selectedItems()[i].text().replace(part+'_', '')))
@@ -221,7 +229,7 @@ class Ui_Dialog(object):
             s_path = file_path.get_result_path() + "LDA\\"
 
             # LDA 분석
-            lda_model_proc(part, anal_str)
+            lda_model_proc(part, anal_str, num)
 
             # 테이블 출력
             self.get_html_lda()
@@ -318,10 +326,10 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
         Dialog.setWindowTitle(_translate("Dialog", "LDA 분석"))
-        self.group_crawl.setTitle(_translate("Dialog", " [ LDA 키워드 분석 - 크롤링 ] "))
-        self.btn_search_crawl.setText(_translate("Dialog", "분석"))
-        self.group_simil.setTitle(_translate("Dialog", " [ LDA 키워드 분석 - 유사사례 ] "))
-        self.btn_search_simil.setText(_translate("Dialog", "분석"))
+        self.groupBox.setTitle(_translate("Dialog", "[ LDA 키워드 분석 ]"))
+        self.btn_search_crawl.setText(_translate("Dialog", "크롤링 분석"))
+        self.btn_search_simil.setText(_translate("Dialog", "유사사례 분석"))
+        self.label.setText(_translate("Dialog", "토픽 수:"))
         self.group2.setTitle(_translate("Dialog", " [ LDA 분석 결과 목록 ] "))
         item = self.tbl_lda_file.horizontalHeaderItem(0)
         item.setText(_translate("Dialog", "분야"))

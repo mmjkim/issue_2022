@@ -29,8 +29,8 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
 # 유사사례정보, 크롤링 정보의 데이타 파일을 머지하여 토픽 키워드를 찾는다.
-# input value 값은 사례 구분[유사사례정보, 크롤링], 키워드[,]
-def lda_model_proc(part, keyword):
+# input value 값은 사례 구분[유사사례정보, 크롤링], 키워드[,], 토픽 수
+def lda_model_proc(part, keyword, num):
 
     filePath = FilePathClass().get_raw_use_path()
 
@@ -78,13 +78,13 @@ def lda_model_proc(part, keyword):
                     anal_data_token_removed.append(line)
 
                 # 단어 인코딩 및 빈도수 계산
-                model, corpus, dictionary = lda_modeling(anal_data_token_removed)
+                model, corpus, dictionary = lda_modeling(anal_data_token_removed, num)
                 NUM_WORDS = 10
                 lda_keyword = "{0}_{1}".format(part, keyword.replace(',', '_'))
                 topics = model.print_topics(num_words=NUM_WORDS)
 
                 # 토픽에 따른 단어와 값 엑셀로 저장
-                print_topic_prop(topics, lda_keyword)
+                print_topic_prop(topics, lda_keyword, num)
 
                 # LDA 분석 시각화 결과 저장
                 lda_visualize(model, corpus, dictionary, lda_keyword)
@@ -92,9 +92,7 @@ def lda_model_proc(part, keyword):
     print("The End!!!")
 
 
-def lda_modeling(anal_data_token):
-    global NUM_TOPICS
-    NUM_TOPICS = 3
+def lda_modeling(anal_data_token, num):
     PASSES = 20
 
     # 단어 인코딩 및 빈도수 계산
@@ -102,14 +100,14 @@ def lda_modeling(anal_data_token):
     corpus = [dictionary.doc2bow(token) for token in anal_data_token]  # 단어를 숫자로 변환하고 카운트와 함께 저장
     # LDA 모델 학습
     model = gensim.models.ldamodel.LdaModel(corpus,
-                                            num_topics=NUM_TOPICS,
+                                            num_topics=num,
                                             id2word=dictionary,
                                             passes=PASSES)
     return model, corpus, dictionary
 
 
 # 토픽에 따른 단어와 값 엑셀로 저장
-def print_topic_prop(topics, lda_keyword):
+def print_topic_prop(topics, lda_keyword, num):
     topic_values = []
 
     file_path = FilePathClass()
@@ -124,7 +122,7 @@ def print_topic_prop(topics, lda_keyword):
     if file_path.is_path_exist_check(file_save_path) == False:
        file_path.make_path(file_save_path)
 
-    topic_prop = pd.DataFrame({"topic_num" : list(range(1, NUM_TOPICS + 1)), "word_prop": topic_values})
+    topic_prop = pd.DataFrame({"topic_num" : list(range(1, num + 1)), "word_prop": topic_values})
     topic_prop.to_excel(file_name + lda_keyword + '.xlsx')
 
 
