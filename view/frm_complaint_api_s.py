@@ -153,7 +153,7 @@ class Ui_complaint_api_win(object):
 
         # 최다 민원 키워드 테이블
         self.tbl_dftop = QtWidgets.QTableWidget(self.frame_2)
-        self.tbl_dftop.setGeometry(QtCore.QRect(756, 25, 234, 596))
+        self.tbl_dftop.setGeometry(QtCore.QRect(506, 330, 481, 290))
         self.tbl_dftop.setObjectName("tbl_dftop")
         self.tbl_dftop.setColumnCount(1)
         item = QtWidgets.QTableWidgetItem()
@@ -163,7 +163,7 @@ class Ui_complaint_api_win(object):
         self.tbl_dftop.setSortingEnabled(True)
         # 급등 키워드 테이블
         self.tbl_rising = QtWidgets.QTableWidget(self.frame_2)
-        self.tbl_rising.setGeometry(QtCore.QRect(8, 25, 234, 596))
+        self.tbl_rising.setGeometry(QtCore.QRect(8, 25, 481, 290))
         self.tbl_rising.setObjectName("tbl_rising")
         self.tbl_rising.setColumnCount(1)
         item = QtWidgets.QTableWidgetItem()
@@ -173,7 +173,7 @@ class Ui_complaint_api_win(object):
         self.tbl_rising.setSortingEnabled(True)
         # 오늘의 민원 키워드 테이블
         self.tbl_today = QtWidgets.QTableWidget(self.frame_2)
-        self.tbl_today.setGeometry(QtCore.QRect(506, 25, 234, 596))
+        self.tbl_today.setGeometry(QtCore.QRect(8, 330, 481, 290))
         self.tbl_today.setObjectName("tbl_today")
         self.tbl_today.setColumnCount(1)
         item = QtWidgets.QTableWidgetItem()
@@ -183,7 +183,7 @@ class Ui_complaint_api_win(object):
         self.tbl_today.setSortingEnabled(True)
         # 핵심 키워드 테이블
         self.tbl_top = QtWidgets.QTableWidget(self.frame_2)
-        self.tbl_top.setGeometry(QtCore.QRect(257, 25, 234, 596))
+        self.tbl_top.setGeometry(QtCore.QRect(506, 25, 481, 290))
         self.tbl_top.setObjectName("tbl_top")
         self.tbl_top.setColumnCount(1)
         item = QtWidgets.QTableWidgetItem()
