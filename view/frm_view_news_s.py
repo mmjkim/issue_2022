@@ -289,9 +289,13 @@ class Ui_frmViewNews(object):
 
             # 막대 그래프
             elif self.rdo_bar.isChecked():
-                df = df.head(int(self.txt_top_n.text()))
-                df.T.plot.bar(figsize=(10, 5), ax=ax, alpha=0.5)
-                ax.xaxis.set_visible(False)
+                for i in range(int(self.txt_top_n.text())):
+                    ax.bar(df.columns,
+                           df.head(int(self.txt_top_n.text())).values[i],
+                           label=df.index.values[i], alpha=0.3, width=10)
+                # df = df.head(int(self.txt_top_n.text()))
+                # df.T.plot.bar(figsize=(10, 5), ax=ax, alpha=0.5)
+                # ax.xaxis.set_visible(False)
 
             # 산점도
             elif self.rdo_area.isChecked():

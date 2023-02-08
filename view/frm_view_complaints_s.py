@@ -470,9 +470,16 @@ class Ui_frmViewComplaints(object):
                     ax.plot(df.columns,
                             df.head(int(topn.text())).values[i],
                             label=df.index.values[i], alpha=0.5, linewidth=2)
+            # elif part == 'bar':
+            #     df.head(int(topn.text())).T.plot.bar(figsize=(10, 5), ax=ax, alpha=0.5)
+            #     ax.xaxis.set_visible(False)
             elif part == 'bar':
-                df.head(int(topn.text())).T.plot.bar(figsize=(10, 5), ax=ax, alpha=0.5)
-                ax.xaxis.set_visible(False)
+                # ax = df.head(int(topn.text())).T.plot(kind='bar', figsize=(10, 5))
+                for i in range(int(topn.text())):
+                    ax.bar(df.columns,
+                            df.head(int(topn.text())).values[i],
+                            label=df.index.values[i], alpha=0.3, width=10)
+
             elif part == 'scatter':
                 for i in range(int(topn.text())):
                     ax.scatter(df.columns,
