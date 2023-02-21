@@ -21,9 +21,9 @@ from common.database import db_mdb as mdb
 #      target = 'pttn:일반민원, dfpt:고충민원, saeol:수집민원, prpl:제안, qna:정책Q&A, qna_origin:공개민원'
 #      std_ymd = yyyymm (기준일자)
 #  return :
+#      dataframe
 #-----------------------------------------------------
 def get_rising_keyword(std_ymd, target):
-
     #파일 path
     file_path = FilePathClass()
     # 분야별 데이터 저장 경로 설정
@@ -89,9 +89,9 @@ def get_rising_keyword(std_ymd, target):
 #      std_ymd_fr = yyyymm (기준월 시작일자)
 #      std_ymd_to = yyyymm (기준월 종료일자)
 #  return :
+#      dataframe
 #-----------------------------------------------------
 def get_topN_keyword(std_ymd_fr, std_ymd_to, target):
-
     #파일 path
     file_path = FilePathClass()
     analysis_date_fr = std_ymd_fr
@@ -156,6 +156,7 @@ def get_topN_keyword(std_ymd_fr, std_ymd_to, target):
 #      target = 'pttn:일반민원, dfpt:고충민원, saeol:수집민원, prpl:제안, qna:정책Q&A, qna_origin:공개민원'
 #      std_ymd = yyyymm (기준 일자)
 #  return :
+#      dataframe
 #-----------------------------------------------------
 def get_today_topic_keyword(std_ymd,  target):
     #파일 path
@@ -223,9 +224,9 @@ def get_today_topic_keyword(std_ymd,  target):
 #      std_ymd = yyyymm (기준 일자)
 #      rangeCount = 분석대상시간으로부터 period에 따른 기간을 입력(수집 종료 년월 - 수집 시작 년월), 문자열
 #  return :
+#      dataframe
 #-----------------------------------------------------
 def get_dfTopN_keyword(std_ymd, target):
-
     file_path = FilePathClass()
     maxResult = apifp.COMPLAIN_MAX_ROW
     analysis_date = std_ymd
@@ -294,9 +295,9 @@ def get_dfTopN_keyword(std_ymd, target):
 #      keyword = 분석 키워드
 #      target = 'qna:정책Q&A, qna_origin:공개민원'
 #  return :
+#      dataframe
 #-----------------------------------------------------
 def get_similarInfo(keyword):
-
     file_path = FilePathClass()
     maxResult = apifp.COMPLAIN_MAX_ROW
     start_page = '1'
@@ -362,9 +363,9 @@ def get_similarInfo(keyword):
 #      std_ymd_fr, std_ymd_to : 수집시작일자, 수집종료일자
 #      target = 'pttn:일반민원, dfpt:고충민원, saeol:수집민원, prpl:제안, qna_origin:공개민원'
 #  return :
+#      dataframe
 #-----------------------------------------------------
 def get_wd_cloud_info(keyword, std_ymd_fr, std_ymd_to, target):
-
     file_path = FilePathClass()
     maxResult = '50'  # apifp.COMPLAIN_MAX_ROW
     analysis_date_fr = std_ymd_fr
