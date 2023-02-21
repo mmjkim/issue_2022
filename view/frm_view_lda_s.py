@@ -177,7 +177,6 @@ class Ui_Dialog(object):
 
     # 내용 조회
     def get_content(self, dataType, keyword):
-
         file_path = FilePathClass()
         path = file_path.get_raw_use_path()
 
@@ -250,7 +249,6 @@ class Ui_Dialog(object):
 
     # LDA 분석 결과 html 파일 조회
     def get_html_lda(self):
-
         file_path = FilePathClass()
         s_path = file_path.get_result_path() + "LDA\\"  # LDA 파일 경로
 

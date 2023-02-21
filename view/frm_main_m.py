@@ -235,4 +235,3 @@ if __name__ == "__main__":
     sys.excepthook = my_exception_hook
 
     sys.exit(app.exec_())
-

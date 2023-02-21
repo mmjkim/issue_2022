@@ -1,5 +1,5 @@
 #
-# 디렉토리안에 있는 파일들의 데이타를 하나로 합치기
+# 디렉토리 안에 있는 파일들의 데이타를 하나로 합치기
 # parameter : filePath = 파일 Path, colList = 컬럼 리스트
 # return : dataframe(colList + 파일식별 Key)
 #
@@ -20,8 +20,8 @@ def file_data_conflate(filePath, colList) :
         df_dis_use['fileKey'] = os.path.basename(filename).replace('.csv', '')
         dfAllData = pd.concat([dfAllData, df_dis_use])
 
-
     return dfAllData
+
 
 #
 # 데이타 파일로 저장하기
@@ -35,7 +35,5 @@ def file_data_save(file_path, file_name, df_save_data, bindex):
 
     # 저장할 파일명 생성
     savefile = file_path + file_name + str(dt.datetime.now().strftime('%y%m%d') + '.csv')
-    # 파일저장
+    # 파일 저장
     df_save_data.to_csv(savefile, encoding='euc-kr', index=bindex)
-
-

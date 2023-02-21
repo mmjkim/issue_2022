@@ -135,13 +135,13 @@ class Ui_frmViewNaver(object):
         self.retranslateUi(frmViewNaver)
         QtCore.QMetaObject.connectSlotsByName(frmViewNaver)
 
-        self.show_list() # 수집된 네이버 데이터의 키워드 출력
-        self.btn_search.clicked.connect(self.show_table) # 테이블 출력
-        self.btn_print.clicked.connect(self.show_graph) # 그래프 출력
+        self.show_list()  # 수집된 네이버 데이터의 키워드 출력
+        self.btn_search.clicked.connect(self.show_table)  # 테이블 출력
+        self.btn_print.clicked.connect(self.show_graph)  # 그래프 출력
 
-        self.tbl_naver.setEditTriggers(QAbstractItemView.NoEditTriggers) # 테이블 수정 불가
+        self.tbl_naver.setEditTriggers(QAbstractItemView.NoEditTriggers)  # 테이블 수정 불가
         self.tbl_naver.horizontalHeader().setStyleSheet(
-            "QHeaderView::section {background-color:#404040;color:#FFFFFF;}") # 테이블 스타일 설정
+            "QHeaderView::section {background-color:#404040;color:#FFFFFF;}")  # 테이블 스타일 설정
 
 
     def show_graph(self):
@@ -162,10 +162,10 @@ class Ui_frmViewNaver(object):
                     else:
                         multi_types += "'" + df.columns[i] + "':'line',\n"
 
-            html = c3Chart(df, type, multi_types) # 그래프 html 가져오기
+            html = c3Chart(df, type, multi_types)  # 그래프 html 가져오기
             temp = "zoom:{enabled: false}"
-            self.webEngineView.setHtml(html.replace(temp, "zoom: {enabled: true}")) # 그래프 그리기
-            loadCSS(self.webEngineView, "c3Chart/c3.css", "script1") # 그래프 스타일 설정
+            self.webEngineView.setHtml(html.replace(temp, "zoom: {enabled: true}"))  # 그래프 그리기
+            loadCSS(self.webEngineView, "c3Chart/c3.css", "script1")  # 그래프 스타일 설정
         else:
             self.webEngineView.setHtml('')
             error_event(em.NO_DATA)

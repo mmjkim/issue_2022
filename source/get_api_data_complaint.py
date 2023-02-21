@@ -55,8 +55,8 @@ def get_rising_keyword(std_ymd, target):
         save_log = mdb.DbUseAnalClass()
         now = datetime.now()
         # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료',
-        # '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
-        save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M:%S'),'민원', route,
+        #           '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
+        save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M:%S'), '민원', route,
                                 analysis_date, analysis_date, len(df1), 'API', ''])
 
         print('The End!!!')
@@ -98,7 +98,8 @@ def get_topN_keyword(std_ymd_fr, std_ymd_to, target):
     analysis_date_to = std_ymd_to
     maxResult = apifp.COMPLAIN_TOPN_MAX_ROW
 
-    url = apifp.COMPLAIN_API_URL + apifp.COMPLAIN_API_URL_TOP + '?serviceKey=' + apifp.COMPLAIN_API_KEY + '&resultCount=' + maxResult + '&target=' + target + '&dateFrom=' + analysis_date_fr + '&dateTo=' + analysis_date_to
+    url = apifp.COMPLAIN_API_URL + apifp.COMPLAIN_API_URL_TOP + '?serviceKey=' + apifp.COMPLAIN_API_KEY + \
+          '&resultCount=' + maxResult + '&target=' + target + '&dateFrom=' + analysis_date_fr + '&dateTo=' + analysis_date_to
     print('URL: ', url)
 
     dataPath = apifp.COMPLAIN_DATA_PATH_TOP
@@ -106,7 +107,6 @@ def get_topN_keyword(std_ymd_fr, std_ymd_to, target):
     get_complain_data_path = file_path.get_raw_collect_path() + dataPath + "//"
 
     try:
-
         res = urlopen(url).read()  # URL 열고 읽음
         resJson = json.loads(res)  # json 문자열을 파이썬 객체로 변환
         df1 = json_normalize(resJson)  # json 데이터를 dataframe으로 변환
@@ -120,13 +120,15 @@ def get_topN_keyword(std_ymd_fr, std_ymd_to, target):
         df1.to_csv(route_csv, index=False, encoding="utf-8-sig")
         df1.to_json(route, orient='table')
 
-        # ------------ 마트 적재 데이타 Log 저장 -------------------------
+        # ------------------------- 마트 적재 데이타 Log 저장 -------------------------
         save_log = mdb.DbUseAnalClass()
         now = datetime.now()
-        # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
-        save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M:%S'),'민원', route, analysis_date_fr, analysis_date_to, len(df1), 'API', ''])
+        # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료',
+        #           '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
+        save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M:%S'), '민원', route, analysis_date_fr, analysis_date_to, len(df1), 'API', ''])
 
         print('The End!!!')
+
         return df1
 
     except requests.exceptions.Timeout as errd:
@@ -161,7 +163,8 @@ def get_today_topic_keyword(std_ymd,  target):
     maxResult = apifp.COMPLAIN_MAX_ROW
     analysis_date = std_ymd
 
-    url = apifp.COMPLAIN_API_URL + apifp.COMPLAIN_API_URL_TOPIC + '?serviceKey=' + apifp.COMPLAIN_API_KEY + '&searchDate=' + analysis_date + '&todayTopicTopN=' + maxResult + '&target=' + target
+    url = apifp.COMPLAIN_API_URL + apifp.COMPLAIN_API_URL_TOPIC + '?serviceKey=' + apifp.COMPLAIN_API_KEY + \
+          '&searchDate=' + analysis_date + '&todayTopicTopN=' + maxResult + '&target=' + target
     print('URL: ', url)
 
     dataPath = apifp.COMPLAIN_DATA_PATH_TOPIC
@@ -183,11 +186,12 @@ def get_today_topic_keyword(std_ymd,  target):
         df1.to_csv(route_csv, index=False, encoding="utf-8-sig")
         df1.to_json(route, orient='table')
 
-        # ------------ 마트 적재 데이타 Log 저장 -------------------------
+        # ------------------------- 마트 적재 데이타 Log 저장 -------------------------
         save_log = mdb.DbUseAnalClass()
         now = datetime.now()
-        # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
-        save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M:%S'),'민원', route, analysis_date, analysis_date, len(df1), 'API', ''])
+        # values = ['현재일자', '데이터 타입', '파일명', '수집기간_시작', '수집기간_종료',
+        #           '저장총건수', '마트구분(API, 1차마트, 분석, 키워드'), '키워드']
+        save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M:%S'), '민원', route, analysis_date, analysis_date, len(df1), 'API', ''])
 
         print('The End!!!')
 
@@ -211,17 +215,16 @@ def get_today_topic_keyword(std_ymd,  target):
 
 
 
-
 #-----------------------------------------------------
 #  공공데이터 포털에서 api i/f 통한 민원 데이터 가져오기
 #  최다민원
 #  param :
 #      target = 'pttn:일반민원, dfpt:고충민원, saeol:수집민원, prpl:제안, qna:정책Q&A, qna_origin:공개민원'
 #      std_ymd = yyyymm (기준 일자)
-#      rangeCount =  분석대상시간으로부터 period에 따른 기간을 입력 (수집 종료 년월 - 수집 시작년월), 문자열
+#      rangeCount = 분석대상시간으로부터 period에 따른 기간을 입력(수집 종료 년월 - 수집 시작 년월), 문자열
 #  return :
 #-----------------------------------------------------
-def get_dfTopN_keyword(std_ymd,  target):
+def get_dfTopN_keyword(std_ymd, target):
 
     file_path = FilePathClass()
     maxResult = apifp.COMPLAIN_MAX_ROW
@@ -232,7 +235,8 @@ def get_dfTopN_keyword(std_ymd,  target):
     period = 'MONTHLY'
     rangeCount = '1'
 
-    url = apifp.COMPLAIN_API_URL + apifp.COMPLAIN_API_URL_DFTOPKW + '?serviceKey=' + apifp.COMPLAIN_API_KEY + '&target=' + target + '&period=' + period + '&analysisTime=' + analysis_date + '&rangeCount=' + rangeCount + '&maxResult=' + maxResult
+    url = apifp.COMPLAIN_API_URL + apifp.COMPLAIN_API_URL_DFTOPKW + '?serviceKey=' + apifp.COMPLAIN_API_KEY + \
+          '&target=' + target + '&period=' + period + '&analysisTime=' + analysis_date + '&rangeCount=' + rangeCount + '&maxResult=' + maxResult
     print('URL: ', url)
 
     dataPath = apifp.COMPLAIN_DATA_PATH_DFTOPKW
@@ -241,7 +245,6 @@ def get_dfTopN_keyword(std_ymd,  target):
     get_complain_data_path = file_path.get_raw_collect_path() + dataPath + "//"
 
     try:
-
         res = urlopen(url).read()  # URL 열고 읽음
         resJson = json.loads(res)  # json 문자열을 파이썬 객체로 변환
         df1 = json_normalize(resJson)  # json 데이터를 dataframe으로 변환
@@ -250,16 +253,17 @@ def get_dfTopN_keyword(std_ymd,  target):
         if file_path.is_path_exist_check(get_complain_data_path) == False:
             file_path.make_path(get_complain_data_path)
 
-        route = "{0}{1}_{2}.json".format(get_complain_data_path,  dataPath, std_ymd)
+        route = "{0}{1}_{2}.json".format(get_complain_data_path, dataPath, std_ymd)
         route_csv = "{0}{1}_{2}.csv".format(get_complain_data_path, dataPath, std_ymd)
         df1.to_csv(route_csv, index=False, encoding="utf-8-sig")
         df1.to_json(route, orient='table')
 
-        # ------------ 마트 적재 데이타 Log 저장 -------------------------
+        # ------------------------- 마트 적재 데이타 Log 저장 -------------------------
         save_log = mdb.DbUseAnalClass()
         now = datetime.now()
-        # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
-        save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M:%S'),'민원', route, analysis_date, analysis_date, len(df1), 'API', ''])
+        # values = ['현재일자', '데이터 타입', '파일명', '수집기간_시작', '수집기간_종료',
+        #           '저장총건수', '마트구분(API, 1차마트, 분석, 키워드'), '키워드']
+        save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M:%S'), '민원', route, analysis_date, analysis_date, len(df1), 'API', ''])
 
         print('The End!!!')
 
@@ -298,13 +302,14 @@ def get_similarInfo(keyword):
     start_page = '1'
     target = 'qna,qna_origin'
 
-    url = apifp.COMPLAIN_API_URL + apifp.COMPLAIN_API_URL_SIMIL +'?serviceKey=' + apifp.COMPLAIN_API_KEY + '&startPos=' + start_page + '&retCount=' + maxResult + '&searchword=' + quote(keyword) + '&target=' + target
+    url = apifp.COMPLAIN_API_URL + apifp.COMPLAIN_API_URL_SIMIL +'?serviceKey=' + apifp.COMPLAIN_API_KEY + \
+          '&startPos=' + start_page + '&retCount=' + maxResult + '&searchword=' + quote(keyword) + '&target=' + target
     print('URL: ', url)
 
     dataPath = apifp.COMPLAIN_DATA_PATH_SIMIL
 
     # 분야별 데이터 저장 full path
-    get_complain_data_path = file_path.get_raw_use_path()  + "//"
+    get_complain_data_path = file_path.get_raw_use_path() + "//"
 
     try:
         res = urlopen(url).read()  # URL 열고 읽음
@@ -321,11 +326,12 @@ def get_similarInfo(keyword):
             df1.to_csv(route_csv, index=False, encoding="utf-8-sig")
             df1.to_json(route, orient='table')
 
-            # ------------ 마트 적재 데이타 Log 저장 -------------------------
+            # ------------------------- 마트 적재 데이타 Log 저장 -------------------------
             save_log = mdb.DbUseAnalClass()
             now = datetime.now()
-            # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
-            save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M%S'),'민원', route, '', '', len(df1), '키워드', keyword])
+            # values = ['현재일자', '데이터 타입', '파일명', '수집기간_시작', '수집기간_종료',
+            #           '저장총건수', '마트구분(API, 1차마트, 분석, 키워드'), '키워드']
+            save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M%S'), '민원', route, '', '', len(df1), '키워드', keyword])
 
             print('The End!!!')
 
@@ -360,11 +366,12 @@ def get_similarInfo(keyword):
 def get_wd_cloud_info(keyword, std_ymd_fr, std_ymd_to, target):
 
     file_path = FilePathClass()
-    maxResult = '50' #apifp.COMPLAIN_MAX_ROW
+    maxResult = '50'  # apifp.COMPLAIN_MAX_ROW
     analysis_date_fr = std_ymd_fr
     analysis_date_to = std_ymd_to
 
-    url = apifp.COMPLAIN_API_URL + apifp.COMPLAIN_API_URL_WDCLOUD +'?serviceKey=' + apifp.COMPLAIN_API_KEY + '&searchword=' + quote(keyword) + '&resultCount=' + maxResult + '&target=' + target + '&omitDuplicate=true' + '&dateFrom=' + analysis_date_fr + '&dateTo='+ analysis_date_to
+    url = apifp.COMPLAIN_API_URL + apifp.COMPLAIN_API_URL_WDCLOUD + '?serviceKey=' + apifp.COMPLAIN_API_KEY + '&searchword=' + \
+          quote(keyword) + '&resultCount=' + maxResult + '&target=' + target + '&omitDuplicate=true' + '&dateFrom=' + analysis_date_fr + '&dateTo=' + analysis_date_to
     print('URL: ', url)
 
     dataPath = apifp.COMPLAIN_DATA_PATH_WDCLOUD
@@ -388,11 +395,12 @@ def get_wd_cloud_info(keyword, std_ymd_fr, std_ymd_to, target):
             df1.to_csv(route_csv, index=False, encoding="utf-8-sig")
             df1.to_json(route, orient='table')
 
-            # ------------ 마트 적재 데이타 Log 저장 -------------------------
+            # ------------------------- 마트 적재 데이타 Log 저장 -------------------------
             save_log = mdb.DbUseAnalClass()
             now = datetime.now()
-            # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
-            save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M:%S'),'민원', route, analysis_date_fr, analysis_date_to, len(df1), '키워드', keyword])
+            # values = ['현재일자', '데이터 타입', '파일명', '수집기간_시작', '수집기간_종료',
+            #           '저장총건수', '마트구분(API, 1차마트, 분석, 키워드'), '키워드']
+            save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M:%S'), '민원', route, analysis_date_fr, analysis_date_to, len(df1), '키워드', keyword])
 
             print('The End!!!')
 
@@ -430,7 +438,7 @@ def get_complaint_data(part, date, target):
     if part == '전체':
         for i in day_list:
             get_rising_keyword(i, target)
-            get_today_topic_keyword(i,  target)
+            get_today_topic_keyword(i, target)
             get_dfTopN_keyword(i, target)
         get_topN_keyword(date+"01", getMonthRange(date[:4], date[-2:]).strftime('%Y%m%d'), target)
     elif part == '급등':
@@ -438,7 +446,7 @@ def get_complaint_data(part, date, target):
             get_rising_keyword(i, target)
     elif part == '오늘':
         for i in day_list:
-            get_today_topic_keyword(i,  target)
+            get_today_topic_keyword(i, target)
     elif part == '최다':
         for i in day_list:
             get_dfTopN_keyword(i, target)

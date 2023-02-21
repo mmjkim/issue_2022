@@ -1,7 +1,6 @@
 #----------------- 분석에 사용될 1차 마트 생성 -----------------
 # 수집된 데이타를 하나의 파일로 저장
-#-----------------------------------------------------------
-
+#------------------------------------------------------------
 
 #
 # 디렉토리 안에 있는 파일들의 데이타를 하나로 합치기
@@ -22,7 +21,6 @@ import common.config.errormessage as em
 
 
 def anal_mart_news(part):
-
     try:
         #파일 path
         file_path = FilePathClass()
@@ -67,8 +65,8 @@ def anal_mart_news(part):
             # 파일 저장
             dfAllData.to_csv(savefile, encoding="utf-8-sig", index=False)
 
-            print("마트 적재 데이타 Log 저장-->", part)
             #마트 적재 데이타 Log 저장
+            print("마트 적재 데이타 Log 저장-->", part)
             save_log = mdb.DbUseAnalClass()
             save_log.mart_log_qry(dfAllData, '뉴스', part)
 
@@ -80,6 +78,7 @@ def anal_mart_news(part):
 
     except Exception as e:
         print("anal_mart_news error :", e)
+
 
 #----------------------------------------------------------------
 # 민원데이터 월별 합계 마트 생성
@@ -130,12 +129,13 @@ def anal_mart_complaint(part):
             # 파일저장
             df_mart_data_group.to_csv(savefile, encoding="utf-8-sig", index=False)
 
-            print("마트 적재 데이타 Log 저장-->", part)
             #마트 적재 데이타 Log 저장
+            print("마트 적재 데이타 Log 저장-->", part)
             save_log = mdb.DbUseAnalClass()
-            save_log.mart_log_qry(df_mart_data_group,'민원' ,part)
+            save_log.mart_log_qry(df_mart_data_group, '민원', part)
 
             print("The End!!!")
+
         else:
             msg = part + " " + em.NO_DATA
             error_event(msg)
@@ -168,6 +168,7 @@ def set_rising_data(files):
         df_mart_data = df_mart_data.assign(rank=0)
 
         return df_mart_data
+
     except Exception:
         import traceback
         traceback.print_exc()
@@ -175,7 +176,6 @@ def set_rising_data(files):
 
 #오늘의 민원 키워드 데이터 생성
 def set_topic_data(files):
-
     try:
         dfAllData = pd.DataFrame()
 
@@ -205,7 +205,6 @@ def set_topic_data(files):
 
 #핵심 키워드 데이터 생성
 def set_top_data(files):
-
     try:
         dfAllData = pd.DataFrame()
 
@@ -235,7 +234,6 @@ def set_top_data(files):
 
 #최다 키워드 데이터 생성
 def set_dftopkw_data(files):
-
     try:
         dfAllData = pd.DataFrame()
 
@@ -265,7 +263,6 @@ def set_dftopkw_data(files):
 
 #네이버 키워드 데이터 생성(MDB에 저장)
 def save_db_naver_data():
-
     try:
         #파일 path
         file_path = FilePathClass()
@@ -293,6 +290,7 @@ def save_db_naver_data():
                 list_qry.append(insert_qry + value_qry)
 
             connect_db.insert_many_qry(list_qry)
+
     except Exception:
         import traceback
         traceback.print_exc()

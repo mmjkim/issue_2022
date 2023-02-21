@@ -449,7 +449,7 @@ class Ui_frmViewComplaints(object):
                 fig.clear(True)
                 plt.cla()
 
-                #트리맵
+                # 트리맵
                 import squarify
                 squarify.plot(sizes=df.head(int(self.txt_top_n_3.text())).values,
                               label=df.head(int(self.txt_top_n_3.text())).index, alpha=.5,
@@ -470,6 +470,7 @@ class Ui_frmViewComplaints(object):
                     ax.plot(df.columns,
                             df.head(int(topn.text())).values[i],
                             label=df.index.values[i], alpha=0.5, linewidth=2)
+
             # elif part == 'bar':
             #     df.head(int(topn.text())).T.plot.bar(figsize=(10, 5), ax=ax, alpha=0.5)
             #     ax.xaxis.set_visible(False)

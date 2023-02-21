@@ -12,7 +12,6 @@ class FilePathClass:
         self.use_path = fp.DATA_USE_PATH
         self.result_path = fp.DATA_RESULT_PATH
         self.log_path = fp.LOG_PATH
-        self.data_api = fp.DATA_API_PATH
 
         try:
             if not os.path.exists(self.root_path):
@@ -45,7 +44,7 @@ class FilePathClass:
 
     # get ResultPath 폴더명
     def get_result_path(self):
-        folder = self.root_path + '\\' + self.data_path +  '\\' + self.result_path + '\\'
+        folder = self.root_path + '\\' + self.data_path + '\\' + self.result_path + '\\'
        # print("================ : ", folder)
         return self.make_path(folder)
 
@@ -57,7 +56,7 @@ class FilePathClass:
 
     # get 수집데이터 폴더명
     def get_raw_collect_path(self):
-        folder = self.root_path + '\\' + self.data_path +  '\\' + self.collect_path + '\\'
+        folder = self.root_path + '\\' + self.data_path + '\\' + self.collect_path + '\\'
        # print("================ : ", folder)
         return self.make_path(folder)
 
@@ -67,27 +66,8 @@ class FilePathClass:
        # print("================ : ", folder)
         return self.make_path(folder)
 
-    # get api 데이터 폴더명
-    def get_bas_api_path(self):
-        folder = self.root_path + '\\' + self.data_path + '\\' + self.data_api + '\\'
-       # print("================ : ", folder)
-        return self.make_path(folder)
-
     # 다운로드 폴더명
     def get_download_path(self):
-        folder = self.root_path + '\\' +'Downloads/'
+        folder = self.root_path + '\\' + 'Downloads/'
        # print("================ : ", folder)
         return self.make_path(folder)
-
-    def set_year(self, year):
-        fp.g_YEAR = year
-
-    def set_sido(self, sido):
-        fp.g_SIDO = sido
-
-    def get_year(self):
-        return fp.g_YEAR
-
-    def get_sido(self):
-        return fp.g_SIDO
-

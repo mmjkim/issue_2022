@@ -1,7 +1,6 @@
 #-------------------------------------------------------
 # 키워드 동시 출현 분석
 # 오늘의 민원 이슈 vs 뉴스_정치, 뉴스_사회, 뉴스_사회
-#
 #-------------------------------------------------------
 import pandas as pd
 import os.path
@@ -51,7 +50,7 @@ def compare_keyword(part):
             si_news_politics_data = pd.read_csv(filename_politics, encoding="utf-8-sig")
             si_news_economy_data = pd.read_csv(filename_economy, encoding="utf-8-sig")
 
-            #시리즈형 데이타를 프레임임형으로 변한
+            #시리즈형 데이타를 프레임형으로 변한
             df_complain_data = si_complain_data['keyword'].to_frame()
 
             #중복되는 데이터 저장 데이타 프레임 정의

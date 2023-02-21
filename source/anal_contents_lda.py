@@ -1,8 +1,10 @@
+import glob
 import numpy as np
 import pandas as pd
-import warnings # 경고 메시지 무시
+import warnings  # 경고 메시지 무시
 warnings.filterwarnings(action='ignore')
-from konlpy.tag import Mecab # 형태소 분석기
+
+from konlpy.tag import Mecab  # 형태소 분석기
 #경로 픽스
 mecab = Mecab(dicpath=r"C:\\mecab\\mecab-ko-dic")
 # 작업 프로세스 시각화
@@ -18,11 +20,8 @@ import pyLDAvis.gensim_models
 # 단어 등장 횟수 카운트
 from collections import Counter
 
-import glob
-
 from common.config.filepassclass import *
 import common.config.apiinfo as apifp
-
 
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)

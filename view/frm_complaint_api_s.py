@@ -28,7 +28,7 @@ class Worker(QThread):
 
     #Thread 실행
     def run(self):
-        #thread 실행
+        #Thread 실행
         self.working = True
 
         if self.working:
@@ -375,7 +375,7 @@ class Ui_complaint_api_win(object):
         self.sel_mm_start.setItemText(9, _translate("complaint_api_win", "10"))
         self.sel_mm_start.setItemText(10, _translate("complaint_api_win", "11"))
         self.sel_mm_start.setItemText(11, _translate("complaint_api_win", "12"))
-        self.sel_mm_start.setCurrentText(str(datetime.today().month)) # 현재 월로 기본값 설정
+        self.sel_mm_start.setCurrentText(str(datetime.today().month))  # 현재 월로 기본값 설정
         self.btn_sel.setText(_translate("complaint_api_win", "데이터 수집"))
         self.btn_mart.setText(_translate("complaint_api_win", "데이터 적재"))
         # 현재 연도까지 6년
@@ -385,7 +385,7 @@ class Ui_complaint_api_win(object):
         self.sel_yy_start.setItemText(3, _translate("complaint_api_win", str(datetime.today().year-3)))
         self.sel_yy_start.setItemText(4, _translate("complaint_api_win", str(datetime.today().year-4)))
         self.sel_yy_start.setItemText(5, _translate("complaint_api_win", str(datetime.today().year-5)))
-        self.sel_yy_start.setCurrentText(str(datetime.today().year)) # 현재 연도로 기본값 설정
+        self.sel_yy_start.setCurrentText(str(datetime.today().year))  # 현재 연도로 기본값 설정
         self.rad_type_all.setText(_translate("complaint_api_win", "전체"))
         self.chkbox_saeol.setText(_translate("complaint_api_win", "수집민원"))
         self.chkbox_qna.setText(_translate("complaint_api_win", "정책QNA"))

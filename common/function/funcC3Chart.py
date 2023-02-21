@@ -18,14 +18,11 @@ def c3chart_html_write(df_data, type, types):
     df_categories_data = df_data['ymd']
     json_temp = df_categories_data.to_json(orient="values")
     categories = json.loads(json_temp)
-    str_json_categories = json.dumps(categories,ensure_ascii=False, indent=4)
+    str_json_categories = json.dumps(categories, ensure_ascii=False, indent=4)
 
     keys_data = "'" + "','".join(df_data.columns.values) + "'"
-    # print(keys_data)
     keys_data = keys_data.replace("'ymd',", '')
-    # print("keys_data:", keys_data)
 
-    # chart_types = str(types).split(",", "")
     multi_types = types
 
     chart_type = type

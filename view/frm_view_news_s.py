@@ -1,5 +1,4 @@
 import os.path
-
 import pandas as pd
 from datetime import datetime
 
@@ -226,7 +225,6 @@ class Ui_frmViewNews(object):
 
     # 선택된 키워드 그래프 출력
     def table_select(self, row, col):
-
         if self.tabWidget.currentIndex() == 0:
             table = self.tbl_data1
         elif self.tabWidget.currentIndex() == 1:
@@ -264,7 +262,6 @@ class Ui_frmViewNews(object):
 
     # 그래프 출력
     def show_graph(self):
-
         self.fig.clear(True)
         ax = self.fig.add_subplot(111)
 
@@ -374,7 +371,6 @@ class Ui_frmViewNews(object):
 
     #조회한 데이타 테이블에 넣기
     def set_table_data(self, news_sel, table):
-
         try:
             #컬럼 생성
             table.setColumnCount(len(news_sel.columns)+1)
@@ -385,7 +381,6 @@ class Ui_frmViewNews(object):
                 table.setHorizontalHeaderItem(j+1, QTableWidgetItem(news_sel.columns[j]))
 
             for i in range(0, len(news_sel)):
-
                 table.setItem(i, 0, QTableWidgetItem(news_sel.index[i]))
                 for j in range(len(news_sel.columns)):
                     item = QTableWidgetItem()
@@ -395,13 +390,13 @@ class Ui_frmViewNews(object):
                        item.setData(Qt.DisplayRole, float(news_sel[news_sel.columns[j]][i]))
                     item.setTextAlignment(Qt.AlignVCenter | Qt.AlignRight)  # 텍스트 오른쪽 정렬
                     table.setItem(i, j+1, item)
+
         except Exception as e:
             print("set_table_data Error : ", e)
 
 
     # 테이블 데이터를 dataframe으로 변경
     def setTblToDf(self, table):
-
         col_count = table.columnCount()
         row_count = table.rowCount()
 

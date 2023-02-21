@@ -1,8 +1,8 @@
 # API I/F 정보 관리
 # 인증키, url, 저장 폴더 정의
 
-#------------- 뉴스 API I/F 정보 ---------------------
-NEWS_API_KEY = ''
+#--------------------- 뉴스 API I/F 정보 ---------------------
+NEWS_API_KEY = ''  # 입력 필요
 
 NEWS_API_URL = 'https://api.odcloud.kr/api'
 
@@ -14,13 +14,13 @@ NEWS_API_URL_ECONOMY = 'namespace=15068899/v1'
 #사회
 NEWS_API_URL_SOCIETY = 'namespace=15065434/v1'
 
-#------------- 뉴스 데이터 저장 폴더 ---------------------
+#--------------------- 뉴스 데이터 저장 폴더 ---------------------
 NEWS_DATA_PATH_POLITICS = '뉴스_정치'
 NEWS_DATA_PATH_ECONOMY = '뉴스_경제'
 NEWS_DATA_PATH_SOCIETY = '뉴스_사회'
 
-#------------- 민원 API I/F 정보 ---------------------
-COMPLAIN_API_KEY = ''
+#--------------------- 민원 API I/F 정보 ---------------------
+COMPLAIN_API_KEY = ''  # 입력 필요
 COMPLAIN_API_URL = 'http://apis.data.go.kr/1140100/minAnalsInfoView5/'
 #급등키워드
 COMPLAIN_API_URL_RISE = 'minRisingKeyword5'
@@ -55,7 +55,7 @@ COMPLAIN_API_URL_KWSEX = 'minPttnStstGndrInfo5'
 #키워드 기반 연령 정보
 COMPLAIN_API_URL_KWAGE = 'minPttnStstAgeInfo5'
 
-#------------- 민원 데이터 저장 폴더 ---------------------
+#--------------------- 민원 데이터 저장 폴더 ---------------------
 #급등키워드
 COMPLAIN_DATA_PATH_RISE = '민원_급등키워드'
 #핵심키워드
@@ -93,19 +93,19 @@ COMPLAIN_MAX_ROW = '20'
 COMPLAIN_TOPN_MAX_ROW = '100'
 
 
-#------------- 네이버 API I/F 정보 ---------------------
+#--------------------- 네이버 API I/F 정보 ---------------------
 NAVER_API_URL = 'https://openapi.naver.com/v1/datalab/search'
-NAVER_API_ID = ''
-NAVER_API_PW = ''
+NAVER_API_ID = ''  # 입력 필요
+NAVER_API_PW = ''  # 입력 필요
 NAVER_DATA_PATH_KEYWORD = '네이버_검색어'
 NAVER_TIME_UNIT = 'month'
 
 
-#----------------- 빅카인즈 로그인 정보 -----------------
-BIGKINDS_ID = ''
-BIGKINDS_PW = ''
+#--------------------- 빅카인즈 로그인 정보 ---------------------
+BIGKINDS_ID = ''  # 입력 필요
+BIGKINDS_PW = ''  # 입력 필요
 
 
-#-----------------User 정보-----------------
+#--------------------- User 정보 ---------------------
 import getpass
 USER = getpass.getuser()

@@ -78,7 +78,6 @@ def get_news(uddi, part, day):
 
         #uuid 값으로 api 호출 후 데이터를 csv로 저장
         for index, row in get_data.iterrows():
-
             url = apifp.NEWS_API_URL + row['uddi'] + '?age=1&perPage=200&serviceKey=' + apifp.NEWS_API_KEY
             url = url.replace("['", '')
             url = url.replace("']", '')
@@ -94,8 +93,8 @@ def get_news(uddi, part, day):
             save_log = mdb.DbUseAnalClass()
             now = datetime.now()
             # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료',
-            # '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
-            save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M:%S'),'뉴스',route,
+            #           '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
+            save_log.mart_log_save([now.strftime('%Y-%m-%d %H:%M:%S'), '뉴스', route,
                                     row['date'], row['date'], len(df), 'API', ''])
 
     except Exception as e:

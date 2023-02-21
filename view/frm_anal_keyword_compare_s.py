@@ -300,10 +300,10 @@ class Ui_Anal_Dialog(object):
         self.tbl_complain_wdcloud.horizontalHeader().setSectionResizeMode(True)
         self.tbl_complain_wdcloud.horizontalHeader().setStyleSheet("QHeaderView::section {background-color:#404040;color:#FFFFFF;}")
 
-        self.btn_news.clicked.connect(self.get_news) # 뉴스 데이터 크롤링
-        self.btn_naver.clicked.connect(self.get_naver_data) # 네이버 키워드 데이터 수집
-        self.btn_anal.clicked.connect(self.get_anal) # 동시출현 키워드 테이블 출력
-        self.btn_complain.clicked.connect(self.get_complain_data) # 민원 데이터 수집
+        self.btn_news.clicked.connect(self.get_news)  # 뉴스 데이터 크롤링
+        self.btn_naver.clicked.connect(self.get_naver_data)  # 네이버 키워드 데이터 수집
+        self.btn_anal.clicked.connect(self.get_anal)  # 동시출현 키워드 테이블 출력
+        self.btn_complain.clicked.connect(self.get_complain_data)  # 민원 데이터 수집
 
         # 탭 변경 > 해당 탭 테이블 변경
         self.tabWidget.currentChanged.connect(self.get_word_compare)
@@ -378,7 +378,7 @@ class Ui_Anal_Dialog(object):
         self.sel_yy_start.setItemText(3, _translate("Anal_Dialog", str(datetime.today().year - 3)))
         self.sel_yy_start.setItemText(4, _translate("Anal_Dialog", str(datetime.today().year - 4)))
         self.sel_yy_start.setItemText(5, _translate("Anal_Dialog", str(datetime.today().year - 5)))
-        self.sel_yy_start.setCurrentText(str(datetime.today().year)) # 현재 연도로 기본값 설정
+        self.sel_yy_start.setCurrentText(str(datetime.today().year))  # 현재 연도로 기본값 설정
         self.sel_mm_end.setItemText(0, _translate("Anal_Dialog", "01"))
         self.sel_mm_end.setItemText(1, _translate("Anal_Dialog", "02"))
         self.sel_mm_end.setItemText(2, _translate("Anal_Dialog", "03"))
@@ -391,7 +391,7 @@ class Ui_Anal_Dialog(object):
         self.sel_mm_end.setItemText(9, _translate("Anal_Dialog", "10"))
         self.sel_mm_end.setItemText(10, _translate("Anal_Dialog", "11"))
         self.sel_mm_end.setItemText(11, _translate("Anal_Dialog", "12"))
-        self.sel_mm_end.setCurrentText(str(datetime.today().month)) # 현재 월로 기본값 설정
+        self.sel_mm_end.setCurrentText(str(datetime.today().month))  # 현재 월로 기본값 설정
         self.label_7.setText(_translate("Anal_Dialog", "분석 키워드"))
         self.group3.setTitle(_translate("Anal_Dialog", " [ 네이버 ] "))
         item = self.tbl_naver.horizontalHeaderItem(0)
@@ -417,7 +417,8 @@ class Ui_Anal_Dialog(object):
         self.tbl_complain_simil.setSortingEnabled(True)
         self.tbl_complain_wdcloud.setSortingEnabled(True)
 
-#  -------------------------------------------------<  logic def >----------------------------------------------------------
+
+#  -------------------------------------------------< logic def >-------------------------------------------------
     def get_anal(self):
         if self.tabWidget.currentIndex() == 0:
             part_name = '오늘'
@@ -426,9 +427,9 @@ class Ui_Anal_Dialog(object):
         elif self.tabWidget.currentIndex() == 2:
             part_name = '최다'
 
-        # 키워드 동시출현 분석 > 파일 저장 및 데이터프레임 반환
+        # 키워드 동시 출현 분석 > 파일 저장 및 데이터프레임 반환
         compare_keyword(part_name)
-        # 동시출현 키워드 테이블 조회
+        # 동시 출현 키워드 테이블 조회
         self.get_word_compare()
 
 
@@ -448,8 +449,8 @@ class Ui_Anal_Dialog(object):
                 from selenium import webdriver
                 from selenium.webdriver.common.by import By
                 from selenium.webdriver.common.keys import Keys
-                from selenium.webdriver.chrome.options import Options # 크롬 옵션 설정
-                from webdriver_manager.chrome import ChromeDriverManager # 크롬 드라이버 자동 업데이트
+                from selenium.webdriver.chrome.options import Options  # 크롬 옵션 설정
+                from webdriver_manager.chrome import ChromeDriverManager  # 크롬 드라이버 자동 업데이트
                 from selenium.webdriver.support.ui import WebDriverWait
                 from selenium.webdriver.support import expected_conditions as EC
                 from selenium.common.exceptions import ElementNotInteractableException
@@ -458,12 +459,12 @@ class Ui_Anal_Dialog(object):
                 down_path = FilePathClass()
 
                 chrome_options = Options()
-                chrome_options.add_experimental_option("detach", True) # 브라우저 자동 종료 방지
+                chrome_options.add_experimental_option("detach", True)  # 브라우저 자동 종료 방지
                 # chrome_options.binary_location = "D:/Program Files/Chrome/Application/chrome.exe"  # 크롬 경로 지정
                 dr = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
                 dr.implicitly_wait(3) # 3초 대기
-                dr.get('https://www.bigkinds.or.kr/v2/news/index.do') # 빅카인즈 주소로 이동
-                dr.maximize_window() # 창 최대화
+                dr.get('https://www.bigkinds.or.kr/v2/news/index.do')  # 빅카인즈 주소로 이동
+                dr.maximize_window()  # 창 최대화
 
                 # 빅카인즈 로그인
                 login_element = dr.find_element(By.XPATH, '//*[@id="header"]/div[1]/div/div[2]/button[1]')
@@ -591,13 +592,13 @@ class Ui_Anal_Dialog(object):
                         i = ('검색,' + i).split(',')
                         # 네이버 데이터 수집
                         naver_trend_search(datetime.strptime(s_yy_start+s_mm_start+"01", '%Y%m%d'),
-                                           getMonthRange(s_yy_end,s_mm_end), i)
+                                           getMonthRange(s_yy_end, s_mm_end), i)
                     else:
                         continue
             else:
                 error_event(em.ENTER_KEYWORD)
 
-            self.show_folders('네이버') # 네이버 데이터 수집 리스트 출력
+            self.show_folders('네이버')  # 네이버 데이터 수집 리스트 출력
 
     
     # 민원 데이터 수집
@@ -625,7 +626,7 @@ class Ui_Anal_Dialog(object):
                     if i != '':
                         # 민원_연관어분석 데이터 수집
                         if get_wd_cloud_info(i, (s_yy_start+s_mm_start+"01"),
-                                       getMonthRange(s_yy_end,s_mm_end).strftime("%Y%m%d"), 'pttn,dfpt,saeol,prpl,qna_origin') is None:
+                                       getMonthRange(s_yy_end, s_mm_end).strftime("%Y%m%d"), 'pttn,dfpt,saeol,prpl,qna_origin') is None:
                             empty_relate_list.append(i)
                         # 민원_유사사례정보 데이터 수집
                         if get_similarInfo(i) is None:
@@ -665,7 +666,7 @@ class Ui_Anal_Dialog(object):
         # 각 분야별 파일명 리스트에 저장
         for i in range(0, len(data_all_list)):
             filename = data_all_list[i].split('_')
-            if len(filename) > 2 :
+            if len(filename) > 2:
                 if (data_all_list[i][-3:] == 'csv') & (filename[0] == '네이버'):
                     data_list_naver.append(data_all_list[i])
                 elif (data_all_list[i][-3:] == 'csv') & (filename[0] == '민원'):

@@ -53,23 +53,19 @@ class DbUseAnalClass:
             print(e)
 
     def insert_many_qry(self, qry_list):
-
         try:
             for qry in qry_list:
                 self.cursor.execute(qry)
-
             self.conn.commit()
         except pyodbc.Error as e:
             print(e)
 
     def update_qry(self, qry):
-
         try:
             self.cursor.execute(qry)
             self.conn.commit()
         except pyodbc.Error as e:
             print(e)
-
 
     def delete_qry(self, qry):
         try:
@@ -79,10 +75,10 @@ class DbUseAnalClass:
             print(e)
 
     # values의 값은 list type으로 전달
-    # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
+    # values = ['현재일자', '데이터 타입', '파일명', '수집기간_시작', '수집기간_종료', '저장총건수', '마트구분(API, 1차마트, 분석, 키워드)', '키워드']
     def mart_log_save(self, value):
         try:
-            insertQry = " INSERT INTO ISSUE_DATA_MART_INFO (WRITE_YMD,DATA_TYPE, DATA_NAME, COLLECT_YMD_STD, COLLECT_YMD_END, DATA_TOT_CNT, MART_TYPE, KEYWORD) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}')"
+            insertQry = " INSERT INTO ISSUE_DATA_MART_INFO (WRITE_YMD, DATA_TYPE, DATA_NAME, COLLECT_YMD_STD, COLLECT_YMD_END, DATA_TOT_CNT, MART_TYPE, KEYWORD) VALUES ('{0}','{1}','{2}','{3}','{4}','{5}','{6}','{7}')"
             qry = insertQry.format(value[0], value[1], value[2], value[3], value[4], value[5], value[6], value[7])
             self.insert_one_qry(qry)
         except pyodbc.Error as e:
@@ -93,10 +89,9 @@ class DbUseAnalClass:
     # DB에 수집된 데이터 LOG 정보 저장 1차 마트
     #----------------------------------------------------------------
     def mart_log_qry(self, dfAllData, type, part):
-
         try:
             # values의 값은 list type으로 전달
-            # values = ['현재일자','데이터 타입' ,'파일명', '수집기간_시작', '수집기간_종료', '저장총건수','마트구분(API, 1마트, 분석, 키워드'), '키워드']
+            # values = ['현재일자', '데이터 타입', '파일명', '수집기간_시작', '수집기간_종료', '저장총건수', '마트구분(API, 1차마트, 분석, 키워드)', '키워드']
             now = datetime.now()
             savefile_name = "{0}_{1}.csv".format('1차마트', part)
             # 데이터 정렬
@@ -104,7 +99,7 @@ class DbUseAnalClass:
             std_ymd = dfAllData['stdym'].iloc[0]
             end_ymd = dfAllData['stdym'].iloc[-1]
 
-            values = [now.strftime('%Y-%m-%d %H:%M:%S'),type, savefile_name, std_ymd, end_ymd, len(dfAllData), '1차마트', '']
+            values = [now.strftime('%Y-%m-%d %H:%M:%S'), type, savefile_name, std_ymd, end_ymd, len(dfAllData), '1차마트', '']
             self.mart_log_save(values)
         except pyodbc.Error as e:
             print(e)
